@@ -4,47 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PlayPort</title>
-<meta name="theme-color" content="#0b0d1c">
+<meta name="theme-color" content="#141518">
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="top">
-  <div class="top-in">
-    <a class="logo" href="#/" aria-label="PlayPort home">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8" fill="var(--mint)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#0b0d1c"/><circle cx="17" cy="13.6" r="1.6" fill="var(--mint)"/></svg>
-      <span>Play<b>Port</b></span>
-    </a>
-    <nav class="nav" aria-label="Main">
-      <a href="#/" data-nav="lobby">Lobby</a>
-      <a href="#/platforms" data-nav="platforms">Platforms</a>
-      <a href="#/games" data-nav="games">Games</a>
-      <a href="#/account" data-nav="account">My account</a>
-    </nav>
-    <div class="top-right" id="topRight"></div>
-  </div>
+  <a class="logo" href="#/" aria-label="PlayPort home"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#fff"/></svg><span>Play<b>Port</b></span></a>
+  <div class="top-right" id="topRight"></div>
 </header>
 
 <main id="app"></main>
 
-<footer class="foot">
-  <div class="foot-in">
-    <div class="foot-brand"><b>PlayPort</b> &middot; one login for every platform we host</div>
-    <div class="foot-links"><a href="#/account">Account</a><a href="#/help">Help</a><a href="#/rules">Sweepstakes rules</a><a href="#/play-safe">Play safe</a></div>
-    <p class="foot-small">No purchase necessary. Void where prohibited. 21+ only. Game credits have no cash value outside the platforms they are issued on.</p>
-  </div>
-</footer>
+<p class="legal">No purchase necessary. Void where prohibited. 21+ only. Sweeps Coins have no cash value outside the platforms they are issued on.</p>
 
-<nav class="tabbar" aria-label="Mobile">
-  <a href="#/" data-nav="lobby"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg>Lobby</a>
-  <a href="#/platforms" data-nav="platforms"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Platforms</a>
-  <a href="#/games" data-nav="games"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Games</a>
-  <a href="#/account" data-nav="account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Account</a>
+<nav class="tabbar" aria-label="Main">
+  <a href="#" data-menu><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Menu</a>
+  <a href="#/games" data-nav="games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 7h10a5 5 0 0 1 4.8 6.4l-1 3.4a2.4 2.4 0 0 1-4.3.6L15 15H9l-1.5 2.4a2.4 2.4 0 0 1-4.3-.6l-1-3.4A5 5 0 0 1 7 7Z"/><path d="M8 10v3M6.5 11.5h3" stroke-linecap="round"/><circle cx="16" cy="11" r=".8" fill="currentColor"/><circle cx="17.5" cy="12.5" r=".8" fill="currentColor"/></svg>Games</a>
+  <a href="#/balance" data-nav="balance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M15 10h6v5h-6a2.5 2.5 0 0 1 0-5Z"/></svg>Balance</a>
+  <a href="#/activity" data-nav="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="m6 15 4-4 3 3 5-6" stroke-linecap="round"/></svg>Activity</a>
+  <a href="#" data-act="chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4Z"/><path d="M9 10.5h.01M12 10.5h.01M15 10.5h.01" stroke-linecap="round" stroke-width="2.4"/></svg>Chat</a>
 </nav>
+
+<div class="scrim" data-close-menu></div>
+<aside class="drawer" id="drawer" aria-label="Menu"></aside>
+<section class="chat" id="chat" aria-label="Support chat"></section>
 
 <div class="modal" id="modal" hidden>
   <div class="modal-back" data-close></div>

@@ -288,11 +288,6 @@ function viewLobby() {
       <div class="plats">${PLATFORMS.map(platTile).join('')}</div>
     </section>
 
-    ${S.user ? `<section class="sec">
-      <div class="sec-h"><h2>Continue playing</h2></div>
-      <div class="row-scroll">${RECENT.map(r => tile(game(r.id), { pct: r.pct, when: r.when })).join('')}</div>
-    </section>` : ''}
-
     ${gameBrowser(GAMES, 'All games', 16)}
   </div>`;
 }

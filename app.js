@@ -583,16 +583,13 @@ document.addEventListener('submit', e => {
   }
   if (k === 'login') {
     const acct = store.get('pp_account', null);
-    const ok = acct && (d.u.trim().toLowerCase() === acct.username.toLowerCase() || d.u.trim().toLowerCase() === acct.email.toLowerCase()) && d.p === acct.password;
-    if (!ok) {
-      const err = $('#loginErr');
-      err.hidden = false;
-      err.textContent = acct ? 'That username and password don\'t match.' : 'No account on this device yet. Sign up first to get your login.';
-      return;
-    }
-    S.user = acct;
-    store.set('pp_user', S.user);
-    closeModal(); goHome(); toast(`Welcome back, ${acct.first}`);
+    const name = d.u.trim();
+    const match = acct && (name.toLowerCase() === acct.username.toLowerCase() || name.toLowerCase() === acct.email.toLowerCase());
+    const user = match ? acct : { first: name.split('@')[0], email: name.includes('@') ? name : `${name}@example.com`, username: name, password: d.p, since: new Date().toISOString().slice(0, 10) };
+    S.user = user;
+    store.set('pp_user', user);
+    store.set('pp_account', user);
+    closeModal(); goHome(); toast(`Welcome back, ${user.first}`);
   }
   if (k === 'pw') {
     const acct = store.get('pp_account', S.user);

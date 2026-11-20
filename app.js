@@ -50,9 +50,8 @@ const store = {
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
-const DEMO_USER = { first: 'Alex', email: 'alex@example.com', username: 'pp_alex2291', password: 'Tq7m-Rk4x-92', since: '2026-08-14' };
 const S = {
-  user: store.get('pp_user', DEMO_USER),
+  user: store.get('pp_user', null),
   cur: store.get('pp_cur', 'sc'),
   cat: 'All',
   q: '',
@@ -154,6 +153,7 @@ function passCard() {
       <div class="pass-label">PLAYPORT PASS <span class="live">Active</span></div>
       ${credRow('Username', S.user.username, 'username')}
       ${credRow('Password', S.user.password, 'password', true)}
+      ${route().name === 'account' ? '' : '<a class="pass-edit" href="#/account">Change username or password</a>'}
     </div>
     <div class="perf"></div>
     <div class="pass-bot">
@@ -198,6 +198,81 @@ function gameBrowser(list, title, limit) {
 }
 
 /* ---------- views ---------- */
+
+function viewLanding() {
+  const total = GAMES.length;
+  const wall = ['milkyway--shooting-star', 'firekirin--jade-fortune', 'milkyway--ocean-king'];
+  const preview = ['milkyway--king-of-leopard', 'firekirin--lucky-weekends', 'milkyway--life-of-luxury', 'firekirin--space-jet', 'milkyway--hexno-keno', 'firekirin--neon-777', 'milkyway--clover-fortune', 'firekirin--yun-cai-fa'];
+  return `<div class="landing">
+    <section class="land-hero wrap">
+      <div class="land-copy">
+        <span class="land-tag">Free to join &middot; 21+</span>
+        <h1>Play Milky Way, Fire Kirin and more with <em>one login</em></h1>
+        <p>Sign up with your email, confirm the code we send you, and get a username and password that works on all ${PLATFORMS.length} platforms here.</p>
+        <form class="land-form" data-form="quick">
+          <input class="field" type="email" name="email" placeholder="Your email address" required autocomplete="email">
+          <button class="btn btn-mint" type="submit">Get my login ${I.arrow}</button>
+        </form>
+        <p class="land-small">Already signed up? <a href="#" data-act="login">Log in</a></p>
+      </div>
+      <div class="land-stack">
+        ${wall.map((id, i) => `<button class="land-card c${i}" data-game="${id}" tabindex="-1"><img src="${game(id).img}" alt="${esc(game(id).name)}"></button>`).join('')}
+      </div>
+    </section>
+
+    <section class="land-stats wrap">
+      <div><b>${PLATFORMS.length}</b><span>platforms</span></div>
+      <div><b>${total}</b><span>games</span></div>
+      <div><b>1</b><span>username + password</span></div>
+    </section>
+
+    <section class="sec wrap">
+      <div class="sec-h"><div><h2>How it works</h2><p class="sub">Your login is only created after your email is verified.</p></div></div>
+      <div class="how">
+        <div class="how-steps">
+          <div class="how-step"><span class="how-ico">@</span><div><b>Enter your email</b><p>Plus your first name. That's all we ask for.</p></div></div>
+          <div class="how-step"><span class="how-ico">#</span><div><b>Verify with the code</b><p>We email you a 6-digit code. Type it in to confirm the address is yours.</p></div></div>
+          <div class="how-step"><span class="how-ico">${I.check}</span><div><b>Get your username and password</b><p>They show on screen right away and work on every platform below.</p></div></div>
+        </div>
+        <div class="pass pass-locked">
+          <div class="pass-top">
+            <div class="pass-label">PLAYPORT PASS <span class="lock">Locked</span></div>
+            <div class="cred"><label>Username</label><div class="cred-row"><code class="blur">pp_yourname0000</code></div></div>
+            <div class="cred"><label>Password</label><div class="cred-row"><code class="blur">&bull;&bull;&bull;&bull;-&bull;&bull;&bull;&bull;-&bull;&bull;</code></div></div>
+          </div>
+          <div class="perf"></div>
+          <div class="pass-bot"><p class="lock-note">Unlocks after you verify your email</p>
+            <button class="btn btn-mint btn-block" data-act="signup">Start sign up</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec wrap">
+      <div class="sec-h"><h2>Platforms you get</h2><a class="more" href="#/platforms">See all ${I.arrow}</a></div>
+      <div class="plats">${PLATFORMS.map(platTile).join('')}</div>
+    </section>
+
+    <section class="sec wrap">
+      <div class="sec-h"><h2>Some of the games</h2><a class="more" href="#/games">All ${total} games ${I.arrow}</a></div>
+      <div class="grid">${preview.map(id => tile(game(id))).join('')}</div>
+    </section>
+
+    <section class="sec wrap">
+      <div class="sec-h"><h2>Questions</h2></div>
+      <div class="faq">
+        <details><summary>Do I need a separate account for each platform?</summary><p>No. We create them for you when you sign up. You only ever use your PlayPort username and password.</p></details>
+        <details><summary>When do I get my password?</summary><p>Straight after you enter the 6-digit code from your email. We also send a copy to that email.</p></details>
+        <details><summary>Can I change my password later?</summary><p>Yes, from My account. The change applies to every platform at once.</p></details>
+        <details><summary>Is it free?</summary><p>Signing up is free. No purchase is necessary to play.</p></details>
+      </div>
+    </section>
+
+    <section class="land-cta wrap">
+      <div><h2>Ready to play?</h2><p>Takes about a minute.</p></div>
+      <button class="btn btn-mint" data-act="signup">Create my login</button>
+    </section>
+  </div>`;
+}
 
 function viewLobby() {
   const name = S.user ? `Welcome back, ${esc(S.user.first)}` : 'Every platform, one login';
@@ -278,6 +353,16 @@ function viewAccount() {
       <div class="stack">
         ${passCard()}
         <div class="panel">
+          <h2>Change username</h2>
+          <p>Pick your own. It changes on all ${PLATFORMS.length} platforms.</p>
+          <form class="form-row" data-form="user">
+            <input class="field" name="next" placeholder="New username" value="${esc(S.user.username)}" pattern="[A-Za-z0-9_]{4,20}" title="4 to 20 letters, numbers or _" autocomplete="username" required>
+            <input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required>
+            <button class="btn btn-mint btn-block" type="submit">Save username</button>
+          </form>
+          <p class="note">4 to 20 letters, numbers or underscores.</p>
+        </div>
+        <div class="panel">
           <h2>Change password</h2>
           <p>The new password is pushed to all ${PLATFORMS.length} platforms at once.</p>
           <form class="form-row" data-form="pw">
@@ -320,7 +405,7 @@ function route() {
 
 function render(keepScroll) {
   const { name, r, arg } = route();
-  const views = { lobby: viewLobby, platforms: r === 'platform' ? () => viewPlatform(arg) : viewPlatforms, games: viewGames, account: viewAccount };
+  const views = { lobby: () => S.user ? viewLobby() : viewLanding(), platforms: r === 'platform' ? () => viewPlatform(arg) : viewPlatforms, games: viewGames, account: viewAccount };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
   document.querySelectorAll('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
@@ -387,7 +472,8 @@ function signupStep(step) {
       <form data-form="code">
         <div class="code-in">${Array.from({ length: 6 }, () => '<input inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]" aria-label="Digit" required>').join('')}</div>
         <button class="btn btn-mint btn-block" type="submit" style="margin-top:16px">Verify and create accounts</button>
-      </form>`);
+      </form>
+      <p class="note">No email? <a href="#" data-act="resend" style="color:var(--mint);font-weight:700">Send a new code</a> or <a href="#" data-act="signup" style="color:var(--mint);font-weight:700">change the email</a></p>`);
   } else {
     const u = S.user;
     openModal(`${bar(3)}<div class="done-mark">${I.check}</div><h2>You're in, ${esc(u.first)}</h2>
@@ -464,15 +550,18 @@ document.addEventListener('click', e => {
       if (isPw) c.outerHTML = credRow('Password', S.user.password, 'password', true);
     });
   }
-  if (a === 'signup') signupStep(1);
+  if (a === 'signup') { e.preventDefault(); signupStep(1); }
+  if (a === 'resend') { e.preventDefault(); toast(`New code sent to ${pending.email}`); }
+  if (a === 'login') e.preventDefault();
   if (a === 'login') openModal(`<h2>Log in</h2><p>Use your PlayPort username and password.</p>
     <form class="form-row" data-form="login">
       <input class="field" name="u" placeholder="Username" autocomplete="username" required>
       <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
       <button class="btn btn-mint btn-block" type="submit">Log in</button>
     </form>
+    <p class="note err" id="loginErr" hidden></p>
     <p class="note">New here? <a href="#" data-act="signup" style="color:var(--mint);font-weight:700">Create your pass</a></p>`);
-  if (a === 'logout') { S.user = null; store.set('pp_user', null); S.showPw = false; render(); toast('Signed out'); }
+  if (a === 'logout') { S.user = null; store.set('pp_user', null); S.showPw = false; goHome(); toast('Signed out'); }
   if (a === 'buy') toast('Coin store opens the platform cashier');
 });
 
@@ -487,21 +576,48 @@ document.addEventListener('submit', e => {
   if (k === 'code') {
     S.user = { first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) };
     store.set('pp_user', S.user);
+    store.set('pp_account', S.user);
     S.showPw = true;
-    render(true);
+    render();
     signupStep(3);
   }
   if (k === 'login') {
-    S.user = { ...DEMO_USER, username: d.u.trim() || DEMO_USER.username };
+    const acct = store.get('pp_account', null);
+    const ok = acct && (d.u.trim().toLowerCase() === acct.username.toLowerCase() || d.u.trim().toLowerCase() === acct.email.toLowerCase()) && d.p === acct.password;
+    if (!ok) {
+      const err = $('#loginErr');
+      err.hidden = false;
+      err.textContent = acct ? 'That username and password don\'t match.' : 'No account on this device yet. Sign up first to get your login.';
+      return;
+    }
+    S.user = acct;
     store.set('pp_user', S.user);
-    closeModal(); render(true); toast('Welcome back');
+    closeModal(); goHome(); toast(`Welcome back, ${acct.first}`);
   }
   if (k === 'pw') {
+    const acct = store.get('pp_account', S.user);
+    if (d.cur !== acct.password) { toast('Current password is wrong'); return; }
     S.user.password = d.next;
     store.set('pp_user', S.user);
+    store.set('pp_account', S.user);
     f.reset(); render(true); toast(`Password updated on ${PLATFORMS.length} platforms`);
   }
+  if (k === 'user') {
+    const acct = store.get('pp_account', S.user);
+    if (d.cur !== acct.password) { toast('Current password is wrong'); return; }
+    const next = d.next.trim();
+    if (next === S.user.username) { toast('That is already your username'); return; }
+    S.user.username = next;
+    store.set('pp_user', S.user);
+    store.set('pp_account', S.user);
+    render(true); toast(`Username changed to ${next}`);
+  }
 });
+
+function goHome() {
+  if (location.hash.length > 2) location.hash = '#/';
+  else render();
+}
 
 document.addEventListener('input', e => {
   if (e.target.matches('[data-search]')) { S.q = e.target.value; refreshGrid(); }

@@ -186,6 +186,7 @@ function viewHome() {
           <div><b>${guest ? '1' : fmt(totalSC())}</b><span>${guest ? 'login for all' : 'SC balance'}</span></div>
         </div>
       </div>
+      <div class="hero-mascot" aria-hidden="true"><img src="assets/mascot.jpg" alt=""></div>
       <div class="hot-card">
         <div class="hot-label">${I.bolt}Hot right now</div>
         ${hot.map((p, i) => `<a class="hot-row" href="#/platform/${p.id}">

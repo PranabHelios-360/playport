@@ -154,9 +154,8 @@ function platRow(p) {
 }
 
 function ticker() {
-  const card = f => { const p = plat(f.p); return `<div class="tick">
-    <div class="tick-top">${coin(p, 'xs')}<b>${p.name}</b><em>${f.amt} SC</em></div>
-    <div class="tick-bot"><span>${esc(f.user)} has won!</span><small>${f.ago}</small></div></div>`; };
+  const card = f => { const p = plat(f.p); return `<div class="tick">${coin(p, 'xs')}
+    <span class="tick-txt"><b>${esc(f.user)}</b> won on ${p.name}</span><em>${f.amt} SC</em><small>${f.ago}</small></div>`; };
   const cards = FEED.map(card).join('');
   return `<div class="ticker" aria-label="Live activity"><div class="ticker-label"><i></i>Live Activity</div>
     <div class="ticker-track"><div class="ticker-run">${cards}${cards}</div></div></div>`;
@@ -168,22 +167,33 @@ function viewHome() {
   const hot = ['firekirin', 'milkyway', 'orion'].map(plat);
   const guest = !S.user;
   return `<div class="page home">
-    <section class="hl">
-      ${guest
-        ? `<h1>One login for <span>every platform</span></h1>
-           <p class="hl-sub">Sign up with your email, confirm the 6-digit code, and get a username and password that works on all ${PLATFORMS.length} platforms.</p>`
-        : `<h1>Activity &amp; <span>Highlights</span></h1><p class="hl-sub">Track winners in real time</p>`}
-      <div class="hot-label">${I.bolt}Top 3 Hot Platforms</div>
-      <div class="hot">
-        ${hot.map((p, i) => `<a class="hot-coin h${i}" href="#/platform/${p.id}" aria-label="${p.name}">${coin(p, 'xl')}</a>`).join('')}
+    <section class="hero">
+      <div class="hero-txt">
+        ${guest
+          ? `<h1>One login for <span>every platform</span></h1>
+             <p class="hero-sub">Sign up with your email, confirm the 6-digit code, and get a username and password that works on all ${PLATFORMS.length} platforms.</p>
+             <form class="hl-form" data-form="quick">
+               <input class="field" type="email" name="email" placeholder="Your email address" required autocomplete="email">
+               <button class="btn btn-accent btn-lg" type="submit">Get my login</button>
+             </form>
+             <p class="hl-note">Already have one? <a href="#" data-act="login">Log in</a></p>`
+          : `<h1>Welcome back, <span>${esc(S.user.first)}</span></h1>
+             <p class="hero-sub">Your login works on all ${PLATFORMS.length} platforms. Pick one and play.</p>
+             <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/games">Play now</a><button class="btn btn-outline btn-lg" data-act="creds">${I.key}My login</button></div>`}
+        <div class="hero-stats">
+          <div><b>${PLATFORMS.length}</b><span>platforms</span></div>
+          <div><b>${GAMES.length}</b><span>games</span></div>
+          <div><b>${guest ? '1' : fmt(totalSC())}</b><span>${guest ? 'login for all' : 'SC balance'}</span></div>
+        </div>
       </div>
-      ${guest
-        ? `<form class="hl-form" data-form="quick">
-             <input class="field" type="email" name="email" placeholder="Your email address" required autocomplete="email">
-             <button class="btn btn-accent btn-lg" type="submit">Get my login</button>
-           </form>
-           <p class="hl-note">Already have one? <a href="#" data-act="login">Log in</a></p>`
-        : `<a class="btn btn-accent btn-lg" href="#/games">Play now</a>`}
+      <div class="hot-card">
+        <div class="hot-label">${I.bolt}Hot right now</div>
+        ${hot.map((p, i) => `<a class="hot-row" href="#/platform/${p.id}">
+          ${coin(p, 'md')}
+          <span class="hot-name"><b>${p.name}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
+          <span class="btn btn-accent btn-sm">Play</span>
+        </a>`).join('')}
+      </div>
     </section>
 
     ${guest ? `<section class="steps3">
@@ -255,7 +265,7 @@ function viewPlatform(id) {
 
 const BAL_ITEMS = [
   { id: 'deposit', label: 'Deposit', color: '#1fbf8f', icon: I.plus },
-  { id: 'redeem', label: 'Redeem', color: '#9c1fc4', icon: I.arrowL },
+  { id: 'redeem', label: 'Redeem', color: '#e0709e', icon: I.arrowL },
   { id: 'balances', label: 'My balances', color: '#3b82f6', icon: I.list },
   { id: 'voucher', label: 'Voucher', color: '#0ea5b7', icon: I.ticket }
 ];
@@ -362,7 +372,7 @@ function menuHtml() {
       : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
 }
 
-const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#fff"/></svg><span>Play<b>Port</b></span>`;
+const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#3a1022"/></svg><span>Play<b>Port</b></span>`;
 
 function chatHtml() {
   return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">P</span><b>PlayPort support</b></div>

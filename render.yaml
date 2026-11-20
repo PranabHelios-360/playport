@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: playport
+    runtime: static
+    buildCommand: echo "static site, no build"
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: X-Robots-Tag
+        value: noindex, nofollow

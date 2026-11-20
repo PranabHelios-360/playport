@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PlayPort</title>
+<meta name="theme-color" content="#0b0d1c">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#/" aria-label="PlayPort home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="8" fill="var(--mint)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#0b0d1c"/><circle cx="17" cy="13.6" r="1.6" fill="var(--mint)"/></svg>
+      <span>Play<b>Port</b></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/" data-nav="lobby">Lobby</a>
+      <a href="#/platforms" data-nav="platforms">Platforms</a>
+      <a href="#/games" data-nav="games">Games</a>
+      <a href="#/account" data-nav="account">My account</a>
+    </nav>
+    <div class="top-right" id="topRight"></div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-brand"><b>PlayPort</b> &middot; one login for every platform we host</div>
+    <div class="foot-links"><a href="#/account">Account</a><a href="#/help">Help</a><a href="#/rules">Sweepstakes rules</a><a href="#/play-safe">Play safe</a></div>
+    <p class="foot-small">No purchase necessary. Void where prohibited. 21+ only. Game credits have no cash value outside the platforms they are issued on.</p>
+  </div>
+</footer>
+
+<nav class="tabbar" aria-label="Mobile">
+  <a href="#/" data-nav="lobby"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></svg>Lobby</a>
+  <a href="#/platforms" data-nav="platforms"><svg viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Platforms</a>
+  <a href="#/games" data-nav="games"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>Games</a>
+  <a href="#/account" data-nav="account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Account</a>
+</nav>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-back" data-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" id="modalBox"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -214,15 +214,16 @@ function viewHome() {
             ? `<div><b>${PLATFORMS.length}</b><span>game platforms</span></div><div><b>${GAMES.length}</b><span>games</span></div><div><b>$${MIN_DEPOSIT}</b><span>min deposit</span></div>`
             : `<div><b>${usd(S.user.wallet)}</b><span>wallet</span></div><div><b>${usd(creditsTotal())}</b><span>in games</span></div><div><b>${unlockedCount()}/${PLATFORMS.length}</b><span>unlocked</span></div>`}
         </div>
+        <div class="hot-strip">
+          <div class="hot-label">${I.bolt}Hot right now</div>
+          <div class="hot-chips">${hot.map((p, i) => `<a class="hot-chip" href="#/platform/${p.id}">
+            ${coin(p, 'xs')}<span><b>${p.name}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
+          </a>`).join('')}</div>
+        </div>
       </div>
-      <div class="hero-mascot" aria-hidden="true"><img src="assets/mascot.jpg" alt=""></div>
-      <div class="hot-card">
-        <div class="hot-label">${I.bolt}Hot right now</div>
-        ${hot.map((p, i) => `<a class="hot-row" href="#/platform/${p.id}">
-          ${coin(p, 'md')}
-          <span class="hot-name"><b>${p.name}${p.daily ? ` <em class="tag daily mini">Daily 1st</em>` : ''}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
-          <span class="btn btn-accent btn-sm">${acct(p.id) ? 'Play' : 'View'}</span>
-        </a>`).join('')}
+      <div class="hero-art" aria-hidden="true">
+        <img src="assets/mascot.jpg" alt="">
+        <div class="art-badge"><b>Daily 1st bonus</b><span>Up to +15% on your first load</span></div>
       </div>
     </section>
 

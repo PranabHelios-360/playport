@@ -227,7 +227,7 @@ function viewHome() {
     </section>
 
     ${guest ? `<section class="steps3 four">
-      <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your PlayPort login.</p></div>
+      <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your Loaded777 login.</p></div>
       <div><span>2</span><b>Deposit to your wallet</b><p>Send crypto. Your wallet shows it once confirmed.</p></div>
       <div><span>3</span><b>Unlock a game, load credits</b><p>Each game gets its own login. Move money from your wallet into it.</p></div>
       <div><span>4</span><b>Play, then redeem</b><p>Redeem credits back to your wallet, then withdraw.</p></div>
@@ -341,7 +341,7 @@ function balPanel(id) {
     </form>` : noGames);
   if (id === 'redeem') return head('Redeem', 'Bring credits from a game back to your wallet.') + walletLine + (unlocked.length ?
     `<div class="opt-list">${unlocked.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${acct(p.id).credits < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${usd(acct(p.id).credits)} credits</small>${I.chev}</button>`).join('')}</div>` : noGames);
-  if (id === 'p2p') return head('P2P', 'Send money from your wallet to another PlayPort player.') + walletLine +
+  if (id === 'p2p') return head('P2P', 'Send money from your wallet to another Loaded777 player.') + walletLine +
     `<form class="form-row narrow" data-form="p2p">
       <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. mike77" required>
       <label class="lbl">Amount ($)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
@@ -393,7 +393,7 @@ function viewAccount() {
     <p class="lede">${esc(u.email)} &middot; member since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
     <div class="acct">
       <div class="card">
-        <h2>PlayPort login</h2>
+        <h2>Loaded777 login</h2>
         <p class="card-sub">For this site: your wallet, deposits and withdrawals.</p>
         ${credRow('Username', u.username, u.username)}
         ${credRow('Password', u.password, u.password, true)}
@@ -467,7 +467,7 @@ const SHOP = [
   { id: 'c10', name: '$10 cashable', cost: 850, cash: 10 },
   { id: 'c25', name: '$25 cashable', cost: 2000, cash: 25 }
 ];
-const PROMO_CODES = { BONUS50: 50, PLAYPORT100: 100 };
+const PROMO_CODES = { BONUS50: 50, LOADED100: 100 };
 
 const yesterdayKey = () => { const d = new Date(Date.now() - 864e5); return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }); };
 const countTx = (kind, status = 'done') => S.user.tx.filter(t => t.kind === kind && t.status === status).length;
@@ -552,7 +552,7 @@ function rwPromos() {
       <h3 class="rw-h">GOT A PROMO CODE?</h3>
       <p>Codes from emails, posts or your host unlock extra offers.</p>
       <form class="promo-form" data-form="promo"><input class="field" name="code" placeholder="ENTER A CODE" autocomplete="off" required><button class="btn btn-accent" type="submit">Unlock</button></form>
-      <p class="note">Demo codes: BONUS50, PLAYPORT100</p>
+      <p class="note">Demo codes: BONUS50, LOADED100</p>
     </section>
     <section class="panel-card">
       <h3 class="rw-h">OFFERS FOR YOU</h3>
@@ -589,7 +589,7 @@ function rwShop() {
 
 function rwYou() {
   const lv = levelInfo();
-  const link = `https://playport.site/r/${S.user.refCode}`;
+  const link = `https://loaded777.com/r/${S.user.refCode}`;
   return `<section class="panel-card">
       <h3 class="rw-h">INVITE FRIENDS</h3>
       <p>Earn <b>+250 points</b> when a friend signs up with your code and makes their first deposit.</p>
@@ -640,7 +640,7 @@ function needLogin(title) {
 
 /* ---------- menu + chat ---------- */
 
-const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#3a1022"/></svg><span>Play<b>Port</b></span>`;
+const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="#3a1022"/></svg><span>Loaded<b>777</b></span>`;
 
 function menuHtml() {
   const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
@@ -656,7 +656,7 @@ function menuHtml() {
 }
 
 function chatHtml() {
-  return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">P</span><b>PlayPort support</b></div>
+  return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">L</span><b>Loaded777 support</b></div>
     <div class="chat-body" id="chatBody">
       ${S.chat.map(m => `<div class="msg ${m.me ? 'me' : ''}">${esc(m.t)}</div>`).join('')}
       ${S.chat.length === 1 ? `<form class="chat-reason" data-form="reason"><label>Contact reason</label>
@@ -668,7 +668,7 @@ function chatHtml() {
 
 const DOCS = {
   'How it works': `<ol class="doc-steps">
-      <li><b>Create your PlayPort account.</b> Email plus a 6-digit code. This login is for the site: your wallet, deposits and withdrawals.</li>
+      <li><b>Create your Loaded777 account.</b> Email plus a 6-digit code. This login is for the site: your wallet, deposits and withdrawals.</li>
       <li><b>Deposit to your wallet.</b> Pick a crypto, send at least $${MIN_DEPOSIT} to the address we show you. It appears once the network confirms it.</li>
       <li><b>Unlock a game account.</b> Each game (Milky Way, Fire Kirin and the rest) has its own app and its own login. We create it for you and show the username and password.</li>
       <li><b>Load credits.</b> Move money from your wallet into that game. Credits stay in the game you loaded them into.</li>
@@ -676,7 +676,7 @@ const DOCS = {
       <li><b>Redeem, then withdraw.</b> Redeem credits from the game back to your wallet, then withdraw from your wallet to your crypto address.</li>
     </ol>`,
   FAQ: `<div class="faq">
-      <details open><summary>Is my PlayPort login the same as my game logins?</summary><p>No. PlayPort is for your wallet. Each game has its own username and password, shown under My account.</p></details>
+      <details open><summary>Is my Loaded777 login the same as my game logins?</summary><p>No. Loaded777 is for your wallet. Each game has its own username and password, shown under My account.</p></details>
       <details><summary>Why are my credits split between games?</summary><p>Each game runs its own balance. Redeem from one game to your wallet, then load another.</p></details>
       <details><summary>How long do withdrawals take?</summary><p>You can see each one under Activity, In progress, until it is sent.</p></details>
       <details><summary>What is the Daily 1st bonus?</summary><p>Games tagged Daily 1st add bonus credits to your first load of the day in that game.</p></details>
@@ -743,7 +743,7 @@ const pending = {};
 function signupStep(step) {
   const bar = n => `<div class="dots-steps">${[1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</div>`;
   if (step === 1) {
-    openModal(`${bar(1)}<h2>Create your account</h2><p>This is your PlayPort login for your wallet. Game accounts come later, one per game.</p>
+    openModal(`${bar(1)}<h2>Create your account</h2><p>This is your Loaded777 login for your wallet. Game accounts come later, one per game.</p>
       <form class="form-row" data-form="email">
         <input class="field" name="first" placeholder="First name" autocomplete="given-name" required value="${esc(pending.first || '')}">
         <input class="field" type="email" name="email" placeholder="Email address" autocomplete="email" required value="${esc(pending.email || '')}">
@@ -760,7 +760,7 @@ function signupStep(step) {
   } else {
     const u = S.user;
     openModal(`${bar(3)}<div class="done-mark">${I.check}</div><h2>You're in, ${esc(u.first)}</h2>
-      <p>Here is your PlayPort login. Next, deposit to your wallet and unlock your first game.</p>
+      <p>Here is your Loaded777 login. Next, deposit to your wallet and unlock your first game.</p>
       ${credRow('Username', u.username, u.username)}
       ${credRow('Password', u.password, u.password, true)}
       <div class="warn">We also emailed these to ${esc(u.email)}. You can change both under My account.</div>
@@ -775,7 +775,7 @@ function makePw() {
 }
 function makeCreds(first) {
   const base = first.toLowerCase().replace(/[^a-z]/g, '').slice(0, 8) || 'player';
-  return { username: `pp_${base}${Math.floor(1000 + Math.random() * 9000)}`, password: makePw() };
+  return { username: `ld_${base}${Math.floor(1000 + Math.random() * 9000)}`, password: makePw() };
 }
 
 function requireLogin() { if (!S.user) { signupStep(1); return false; } return true; }
@@ -860,7 +860,7 @@ function loadModal(pid) {
 
 function redeemModal(pid) {
   const p = plat(pid), a = acct(pid);
-  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your PlayPort wallet. You can then withdraw or load another game.</p>
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your Loaded777 wallet. You can then withdraw or load another game.</p>
     <div class="wallet-line">${p.name} credits <b>${usd(a.credits)}</b></div>
     <form class="form-row" data-form="redeem"><input type="hidden" name="plat" value="${pid}">
       <input class="field" name="amt" type="number" min="1" step="0.01" max="${a.credits}" value="${a.credits.toFixed(2)}" required>
@@ -947,7 +947,7 @@ document.addEventListener('click', e => {
   if (a === 'resend') toast(`New code sent to ${pending.email}`);
   if (a === 'login') {
     setMenu(false);
-    openModal(`<h2>Log in</h2><p>Use your PlayPort username and password.</p>
+    openModal(`<h2>Log in</h2><p>Use your Loaded777 username and password.</p>
       <form class="form-row" data-form="login">
         <input class="field" name="u" placeholder="Username or email" autocomplete="username" required>
         <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
@@ -958,7 +958,7 @@ document.addEventListener('click', e => {
   if (a === 'logout') { setMenu(false); S.user = null; store.set('pp_user', null); S.showPw = false; goHome(); toast('Signed out'); }
   if (a === 'unlock') unlockModal(pid);
   if (a === 'unlock-go') {
-    S.user.accounts[pid] = { username: `${S.user.username.replace(/^pp_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
+    S.user.accounts[pid] = { username: `${S.user.username.replace(/^(pp|ld)_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
     S.showPw = true;
     refresh();
     gameCredsModal(pid, true);
@@ -1003,7 +1003,7 @@ document.addEventListener('click', e => {
   if (a === 'avatar') { S.user.avatar = t.dataset.c; refresh(); syncQuests(); render(true); }
   if (a === 'share') {
     const link = t.dataset.link;
-    if (navigator.share) navigator.share({ title: 'PlayPort', text: 'Join me on PlayPort', url: link }).catch(() => {});
+    if (navigator.share) navigator.share({ title: 'Loaded777', text: 'Join me on Loaded777', url: link }).catch(() => {});
     else { if (navigator.clipboard) navigator.clipboard.writeText(link).catch(() => {}); toast('Invite link copied'); }
   }
   if (a === 'bell') toast('No new notifications');

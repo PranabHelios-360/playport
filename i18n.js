@@ -233,6 +233,7 @@ const ES = {
   'Bitcoin': 'Bitcoin', 'Bitcoin Cash': 'Bitcoin Cash', 'Binance Coin': 'Binance Coin',
 
   // pieces found in the Spanish sweep
+  'All fish games and slots platform under one roof. Sign up': 'Todos los juegos de pesca y tragamonedas en una sola plataforma. Regístrate',
   'Our platforms': 'Nuestras plataformas', 'All games': 'Ver todo',
   '5 fish table tips for beginners': '5 consejos de mesas de pesca para principiantes',
   "Don't have one yet? Unlock it now!": '¿Aún no tienes una? ¡Desbloquéala ahora!', '6 available': '6 disponibles', '9 games': '9 juegos', '2 accounts': '2 cuentas',

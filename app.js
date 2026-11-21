@@ -224,6 +224,7 @@ function viewHome() {
   const hot = ['firekirin', 'milkyway', 'orion'].map(plat);
   const guest = !S.user;
   return `${ticker()}<div class="page home">
+    ${S.user ? "" : `<a class="top-banner" href="#" data-act="signup" aria-label="All fish games and slots platform under one roof. Sign up"><img src="assets/banner-fish-slots.webp" alt="All Fish Games &amp; Slots: platform under one roof" width="2000" height="667"></a>`}
     <section class="hero">
       <div class="hero-txt">
         ${guest
@@ -986,6 +987,7 @@ function walletBoxB() {
 function viewHomeB() {
   const mine = PLATFORMS.filter(p => acct(p.id));
   return `<div class="page b-home">
+    ${S.user ? "" : `<a class="top-banner" href="#" data-act="signup" aria-label="All fish games and slots platform under one roof. Sign up"><img src="assets/banner-fish-slots.webp" alt="All Fish Games &amp; Slots: platform under one roof" width="2000" height="667"></a>`}
     <div class="b-top">
       <section class="b-hero">
         ${B_SLIDES.map((x, i) => { const g = game(x.g), p = plat(g.p); return `<div class="b-slide ${i === S.bslide ? 'on' : ''}">

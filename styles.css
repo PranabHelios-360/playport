@@ -1698,3 +1698,10 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
   .pband-item .coin.sm { --s: 56px; }
   .pband-item b { font-size: 15px; }
 }
+
+/* ===== guest landing banner ===== */
+.top-banner { display: block; max-width: 1100px; margin: 18px auto 0; border-radius: 20px; overflow: hidden; border: 1px solid var(--line-2); box-shadow: 0 14px 40px rgba(0, 0, 0, .28); background: #0b1430; }
+.top-banner img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: cover; }
+.top-banner:hover img { filter: brightness(1.06); }
+.page.b-home > .top-banner { margin: 0 0 18px; max-width: none; }
+@media (max-width: 860px) { .top-banner { margin-top: 12px; border-radius: 14px; } }

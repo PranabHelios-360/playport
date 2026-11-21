@@ -22,23 +22,6 @@ const lineup = (pid, i) => pid === 'milkyway' ? MW_ART : pid === 'firekirin' ? F
 const GAMES = PLATFORMS.flatMap((p, i) => lineup(p.id, i).map(a => ({ id: `${p.id}--${a}`, p: p.id, name: ART[a][0], cat: ART[a][1], img: `assets/games/${a}.jpg` })));
 PLATFORMS.forEach(p => { p.games = GAMES.filter(g => g.p === p.id).length; });
 
-const HERO = [
-  { game: 'milkyway--shooting-star', title: 'Shooting Star', text: 'Stack rubies and cherries for the Grand jackpot. Play it on your Milky Way account.' },
-  { game: 'firekirin--jade-fortune', title: 'Jade Fortune', text: 'The jade dragon pays up to 2,000x. New this week on Fire Kirin.' },
-  { game: 'milkyway--ocean-king', title: 'Ocean King', text: 'Hunt the great white for the boss bonus. Fish tables on Milky Way.' }
-];
-
-const RECENT = [
-  { id: 'milkyway--ocean-king', pct: 72, when: '2h ago' },
-  { id: 'firekirin--jade-fortune', pct: 40, when: 'Yesterday' },
-  { id: 'milkyway--king-of-leopard', pct: 88, when: 'Yesterday' },
-  { id: 'firekirin--space-jet', pct: 25, when: '3 days ago' },
-  { id: 'milkyway--hexno-keno', pct: 55, when: '5 days ago' },
-  { id: 'firekirin--lucky-weekends', pct: 10, when: '1 week ago' }
-];
-
-const BALANCES = { firekirin: [42.5, 18200], milkyway: [12, 5400], orion: [88.25, 31000], panda: [0, 2500], juwa: [7.8, 9100], vegas: [3.1, 1200] };
-
 const plat = id => PLATFORMS.find(p => p.id === id);
 const game = id => GAMES.find(g => g.id === id);
 const $ = (s, el = document) => el.querySelector(s);
@@ -50,8 +33,21 @@ const store = {
   del(k) { try { localStorage.removeItem(k); } catch (e) {} }
 };
 
+const MIN_DEPOSIT = 25;
+const MIN_WITHDRAW = 20;
+const now = () => new Date().toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+const rid = () => Math.random().toString(36).slice(2, 9);
+
+function normUser(u) {
+  if (!u) return null;
+  return {
+    wallet: 0, accounts: {}, tx: [], twofa: false, limit: 0, coolUntil: 0, excluded: false,
+    ...u
+  };
+}
+
 const S = {
-  user: store.get('pp_user', null),
+  user: normUser(store.get('pp_user', null)),
   cat: 'All',
   q: '',
   showPw: false,
@@ -61,6 +57,11 @@ const S = {
   actChip: 'All',
   chat: [{ t: 'Hi there. How can we help you today?' }]
 };
+
+function save() {
+  store.set('pp_user', S.user);
+  store.set('pp_account', S.user);
+}
 
 /* ---------- demo feed data ---------- */
 
@@ -77,13 +78,22 @@ const BIG = [
   ['panda', 'kayla22', '11/19/2026 07:40 PM', 1082], ['vegas', 'dex808', '11/19/2026 05:02 PM', 950]
 ];
 const MONTHLY = [['milkyway', 'bigfish', 18293], ['firekirin', 'tina.b', 17232], ['orion', 'jdog_44', 13000], ['juwa', 'mona_v', 12796], ['panda', 'sam_k', 12399]];
-const TX = [
-  { kind: 'Deposits', label: 'Deposit', p: 'firekirin', amt: '+20.00 SC', when: '11/20/2026 01:12 PM', done: true },
-  { kind: 'Bonus', label: 'Daily bonus', p: 'milkyway', amt: '+1.00 SC', when: '11/20/2026 09:00 AM', done: true },
-  { kind: 'Redeems', label: 'Redeem', p: 'orion', amt: '-50.00 SC', when: '11/19/2026 08:41 PM', done: true },
-  { kind: 'Vouchers', label: 'Voucher WELCOME5', p: 'juwa', amt: '+5.00 SC', when: '11/18/2026 06:30 PM', done: true },
-  { kind: 'Redeems', label: 'Redeem', p: 'firekirin', amt: '-25.00 SC', when: '11/20/2026 03:05 PM', done: false }
-];
+
+function demoUser(name, password) {
+  const base = name.split('@')[0];
+  const acc = (pid, c) => ({ username: `${base.replace(/[^a-z0-9]/gi, '').slice(0, 8).toLowerCase()}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: c });
+  return normUser({
+    first: base, email: name.includes('@') ? name : `${name}@example.com`, username: name, password, since: new Date().toISOString().slice(0, 10),
+    wallet: 120,
+    accounts: { firekirin: acc('firekirin', 42.5), milkyway: acc('milkyway', 18) },
+    tx: [
+      { id: rid(), kind: 'Deposits', label: 'Deposit (Bitcoin)', amt: 100, when: '11/19/2026 06:30 PM', status: 'done' },
+      { id: rid(), kind: 'Loads', label: 'Loaded credits', p: 'firekirin', amt: -50, when: '11/19/2026 06:41 PM', status: 'done' },
+      { id: rid(), kind: 'Redeems', label: 'Redeemed credits', p: 'milkyway', amt: 32, when: '11/20/2026 11:02 AM', status: 'done' },
+      { id: rid(), kind: 'Withdrawals', label: 'Withdrawal (Litecoin)', amt: -40, when: '11/20/2026 01:15 PM', status: 'pending' }
+    ]
+  });
+}
 
 /* ---------- small pieces ---------- */
 
@@ -99,13 +109,14 @@ const I = {
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
   home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20h-5v-5.5H9V20H4Z"/></svg>',
   key: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9m-3 3 2 2m-4 0 2 2"/></svg>',
+  dl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>',
   trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0Zm0 1H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4m-4 2v4m-4 3h8"/></svg>',
   bolt: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h7l-1 8 9-12h-7Z"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
-  minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>',
   arrowL: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>',
   ticket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4Z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg>',
-  list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6Z"/><path d="m9 12 2 2 4-4" stroke-linecap="round"/></svg>',
   gift: '<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2" fill="#e2483a"/><rect x="2" y="7" width="20" height="5" rx="1.5" fill="#ff6a52"/><rect x="10.5" y="7" width="3" height="14" fill="#ffd25a"/><path d="M12 7c-2-4-6-4-6-1.5S10 7 12 7c2 0 6-1 6-1.5S14 3 12 7Z" fill="#ffd25a"/></svg>',
   bell: '<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6Z" fill="#ffc83d"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0Z" fill="#e6a313"/></svg>'
 };
@@ -113,22 +124,32 @@ const I = {
 const initials = p => p.name.split(' ').map(w => w[0]).join('').slice(0, 2);
 const coin = (p, size = '') => `<span class="coin ${size}" style="--c1:${p.c1};--c2:${p.c2}">${p.logo ? `<img src="${p.logo}" alt="">` : `<i class="ini">${initials(p)}</i>`}</span>`;
 const crumb = (...parts) => `<nav class="crumb"><a href="#/" aria-label="Home">${I.home}</a>${parts.map(([t, h]) => `<span class="sep">${I.chev}</span>${h ? `<a href="${h}">${t}</a>` : `<b>${t}</b>`}`).join('')}</nav>`;
-const fmt = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const totalSC = () => Object.values(BALANCES).reduce((s, b) => s + b[0], 0);
+const fmt = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const usd = n => `$${fmt(n)}`;
+const acct = pid => S.user && S.user.accounts[pid];
+const unlockedCount = () => S.user ? Object.keys(S.user.accounts).length : 0;
+const creditsTotal = () => S.user ? Object.values(S.user.accounts).reduce((s, a) => s + a.credits, 0) : 0;
+
+function blocked() {
+  if (!S.user) return '';
+  if (S.user.excluded) return 'Your account is self-excluded. Contact support to discuss reopening it.';
+  if (S.user.coolUntil > Date.now()) return `You're on a cool-off break until ${new Date(S.user.coolUntil).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}.`;
+  return '';
+}
 
 function topRight() {
   if (!S.user) return `<button class="btn btn-ghost btn-sm" data-act="login">Log in</button><button class="btn btn-accent btn-sm" data-act="signup">Sign up</button>`;
   return `<button class="round-btn" data-act="gift" aria-label="Daily bonus">${I.gift}</button>
     <button class="round-btn" data-act="bell" aria-label="Notifications">${I.bell}<i class="dot"></i></button>
-    <a class="bal" href="#/balance" aria-label="Balance"><span class="bal-plus">${I.plus}</span><span class="bal-num">${fmt(totalSC())} SC</span></a>`;
+    <a class="bal" href="#/balance" data-bal-go="deposit" aria-label="Wallet"><span class="bal-plus">${I.plus}</span><span class="bal-num">${usd(S.user.wallet)}</span></a>`;
 }
 
-function credRow(label, value, key, secret) {
+function credRow(label, value, copyVal, secret) {
   const shown = !secret || S.showPw;
   return `<div class="cred"><label>${label}</label>
     <div class="cred-row"><code>${shown ? esc(value) : '&bull;'.repeat(12)}</code>
       ${secret ? `<button class="icon-btn" data-act="pw" aria-label="${S.showPw ? 'Hide' : 'Show'} password">${S.showPw ? I.eyeOff : I.eye}</button>` : ''}
-      <button class="icon-btn" data-copy="${key}" aria-label="Copy ${label.toLowerCase()}">${I.copy}</button>
+      <button class="icon-btn" data-copyval="${esc(copyVal)}" data-what="${label}" aria-label="Copy ${label.toLowerCase()}">${I.copy}</button>
     </div></div>`;
 }
 
@@ -142,21 +163,23 @@ function tile(g) {
 }
 
 function platRow(p) {
-  const actions = S.user
-    ? `<span class="linked">${I.check}Linked</span>
-       <a class="btn btn-accent" href="#/platform/${p.id}">Play</a>
-       <button class="sq-btn" data-act="creds" aria-label="Show my login">${I.key}</button>`
-    : `<button class="btn btn-outline" data-act="signup">Unlock Account</button>
-       <a class="sq-btn" href="#/platform/${p.id}" aria-label="See games">${I.chev}</a>`;
+  const a = acct(p.id);
+  const actions = a
+    ? `<span class="credits"><small>Credits</small><b>${usd(a.credits)}</b></span>
+       <button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load</button>
+       <button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>
+       <button class="sq-btn" data-act="gcreds" data-plat="${p.id}" aria-label="${p.name} login">${I.key}</button>`
+    : `<button class="btn btn-outline" data-act="unlock" data-plat="${p.id}">Unlock Account</button>
+       <button class="sq-btn" data-act="download" data-plat="${p.id}" aria-label="Download ${p.name}">${I.dl}</button>`;
   return `<div class="row-card">
-    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}</b><small>${p.games} games &middot; ${p.blurb}</small></span></a>
+    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}${a ? `<em class="linked">${I.check}Unlocked</em>` : ''}</b><small>${p.games} games &middot; ${p.blurb}</small></span></a>
     <div class="row-acts">${actions}</div>
   </div>`;
 }
 
 function ticker() {
   const card = f => { const p = plat(f.p); return `<div class="tick">${coin(p, 'xs')}
-    <span class="tick-txt"><b>${esc(f.user)}</b> won on ${p.name}</span><em>${f.amt} SC</em><small>${f.ago}</small></div>`; };
+    <span class="tick-txt"><b>${esc(f.user)}</b> redeemed on ${p.name}</span><em>${usd(f.amt)}</em><small>${f.ago}</small></div>`; };
   const cards = FEED.map(card).join('');
   return `<div class="ticker" aria-label="Live activity"><div class="ticker-label"><i></i>Live Activity</div>
     <div class="ticker-track"><div class="ticker-run">${cards}${cards}</div></div></div>`;
@@ -171,20 +194,20 @@ function viewHome() {
     <section class="hero">
       <div class="hero-txt">
         ${guest
-          ? `<h1>One login for <span>every platform</span></h1>
-             <p class="hero-sub">Sign up with your email, confirm the 6-digit code, and get a username and password that works on all ${PLATFORMS.length} platforms.</p>
+          ? `<h1>One wallet for <span>every game</span></h1>
+             <p class="hero-sub">Make one account, fund it once, and unlock Milky Way, Fire Kirin, Orion Stars and more. Load credits into any game and redeem them back to your wallet.</p>
              <form class="hl-form" data-form="quick">
                <input class="field" type="email" name="email" placeholder="Your email address" required autocomplete="email">
-               <button class="btn btn-accent btn-lg" type="submit">Get my login</button>
+               <button class="btn btn-accent btn-lg" type="submit">Create account</button>
              </form>
              <p class="hl-note">Already have one? <a href="#" data-act="login">Log in</a></p>`
           : `<h1>Welcome back, <span>${esc(S.user.first)}</span></h1>
-             <p class="hero-sub">Your login works on all ${PLATFORMS.length} platforms. Pick one and play.</p>
-             <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/games">Play now</a><button class="btn btn-outline btn-lg" data-act="creds">${I.key}My login</button></div>`}
+             <p class="hero-sub">${unlockedCount() ? `You have ${unlockedCount()} of ${PLATFORMS.length} game accounts unlocked.` : `Unlock your first game account to start playing.`}</p>
+             <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-outline btn-lg" href="#/games">${unlockedCount() ? 'My games' : 'Unlock a game'}</a></div>`}
         <div class="hero-stats">
-          <div><b>${PLATFORMS.length}</b><span>platforms</span></div>
-          <div><b>${GAMES.length}</b><span>games</span></div>
-          <div><b>${guest ? '1' : fmt(totalSC())}</b><span>${guest ? 'login for all' : 'SC balance'}</span></div>
+          ${guest
+            ? `<div><b>${PLATFORMS.length}</b><span>game platforms</span></div><div><b>${GAMES.length}</b><span>games</span></div><div><b>$${MIN_DEPOSIT}</b><span>min deposit</span></div>`
+            : `<div><b>${usd(S.user.wallet)}</b><span>wallet</span></div><div><b>${usd(creditsTotal())}</b><span>in games</span></div><div><b>${unlockedCount()}/${PLATFORMS.length}</b><span>unlocked</span></div>`}
         </div>
       </div>
       <div class="hero-mascot" aria-hidden="true"><img src="assets/mascot.jpg" alt=""></div>
@@ -193,15 +216,16 @@ function viewHome() {
         ${hot.map((p, i) => `<a class="hot-row" href="#/platform/${p.id}">
           ${coin(p, 'md')}
           <span class="hot-name"><b>${p.name}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
-          <span class="btn btn-accent btn-sm">Play</span>
+          <span class="btn btn-accent btn-sm">${acct(p.id) ? 'Play' : 'View'}</span>
         </a>`).join('')}
       </div>
     </section>
 
-    ${guest ? `<section class="steps3">
-      <div><span>1</span><b>Enter your email</b><p>Plus your first name.</p></div>
-      <div><span>2</span><b>Verify the code</b><p>We email you 6 digits.</p></div>
-      <div><span>3</span><b>Get your login</b><p>Username and password, shown on screen.</p></div>
+    ${guest ? `<section class="steps3 four">
+      <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your PlayPort login.</p></div>
+      <div><span>2</span><b>Deposit to your wallet</b><p>Send crypto. Your wallet shows it once confirmed.</p></div>
+      <div><span>3</span><b>Unlock a game, load credits</b><p>Each game gets its own login. Move money from your wallet into it.</p></div>
+      <div><span>4</span><b>Play, then redeem</b><p>Redeem credits back to your wallet, then withdraw.</p></div>
     </section>` : ''}
 
     <section class="boards">
@@ -229,11 +253,14 @@ function viewHome() {
 }
 
 function viewGames() {
+  const n = unlockedCount();
   return `<div class="page">
     ${crumb(['Games'])}
-    <p class="lede">${S.user ? `Your <b>PlayPort login</b> works on every platform below. Tap Play to open one.` : `Here you'll find all our <b>platforms</b>. Don't have a login yet? Unlock it now!`}</p>
-    <div class="list-h"><h2>Platforms</h2><span>${PLATFORMS.length} available</span></div>
-    <div class="rows">${PLATFORMS.map(platRow).join('')}</div>
+    <p class="lede">Here you'll find your <b>Gaming Accounts</b>. ${S.user && n ? `You have ${n} unlocked. Load credits from your wallet and tap Play.` : `Don't have one yet? Unlock it now!`}</p>
+    ${S.user && n ? `<div class="list-h"><h2>My Games</h2><span>${n} unlocked</span></div>
+      <div class="rows">${PLATFORMS.filter(p => acct(p.id)).map(platRow).join('')}</div>` : ''}
+    ${PLATFORMS.length - n ? `<div class="list-h"><h2>${n ? 'More Games' : 'Games'}</h2><span>${PLATFORMS.length - n} available</span></div>
+      <div class="rows">${PLATFORMS.filter(p => !acct(p.id)).map(platRow).join('')}</div>` : ''}
   </div>`;
 }
 
@@ -246,16 +273,17 @@ function gameGrid(list) {
 function viewPlatform(id) {
   const p = plat(id);
   if (!p) return viewGames();
+  const a = acct(p.id);
   const list = GAMES.filter(g => g.p === p.id);
   return `<div class="page">
     ${crumb(['Games', '#/games'], [p.name])}
     <div class="plat-top">
       ${coin(p, 'lg')}
       <div class="plat-top-txt"><h1>${p.name}</h1><p>${p.blurb}</p>
-        ${S.user ? `<p class="signed">Signed in as <code>${esc(S.user.username)}</code> &middot; ${fmt(BALANCES[p.id][0])} SC</p>` : ''}</div>
-      <div class="plat-top-acts">${S.user
-        ? `<button class="btn btn-outline" data-act="creds">${I.key}My login</button><a class="btn btn-accent" href="#/balance">Add coins</a>`
-        : `<button class="btn btn-accent" data-act="signup">Unlock Account</button>`}</div>
+        <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${usd(a.credits)} credits` : `You need a ${p.name} account to play these games.`}</p></div>
+      <div class="plat-top-acts">${a
+        ? `<button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>`
+        : `<button class="btn btn-accent" data-act="unlock" data-plat="${p.id}">Unlock Account</button><button class="btn btn-outline" data-act="download" data-plat="${p.id}">${I.dl}Get the app</button>`}</div>
     </div>
     <div class="filters">
       ${['All', 'Fish', 'Slots', 'Keno'].map(c => `<button class="chip ${S.cat === c ? 'on' : ''}" data-cat="${c}">${c}</button>`).join('')}
@@ -268,52 +296,54 @@ function viewPlatform(id) {
 const BAL_ITEMS = [
   { id: 'deposit', label: 'Deposit', color: '#1fbf8f', icon: I.plus },
   { id: 'withdraw', label: 'Withdraw', color: '#e0334f', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>' },
-  { id: 'transfer', label: 'Transfer', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
+  { id: 'transfer', label: 'Load a game', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
   { id: 'redeem', label: 'Redeem', color: '#e0709e', icon: I.arrowL },
   { id: 'p2p', label: 'P2P', color: '#c9961a', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2.1 0 3.6 1.2 4 3.5"/></svg>' },
   { id: 'voucher', label: 'Voucher', color: '#0ea5b7', icon: I.ticket, plus: true }
 ];
 
 const CRYPTO = [
-  { id: 'btc', name: 'Bitcoin', code: 'BTC', bg: '#f7931a', sym: '&#8383;' },
-  { id: 'btcln', name: 'Bitcoin Lightning', code: 'BTCLightning', bg: '#f7931a', sym: '&#8383;', bolt: true },
-  { id: 'sol', name: 'Solana', code: 'SOL', bg: 'linear-gradient(135deg,#9945ff,#14f195)', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 7h13l-2 2H4Zm0 4h13l-2 2H4Zm2 4h13l-2 2H6Z"/></svg>' },
-  { id: 'ltc', name: 'Litecoin', code: 'LTC', bg: '#345d9d', sym: '&#321;' },
-  { id: 'bch', name: 'Bitcoin Cash', code: 'BCH', bg: '#0ac18e', sym: '&#8383;' },
-  { id: 'eth', name: 'Ethereum', code: 'ETH', bg: '#627eea', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 6.5 12 12 15.2 17.5 12Zm0 13.4L6.5 13.2 12 21l5.5-7.8Z"/></svg>' },
-  { id: 'trx', name: 'Tron', code: 'TRX', bg: '#e5262f', sym: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 5l16 3-8 12Zm0 0 8 15m-8-15 13 6"/></svg>' },
-  { id: 'bnb', name: 'Binance Coin', code: 'BNB', bg: '#f3ba2f', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="m12 4 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Zm10 0 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Z"/></svg>' },
-  { id: 'usdt', name: 'Tether', code: 'USDT', bg: '#26a17b', sym: '&#8366;' }
+  { id: 'btc', name: 'Bitcoin', code: 'BTC', bg: '#f7931a', sym: '&#8383;', pre: 'bc1q' },
+  { id: 'btcln', name: 'Bitcoin Lightning', code: 'BTCLightning', bg: '#f7931a', sym: '&#8383;', bolt: true, pre: 'lnbc' },
+  { id: 'sol', name: 'Solana', code: 'SOL', bg: 'linear-gradient(135deg,#9945ff,#14f195)', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 7h13l-2 2H4Zm0 4h13l-2 2H4Zm2 4h13l-2 2H6Z"/></svg>', pre: '7Gx' },
+  { id: 'ltc', name: 'Litecoin', code: 'LTC', bg: '#345d9d', sym: '&#321;', pre: 'ltc1q' },
+  { id: 'bch', name: 'Bitcoin Cash', code: 'BCH', bg: '#0ac18e', sym: '&#8383;', pre: 'qp' },
+  { id: 'eth', name: 'Ethereum', code: 'ETH', bg: '#627eea', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 6.5 12 12 15.2 17.5 12Zm0 13.4L6.5 13.2 12 21l5.5-7.8Z"/></svg>', pre: '0x' },
+  { id: 'trx', name: 'Tron', code: 'TRX', bg: '#e5262f', sym: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 5l16 3-8 12Zm0 0 8 15m-8-15 13 6"/></svg>', pre: 'T' },
+  { id: 'bnb', name: 'Binance Coin', code: 'BNB', bg: '#f3ba2f', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="m12 4 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Zm10 0 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Z"/></svg>', pre: 'bnb1' },
+  { id: 'usdt', name: 'Tether', code: 'USDT', bg: '#26a17b', sym: '&#8366;', pre: 'T' }
 ];
 const cryptoIco = c => `<span class="cry" style="background:${c.bg}">${c.sym}${c.bolt ? `<i>${I.bolt}</i>` : ''}</span>`;
 
 function balPanel(id) {
   const it = BAL_ITEMS.find(b => b.id === id);
   const head = (t, s) => `<div class="panel-h"><span class="mini-ico" style="background:${it.color}">${it.icon}</span><div><h2>${t}</h2><p>${s}</p></div></div>`;
+  const walletLine = `<div class="wallet-line">Wallet balance <b>${usd(S.user.wallet)}</b></div>`;
   const cryptoList = () => `<div class="opt-list">${CRYPTO.map(c => `<button class="opt cry-opt ${S.method === c.id ? 'on' : ''}" data-method="${c.id}">${cryptoIco(c)}<b>${c.name}</b><small>(${c.code})</small>${S.method === c.id ? `<span class="tick-ok">${I.check}</span>` : ''}</button>`).join('')}</div>`;
-  const platOpts = () => PLATFORMS.map(p => `<option value="${p.id}">${p.name} (${fmt(BALANCES[p.id][0])} SC)</option>`).join('');
-  if (id === 'deposit') return head('Deposit', 'Choose the crypto you want to deposit.') + cryptoList() +
-    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now">Deposit Now</button></div>`;
-  if (id === 'withdraw') return head('Withdraw', 'Choose the crypto you want to receive.') + cryptoList() +
+  const unlocked = PLATFORMS.filter(p => acct(p.id));
+  const noGames = `<div class="card soft"><b>No game accounts yet</b><p class="card-sub">Unlock a game first. Each game gets its own login.</p><a class="btn btn-accent" href="#/games">Unlock a game</a></div>`;
+  const stop = blocked();
+  if (id === 'deposit') return head('Deposit', `Choose the crypto you want to deposit. Minimum $${MIN_DEPOSIT}.`) + walletLine + (stop ? `<div class="warn">${stop}</div>` : cryptoList() +
+    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now">Deposit Now</button></div>`);
+  if (id === 'withdraw') return head('Withdraw', `Send money from your wallet to your crypto address. Minimum $${MIN_WITHDRAW}.`) + walletLine +
+    `<p class="hint">Credits inside a game must be redeemed to your wallet first.</p>` + cryptoList() +
     `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="withdraw-now">Withdraw Now</button></div>`;
-  if (id === 'transfer') return head('Transfer', 'Move Sweeps Coins from one of your platforms to another.') +
-    `<form class="form-row narrow" data-form="transfer">
-      <label class="lbl">From</label><select class="field" name="from">${platOpts()}</select>
-      <label class="lbl">To</label><select class="field" name="to">${platOpts()}</select>
-      <label class="lbl">Amount (SC)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
-      <button class="btn btn-accent" type="submit">Transfer</button>
-    </form>`;
-  if (id === 'redeem') return head('Redeem', 'Redeem Sweeps Coins you won on a platform.') +
-    `<div class="opt-list">${PLATFORMS.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${BALANCES[p.id][0] < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${fmt(BALANCES[p.id][0])} SC available</small>${I.chev}</button>`).join('')}</div>`;
-  if (id === 'p2p') return head('P2P', 'Send Sweeps Coins to another PlayPort player.') +
+  if (id === 'transfer') return head('Load a game', 'Move money from your wallet into a game account as credits.') + walletLine + (stop ? `<div class="warn">${stop}</div>` : unlocked.length ?
+    `<form class="form-row narrow" data-form="load">
+      <label class="lbl">Game</label><select class="field" name="plat">${unlocked.map(p => `<option value="${p.id}" ${S.loadPlat === p.id ? 'selected' : ''}>${p.name} (${usd(acct(p.id).credits)} credits)</option>`).join('')}</select>
+      <label class="lbl">Amount ($)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
+      <button class="btn btn-accent" type="submit">Load credits</button>
+    </form>` : noGames);
+  if (id === 'redeem') return head('Redeem', 'Bring credits from a game back to your wallet.') + walletLine + (unlocked.length ?
+    `<div class="opt-list">${unlocked.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${acct(p.id).credits < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${usd(acct(p.id).credits)} credits</small>${I.chev}</button>`).join('')}</div>` : noGames);
+  if (id === 'p2p') return head('P2P', 'Send money from your wallet to another PlayPort player.') + walletLine +
     `<form class="form-row narrow" data-form="p2p">
-      <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. pp_mike1234" required>
-      <label class="lbl">From platform</label><select class="field" name="from">${platOpts()}</select>
-      <label class="lbl">Amount (SC)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
+      <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. mike77" required>
+      <label class="lbl">Amount ($)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
       <button class="btn btn-accent" type="submit">Send</button>
     </form>`;
-  return head('Voucher', 'Got a voucher code? Enter it here.') +
-    `<form class="form-row narrow" data-form="voucher"><input class="field" name="code" placeholder="Voucher code" required><button class="btn btn-accent" type="submit">Apply voucher</button></form>`;
+  return head('Voucher', 'Got a voucher code? It goes straight to your wallet.') +
+    `<form class="form-row narrow" data-form="voucher"><input class="field" name="code" placeholder="Voucher code (try WELCOME5)" required><button class="btn btn-accent" type="submit">Apply voucher</button></form>`;
 }
 
 function viewBalance() {
@@ -322,6 +352,7 @@ function viewBalance() {
     <aside class="split-left">
       ${crumb(['Balance'])}
       <p class="lede">Here you can manage your Deposits, Withdrawals and Transfers!</p>
+      <div class="wallet-card"><small>Wallet</small><b>${usd(S.user.wallet)}</b><span>${usd(creditsTotal())} in game credits</span></div>
       <div class="acc">${BAL_ITEMS.map(b => `<button class="acc-item ${S.bal === b.id ? 'on' : ''}" data-bal="${b.id}" style="--ic:${b.color}">
         <span class="mini-ico" style="background:${b.color}">${b.icon}</span><b>${b.label}</b>${b.plus ? I.plus : S.bal === b.id ? I.chev : I.down}</button>`).join('')}</div>
     </aside>
@@ -331,8 +362,8 @@ function viewBalance() {
 
 function viewActivity() {
   if (!S.user) return needLogin('Activity');
-  const chips = ['All', 'Deposits', 'Redeems', 'Bonus', 'Vouchers'];
-  const rows = TX.filter(t => t.done === (S.actTab === 'done') && (S.actChip === 'All' || t.kind === S.actChip));
+  const chips = ['All', 'Deposits', 'Withdrawals', 'Loads', 'Redeems', 'P2P', 'Vouchers', 'Bonus'];
+  const rows = S.user.tx.filter(t => (S.actTab === 'done' ? t.status === 'done' : t.status === 'pending') && (S.actChip === 'All' || t.kind === S.actChip));
   return `<div class="page">
     ${crumb(['Activity'])}
     <div class="tabs">
@@ -340,9 +371,9 @@ function viewActivity() {
       <button class="${S.actTab === 'pending' ? 'on' : ''}" data-tab="pending">In progress</button>
     </div>
     <div class="filters">${chips.map(c => `<button class="chip ${S.actChip === c ? 'on' : ''}" data-chip="${c}">${c}</button>`).join('')}</div>
-    ${rows.length ? `<div class="rows tx">${rows.map(t => { const p = plat(t.p); return `<div class="row-card slim">
-        <div class="row-main">${coin(p, 'sm')}<span><b>${t.label}</b><small>${p.name} &middot; ${t.when}</small></span></div>
-        <div class="row-acts"><b class="${t.amt.startsWith('+') ? 'pos' : 'neg'}">${t.amt}</b>${t.done ? '' : '<span class="pend">Pending</span>'}</div>
+    ${rows.length ? `<div class="rows tx">${rows.map(t => { const p = t.p && plat(t.p); return `<div class="row-card slim">
+        <div class="row-main">${p ? coin(p, 'sm') : `<span class="tx-ico">${t.amt >= 0 ? I.plus : I.arrowL}</span>`}<span><b>${t.label}</b><small>${p ? p.name + ' &middot; ' : ''}${t.when}</small></span></div>
+        <div class="row-acts"><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${usd(Math.abs(t.amt))}</b>${t.status === 'pending' ? '<span class="pend">Processing</span>' : ''}</div>
       </div>`; }).join('')}</div>`
       : '<p class="empty big">No transactions found for the selected filter</p>'}
   </div>`;
@@ -351,15 +382,16 @@ function viewActivity() {
 function viewAccount() {
   if (!S.user) return needLogin('My account');
   const u = S.user;
+  const games = PLATFORMS.filter(p => acct(p.id));
   return `<div class="page">
     ${crumb(['My account'])}
     <p class="lede">${esc(u.email)} &middot; member since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
     <div class="acct">
       <div class="card">
-        <h2>My login</h2>
-        <p class="card-sub">Works on all ${PLATFORMS.length} platforms.</p>
-        ${credRow('Username', u.username, 'username')}
-        ${credRow('Password', u.password, 'password', true)}
+        <h2>PlayPort login</h2>
+        <p class="card-sub">For this site: your wallet, deposits and withdrawals.</p>
+        ${credRow('Username', u.username, u.username)}
+        ${credRow('Password', u.password, u.password, true)}
       </div>
       <div class="card">
         <h2>Change username</h2>
@@ -372,7 +404,7 @@ function viewAccount() {
       </div>
       <div class="card">
         <h2>Change password</h2>
-        <p class="card-sub">Updated on every platform at once.</p>
+        <p class="card-sub">Your game logins are separate and don't change.</p>
         <form class="form-row" data-form="pw">
           <input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required>
           <input class="field" type="password" name="next" placeholder="New password (8+ characters)" minlength="8" autocomplete="new-password" required>
@@ -380,42 +412,95 @@ function viewAccount() {
         </form>
       </div>
     </div>
-    <button class="btn btn-ghost" data-act="logout" style="margin-top:22px">Sign out</button>
+
+    <div class="list-h"><h2>Game accounts</h2><span>${games.length} of ${PLATFORMS.length} unlocked</span></div>
+    ${games.length ? `<table class="tbl"><thead><tr><th>Game</th><th>Username</th><th>Password</th><th class="num">Credits</th></tr></thead>
+      <tbody>${games.map(p => { const a = acct(p.id); return `<tr><td><span class="pname">${coin(p, 'xs')}${p.name}</span></td>
+        <td><span class="mono-cell">${esc(a.username)}<button class="icon-btn" data-copyval="${esc(a.username)}" data-what="Username">${I.copy}</button></span></td>
+        <td><span class="mono-cell">${S.showPw ? esc(a.password) : '&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;'}<button class="icon-btn" data-act="pw" aria-label="Show passwords">${S.showPw ? I.eyeOff : I.eye}</button><button class="icon-btn" data-copyval="${esc(a.password)}" data-what="Password">${I.copy}</button></span></td>
+        <td class="num">${usd(a.credits)}</td></tr>`; }).join('')}</tbody></table>`
+      : `<div class="card soft"><p class="card-sub">No game accounts yet.</p><a class="btn btn-accent" href="#/games">Unlock a game</a></div>`}
+
+    <div class="list-h"><h2>Security &amp; responsible play</h2><span></span></div>
+    <div class="acct">
+      <div class="card">
+        <h2>${I.shield}Two-step login</h2>
+        <p class="card-sub">Ask for a code from your email every time you log in.</p>
+        <button class="switch ${u.twofa ? 'on' : ''}" data-act="twofa" role="switch" aria-checked="${u.twofa}"><i></i><span>${u.twofa ? 'On' : 'Off'}</span></button>
+      </div>
+      <div class="card">
+        <h2>Daily deposit limit</h2>
+        <p class="card-sub">Lower it any time. Raising it takes 24 hours.</p>
+        <form class="form-row" data-form="limit">
+          <select class="field" name="limit">${[0, 50, 100, 250, 500, 1000].map(v => `<option value="${v}" ${u.limit === v ? 'selected' : ''}>${v ? `$${v} per day` : 'No limit'}</option>`).join('')}</select>
+          <button class="btn btn-ghost btn-block" type="submit">Save limit</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Take a break</h2>
+        <p class="card-sub">${blocked() || 'Pause deposits and loading credits for a while.'}</p>
+        <div class="break-btns">
+          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="24">24 hours</button>
+          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="168">7 days</button>
+          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="720">30 days</button>
+        </div>
+        <button class="btn btn-outline btn-block danger" data-act="exclude" style="margin-top:12px">Self-exclude</button>
+      </div>
+    </div>
+    <button class="btn btn-ghost" data-act="logout" style="margin-top:26px">Sign out</button>
   </div>`;
 }
 
 function needLogin(title) {
   return `<div class="page">${crumb([title])}
-    <div class="card gate"><h2>Log in to see this page</h2><p class="card-sub">Don't have a login yet? Sign up with your email. It takes about a minute.</p>
+    <div class="card gate"><h2>Log in to see this page</h2><p class="card-sub">Don't have an account yet? Sign up with your email. It takes about a minute.</p>
       <div class="gate-acts"><button class="btn btn-accent" data-act="signup">Sign up</button><button class="btn btn-outline" data-act="login">Log in</button></div></div>
   </div>`;
 }
 
 /* ---------- menu + chat ---------- */
 
+const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#3a1022"/></svg><span>Play<b>Port</b></span>`;
+
 function menuHtml() {
   const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
   return `<div class="drawer-h"><a class="logo" href="#/">${LOGO}</a><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
-    ${S.user ? `<div class="drawer-user"><span class="avatar">${esc(S.user.first[0] || 'P').toUpperCase()}</span><div><b>${esc(S.user.first)}</b><small>${esc(S.user.username)}</small></div></div>` : ''}
+    ${S.user ? `<div class="drawer-user"><span class="avatar">${esc((S.user.first[0] || 'P').toUpperCase())}</span><div><b>${esc(S.user.first)}</b><small>Wallet ${usd(S.user.wallet)}</small></div></div>` : ''}
     <nav class="drawer-nav">${links.map(([h, t]) => `<a href="${h}">${t}${I.chev}</a>`).join('')}
+      <a href="#" data-act="foot-doc" data-doc="How it works">How it works${I.chev}</a>
       <a href="#" data-act="chat">Help &amp; chat${I.chev}</a></nav>
     <div class="drawer-foot">${S.user
       ? `<button class="btn btn-ghost btn-block" data-act="logout">Sign out</button>`
       : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
 }
 
-const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#3a1022"/></svg><span>Play<b>Port</b></span>`;
-
 function chatHtml() {
   return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">P</span><b>PlayPort support</b></div>
     <div class="chat-body" id="chatBody">
       ${S.chat.map(m => `<div class="msg ${m.me ? 'me' : ''}">${esc(m.t)}</div>`).join('')}
       ${S.chat.length === 1 ? `<form class="chat-reason" data-form="reason"><label>Contact reason</label>
-        <select class="field" name="r"><option>Account / login issues</option><option>Deposit or coins</option><option>Redeem</option><option>A game isn't loading</option><option>Something else</option></select>
+        <select class="field" name="r"><option>Account / login issues</option><option>Deposit not showing</option><option>Redeem or withdrawal</option><option>Game account / credits</option><option>Something else</option></select>
         <button class="btn btn-accent btn-sm" type="submit">Send</button></form>` : ''}
     </div>
     <form class="chat-in" data-form="chat"><input class="field" name="m" placeholder="Type a message" autocomplete="off" required><button class="btn btn-accent btn-sm" type="submit">Send</button></form>`;
 }
+
+const DOCS = {
+  'How it works': `<ol class="doc-steps">
+      <li><b>Create your PlayPort account.</b> Email plus a 6-digit code. This login is for the site: your wallet, deposits and withdrawals.</li>
+      <li><b>Deposit to your wallet.</b> Pick a crypto, send at least $${MIN_DEPOSIT} to the address we show you. It appears once the network confirms it.</li>
+      <li><b>Unlock a game account.</b> Each game (Milky Way, Fire Kirin and the rest) has its own app and its own login. We create it for you and show the username and password.</li>
+      <li><b>Load credits.</b> Move money from your wallet into that game. Credits stay in the game you loaded them into.</li>
+      <li><b>Play</b> in the game's web version or app, using that game's login.</li>
+      <li><b>Redeem, then withdraw.</b> Redeem credits from the game back to your wallet, then withdraw from your wallet to your crypto address.</li>
+    </ol>`,
+  FAQ: `<div class="faq">
+      <details open><summary>Is my PlayPort login the same as my game logins?</summary><p>No. PlayPort is for your wallet. Each game has its own username and password, shown under My account.</p></details>
+      <details><summary>Why are my credits split between games?</summary><p>Each game runs its own balance. Redeem from one game to your wallet, then load another.</p></details>
+      <details><summary>How long do withdrawals take?</summary><p>You can see each one under Activity, In progress, until it is sent.</p></details>
+      <details><summary>Can I limit my spending?</summary><p>Yes. Set a daily deposit limit, take a break, or self-exclude under My account.</p></details>
+    </div>`
+};
 
 /* ---------- router ---------- */
 
@@ -436,6 +521,7 @@ function render(keepScroll) {
 }
 
 function goHome() { if (location.hash.length > 2) location.hash = '#/'; else render(); }
+function refresh() { save(); render(true); }
 
 /* ---------- modal ---------- */
 
@@ -445,7 +531,7 @@ function openModal(html, wide) {
   box.innerHTML = `<button class="icon-btn modal-x" data-close aria-label="Close">${I.x}</button>` + html;
   $('#modal').hidden = false;
   document.body.style.overflow = 'hidden';
-  const f = box.querySelector('input');
+  const f = box.querySelector('input:not([readonly])');
   if (f) setTimeout(() => f.focus(), 50);
 }
 function closeModal() {
@@ -458,63 +544,137 @@ const pending = {};
 function signupStep(step) {
   const bar = n => `<div class="dots-steps">${[1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</div>`;
   if (step === 1) {
-    openModal(`${bar(1)}<h2>Create your login</h2><p>One email. We set up your account on all ${PLATFORMS.length} platforms.</p>
+    openModal(`${bar(1)}<h2>Create your account</h2><p>This is your PlayPort login for your wallet. Game accounts come later, one per game.</p>
       <form class="form-row" data-form="email">
         <input class="field" name="first" placeholder="First name" autocomplete="given-name" required value="${esc(pending.first || '')}">
         <input class="field" type="email" name="email" placeholder="Email address" autocomplete="email" required value="${esc(pending.email || '')}">
+        <label class="check"><input type="checkbox" required> I'm 21 or older and agree to the terms and sweepstakes rules.</label>
         <button class="btn btn-accent btn-block" type="submit">Send code</button>
-      </form>
-      <p class="note">21+ only. By continuing you agree to the sweepstakes rules of each platform.</p>`);
+      </form>`);
   } else if (step === 2) {
     openModal(`${bar(2)}<h2>Check your email</h2><p>We sent a 6-digit code to <b>${esc(pending.email)}</b>. Any 6 digits work in this demo.</p>
       <form data-form="code">
         <div class="code-in">${Array.from({ length: 6 }, () => '<input inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]" aria-label="Digit" required>').join('')}</div>
-        <button class="btn btn-accent btn-block" type="submit" style="margin-top:16px">Verify and create my login</button>
+        <button class="btn btn-accent btn-block" type="submit" style="margin-top:16px">Verify and create account</button>
       </form>
       <p class="note">No email? <a href="#" data-act="resend">Send a new code</a> or <a href="#" data-act="signup">change the email</a></p>`);
   } else {
     const u = S.user;
     openModal(`${bar(3)}<div class="done-mark">${I.check}</div><h2>You're in, ${esc(u.first)}</h2>
-      <p>Your accounts on all ${PLATFORMS.length} platforms are ready. Use this login for every game.</p>
-      ${credRow('Username', u.username, 'username')}
-      ${credRow('Password', u.password, 'password', true)}
-      <div class="warn">We also emailed these to ${esc(u.email)}. You can change both any time from My account.</div>
-      <button class="btn btn-accent btn-block" data-close style="margin-top:18px">Go to games</button>`);
+      <p>Here is your PlayPort login. Next, deposit to your wallet and unlock your first game.</p>
+      ${credRow('Username', u.username, u.username)}
+      ${credRow('Password', u.password, u.password, true)}
+      <div class="warn">We also emailed these to ${esc(u.email)}. You can change both under My account.</div>
+      <div class="modal-acts"><a class="btn btn-accent" href="#/balance" data-bal-go="deposit" data-close-after>Deposit</a><a class="btn btn-outline" href="#/games" data-close-after>Unlock a game</a></div>`);
   }
 }
 
-function credsModal() {
-  openModal(`<h2>My login</h2><p>Use this on every platform.</p>
-    ${credRow('Username', S.user.username, 'username')}
-    ${credRow('Password', S.user.password, 'password', true)}
-    <a class="btn btn-outline btn-block" href="#/account" style="margin-top:18px">Change username or password</a>`);
-}
-
-function makeCreds(first) {
-  const base = first.toLowerCase().replace(/[^a-z]/g, '').slice(0, 8) || 'player';
-  const n = Math.floor(1000 + Math.random() * 9000);
+function makePw() {
   const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
   const chunk = () => Array.from({ length: 4 }, () => abc[Math.floor(Math.random() * abc.length)]).join('');
-  return { username: `pp_${base}${n}`, password: `${chunk()}-${chunk()}-${n % 100}` };
+  return `${chunk()}-${chunk()}-${Math.floor(10 + Math.random() * 89)}`;
+}
+function makeCreds(first) {
+  const base = first.toLowerCase().replace(/[^a-z]/g, '').slice(0, 8) || 'player';
+  return { username: `pp_${base}${Math.floor(1000 + Math.random() * 9000)}`, password: makePw() };
 }
 
-function launch(id) {
-  if (!S.user) { signupStep(1); return; }
-  const g = game(id), p = plat(g.p);
+function requireLogin() { if (!S.user) { signupStep(1); return false; } return true; }
+
+function unlockModal(pid) {
+  if (!requireLogin()) return;
+  const p = plat(pid);
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Unlock ${p.name}</h2>
+    <p>${p.name} runs in its own app with its own login. We'll create a ${p.name} account for you and show the username and password here.</p>
+    <button class="btn btn-accent btn-block" data-act="unlock-go" data-plat="${pid}">Create my ${p.name} account</button>
+    <p class="note">Free. Your ${p.name} credits are kept separate from your other games.</p>`);
+}
+
+function gameCredsModal(pid, fresh) {
+  const p = plat(pid), a = acct(pid);
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>${fresh ? `${p.name} account ready` : `${p.name} login`}</h2>
+    <p>Use this username and password inside the ${p.name} app or web version.</p>
+    ${credRow('Username', a.username, a.username)}
+    ${credRow('Password', a.password, a.password, true)}
+    <div class="wallet-line">Credits <b>${usd(a.credits)}</b></div>
+    <div class="modal-acts"><button class="btn btn-outline" data-act="load" data-plat="${pid}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${pid}">Play ${p.name}</button></div>`);
+}
+
+function downloadModal(pid) {
+  const p = plat(pid);
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Get ${p.name}</h2><p>Play in your browser or install the app. Log in with your ${p.name} username and password.</p>
+    <div class="dl-list">
+      <button class="opt" data-act="web" data-plat="${pid}"><b>Web version</b><small>Opens in a new tab</small>${I.chev}</button>
+      <button class="opt" data-act="store" data-store="Android"><b>Android</b><small>Download the APK</small>${I.dl}</button>
+      <button class="opt" data-act="store" data-store="iPhone"><b>iPhone</b><small>Install from the link</small>${I.dl}</button>
+    </div>`);
+}
+
+function playModal(pid, gameId) {
+  if (!requireLogin()) return;
+  const p = plat(pid), a = acct(pid);
+  if (!a) return unlockModal(pid);
+  const g = gameId ? game(gameId) : null;
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>${g ? esc(g.name) : `Play ${p.name}`}</h2>
+    <p>${g ? `${esc(g.name)} is in the ${p.name} app. ` : ''}Open ${p.name} and log in with this account.</p>
+    ${credRow('Username', a.username, a.username)}
+    ${credRow('Password', a.password, a.password, true)}
+    <div class="wallet-line">Credits <b>${usd(a.credits)}</b>${a.credits < 1 ? ` <a href="#" data-act="load" data-plat="${pid}">Load credits first</a>` : ''}</div>
+    <div class="modal-acts"><button class="btn btn-accent" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Open web version</button><button class="btn btn-outline" data-act="download" data-plat="${pid}">${I.dl}Get the app</button></div>`);
+}
+
+function launch(pid, gameId) {
+  const p = plat(pid), a = acct(pid), g = gameId ? game(gameId) : GAMES.find(x => x.p === pid);
   openModal(`<div class="launch-stage"><div class="launch-blur" style="background-image:url(${g.img})"></div>
-      <div class="launch-mid"><img class="launch-art" src="${g.img}" alt=""><h3>${esc(g.name)}</h3><p id="lmsg">Signing in to ${p.name}&hellip;</p><div class="bar"><i id="lbar"></i></div></div></div>
-    <div class="launch-foot">${coin(p, 'xs')}<span>${p.name}</span><span>as <code>${esc(S.user.username)}</code></span><span>${fmt(BALANCES[p.id][0])} SC</span>
+      <div class="launch-mid"><img class="launch-art" src="${g.img}" alt=""><h3>${p.name}</h3><p id="lmsg">Opening ${p.name}&hellip;</p><div class="bar"><i id="lbar"></i></div></div></div>
+    <div class="launch-foot">${coin(p, 'xs')}<span>${p.name}</span><span>as <code>${esc(a.username)}</code></span><span>${usd(a.credits)} credits</span>
       <button class="btn btn-ghost btn-sm" data-close>Back</button></div>`, true);
   let pct = 0;
-  const msgs = [[30, `Signing in to ${p.name}…`], [65, 'Loading game…'], [100, 'Ready']];
   S.launchTimer = setInterval(() => {
-    pct = Math.min(100, pct + 9);
+    pct = Math.min(100, pct + 10);
     const bar = $('#lbar'), msg = $('#lmsg');
     if (!bar) return clearInterval(S.launchTimer);
     bar.style.width = pct + '%';
-    msg.textContent = msgs.find(m => pct <= m[0])[1];
-    if (pct >= 100) { clearInterval(S.launchTimer); msg.textContent = 'The game opens here once the platform connection is live.'; }
-  }, 160);
+    if (pct >= 100) { clearInterval(S.launchTimer); msg.textContent = `In the live site this opens the ${p.name} web version in a new tab.`; }
+  }, 140);
+}
+
+function loadModal(pid) {
+  if (!requireLogin()) return;
+  const stop = blocked();
+  if (stop) return openModal(`<h2>Loading is paused</h2><p>${stop}</p>`);
+  const p = plat(pid), a = acct(pid);
+  if (!a) return unlockModal(pid);
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Load ${p.name}</h2><p>Move money from your wallet into your ${p.name} account.</p>
+    <div class="wallet-line">Wallet <b>${usd(S.user.wallet)}</b> &middot; ${p.name} credits <b>${usd(a.credits)}</b></div>
+    <form class="form-row" data-form="load"><input type="hidden" name="plat" value="${pid}">
+      <div class="quick-amts">${[10, 25, 50, 100].map(v => `<button type="button" class="chip" data-amt="${v}">$${v}</button>`).join('')}</div>
+      <input class="field" name="amt" type="number" min="1" step="0.01" placeholder="Amount ($)" required>
+      <button class="btn btn-accent btn-block" type="submit">Load credits</button>
+    </form>
+    ${S.user.wallet < 1 ? `<p class="note">Your wallet is empty. <a href="#/balance" data-bal-go="deposit" data-close-after>Deposit first</a></p>` : ''}`);
+}
+
+function redeemModal(pid) {
+  const p = plat(pid), a = acct(pid);
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your PlayPort wallet. You can then withdraw or load another game.</p>
+    <div class="wallet-line">${p.name} credits <b>${usd(a.credits)}</b></div>
+    <form class="form-row" data-form="redeem"><input type="hidden" name="plat" value="${pid}">
+      <input class="field" name="amt" type="number" min="1" step="0.01" max="${a.credits}" value="${a.credits.toFixed(2)}" required>
+      <button class="btn btn-accent btn-block" type="submit">Redeem to wallet</button>
+    </form>`);
+}
+
+function addTx(t) { S.user.tx.unshift({ id: rid(), when: now(), ...t }); }
+function settleLater(id, fn, ms = 4000) {
+  setTimeout(() => {
+    if (!S.user) return;
+    const t = S.user.tx.find(x => x.id === id);
+    if (!t || t.status !== 'pending') return;
+    t.status = 'done';
+    fn();
+    refresh();
+  }, ms);
 }
 
 function toast(t) {
@@ -522,11 +682,11 @@ function toast(t) {
   el.textContent = t;
   el.classList.add('on');
   clearTimeout(toast.t);
-  toast.t = setTimeout(() => el.classList.remove('on'), 2000);
+  toast.t = setTimeout(() => el.classList.remove('on'), 2400);
 }
 
 function setMenu(open) {
-  $('#drawer').innerHTML = open ? menuHtml() : $('#drawer').innerHTML;
+  if (open) $('#drawer').innerHTML = menuHtml();
   document.body.classList.toggle('menu-open', open);
 }
 function setChat(open) {
@@ -535,16 +695,26 @@ function setChat(open) {
   if (open) { const b = $('#chatBody'); b.scrollTop = b.scrollHeight; }
 }
 
+function todayDeposits() {
+  const d = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  return S.user.tx.filter(t => t.kind === 'Deposits' && t.when.startsWith(d)).reduce((s, t) => s + t.amt, 0);
+}
+
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copy],[data-cat],[data-close],[data-close-menu],[data-bal],[data-method],[data-tab],[data-chip],[data-menu],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-bal-go],[data-close-after],.drawer-nav a');
   if (!t) return;
+  if (t.dataset.balGo) S.bal = t.dataset.balGo;
+  if (t.dataset.closeAfter !== undefined) closeModal();
+  if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') render(true); return; }
+  if (t.dataset.closeAfter !== undefined && !t.dataset.act) return;
   if (t.matches('.drawer-nav a') && !t.dataset.act) { setMenu(false); return; }
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
-  if (t.dataset.game) { closeModal(); return launch(t.dataset.game); }
+  if (t.dataset.amt) { t.closest('form').amt.value = t.dataset.amt; return; }
+  if (t.dataset.game) { const g = game(t.dataset.game); return playModal(g.p, g.id); }
   if (t.dataset.cat) {
     S.cat = t.dataset.cat;
     const grid = $('#gameGrid');
@@ -556,16 +726,17 @@ document.addEventListener('click', e => {
   if (t.dataset.method) { S.method = t.dataset.method; $('#balPanel').innerHTML = balPanel(S.bal); return; }
   if (t.dataset.tab) { S.actTab = t.dataset.tab; return render(true); }
   if (t.dataset.chip) { S.actChip = t.dataset.chip; return render(true); }
-  if (t.dataset.copy) {
-    const v = S.user && S.user[t.dataset.copy];
-    if (v && navigator.clipboard) navigator.clipboard.writeText(v).catch(() => {});
-    return toast(t.dataset.copy === 'username' ? 'Username copied' : 'Password copied');
+  if (t.dataset.copyval) {
+    if (navigator.clipboard) navigator.clipboard.writeText(t.dataset.copyval).catch(() => {});
+    return toast(`${t.dataset.what || 'Text'} copied`);
   }
   const a = t.dataset.act;
   if (t.tagName === 'A' && t.getAttribute('href') === '#') e.preventDefault();
+  const pid = t.dataset.plat;
   if (a === 'pw') {
     S.showPw = !S.showPw;
-    document.querySelectorAll('.cred').forEach(c => { if (c.querySelector('[data-act="pw"]')) c.outerHTML = credRow('Password', S.user.password, 'password', true); });
+    if ($('#modal').hidden) render(true);
+    else document.querySelectorAll('#modalBox .cred').forEach(c => { const b = c.querySelector('[data-act="pw"]'); if (b) { const v = c.querySelector('[data-copyval]').dataset.copyval; c.outerHTML = credRow('Password', v, v, true); } });
   }
   if (a === 'signup') { setMenu(false); signupStep(1); }
   if (a === 'resend') toast(`New code sent to ${pending.email}`);
@@ -573,32 +744,66 @@ document.addEventListener('click', e => {
     setMenu(false);
     openModal(`<h2>Log in</h2><p>Use your PlayPort username and password.</p>
       <form class="form-row" data-form="login">
-        <input class="field" name="u" placeholder="Username" autocomplete="username" required>
+        <input class="field" name="u" placeholder="Username or email" autocomplete="username" required>
         <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
         <button class="btn btn-accent btn-block" type="submit">Log in</button>
       </form>
-      <p class="note">New here? <a href="#" data-act="signup">Create your login</a></p>`);
+      <p class="note">New here? <a href="#" data-act="signup">Create an account</a></p>`);
   }
   if (a === 'logout') { setMenu(false); S.user = null; store.set('pp_user', null); S.showPw = false; goHome(); toast('Signed out'); }
-  if (a === 'creds') credsModal();
-  if (a === 'gift') toast('Daily bonus: +1.00 SC added');
-  if (a === 'bell') toast('No new notifications');
-  if (a === 'deposit-now' || a === 'withdraw-now') {
-    const c = CRYPTO.find(x => x.id === S.method);
-    const dep = a === 'deposit-now';
-    openModal(`<h2>${dep ? 'Deposit' : 'Withdraw'} with ${c.name}</h2><p>${dep ? 'Pick the platform to add coins to and the amount.' : 'Pick the platform to redeem from and the amount.'}</p>
-      <form class="form-row" data-form="${dep ? 'deposit' : 'withdraw'}">
-        <select class="field" name="plat">${PLATFORMS.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}</select>
-        <input class="field" name="amt" type="number" min="5" step="1" placeholder="Amount in USD (min 5)" required>
-        <button class="btn btn-accent btn-block" type="submit">Continue</button>
-      </form>
-      <p class="note">Demo only. The live version shows the ${c.code} address or payment page here.</p>`);
+  if (a === 'unlock') unlockModal(pid);
+  if (a === 'unlock-go') {
+    S.user.accounts[pid] = { username: `${S.user.username.replace(/^pp_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
+    S.showPw = true;
+    refresh();
+    gameCredsModal(pid, true);
   }
-  if (a === 'cashier') toast(`${plat(t.dataset.plat).name} cashier opens here in the live version`);
-  if (a === 'redeem') toast(`Redeem request for ${plat(t.dataset.plat).name} opens here in the live version`);
+  if (a === 'gcreds') gameCredsModal(pid);
+  if (a === 'download') downloadModal(pid);
+  if (a === 'play') playModal(pid);
+  if (a === 'web') launch(pid, t.dataset.gameId);
+  if (a === 'store') toast(`${t.dataset.store} download link goes here in the live site`);
+  if (a === 'load') loadModal(pid);
+  if (a === 'redeem') redeemModal(pid);
+  if (a === 'gift') toast('Daily bonus: check back tomorrow');
+  if (a === 'bell') toast('No new notifications');
   if (a === 'chat') { closeModal(); setMenu(false); setChat(true); }
-  if (a === 'foot-doc') openModal(`<h2>${esc(t.dataset.doc)}</h2><p>This page is coming soon. For help now, use live chat.</p><button class="btn btn-accent btn-block" data-act="chat">Open live chat</button>`);
   if (a === 'chat-close') setChat(false);
+  if (a === 'foot-doc') {
+    setMenu(false);
+    const body = DOCS[t.dataset.doc];
+    openModal(`<h2>${esc(t.dataset.doc)}</h2>${body || '<p>This page is coming soon. For help now, use live chat.</p>'}<button class="btn ${body ? 'btn-ghost' : 'btn-accent'} btn-block" data-act="chat" style="margin-top:16px">Open live chat</button>`);
+  }
+  if (a === 'deposit-now') {
+    const c = CRYPTO.find(x => x.id === S.method);
+    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Deposit with ${c.name}</h2><p>How much do you want to add to your wallet? Minimum $${MIN_DEPOSIT}.</p>
+      <form class="form-row" data-form="deposit">
+        <div class="quick-amts">${[25, 50, 100, 250].map(v => `<button type="button" class="chip" data-amt="${v}">$${v}</button>`).join('')}</div>
+        <input class="field" name="amt" type="number" min="${MIN_DEPOSIT}" step="1" placeholder="Amount ($)" required>
+        <button class="btn btn-accent btn-block" type="submit">Get deposit address</button>
+      </form>`);
+  }
+  if (a === 'sent') {
+    const amt = Number(t.dataset.amount), c = CRYPTO.find(x => x.id === S.method);
+    const id = rid();
+    S.user.tx.unshift({ id, kind: 'Deposits', label: `Deposit (${c.name})`, amt, when: now(), status: 'pending' });
+    settleLater(id, () => { S.user.wallet += amt; toast(`Deposit confirmed: ${usd(amt)} added to your wallet`); });
+    closeModal(); refresh(); toast('Waiting for network confirmation (demo: about 4 seconds)');
+  }
+  if (a === 'withdraw-now') {
+    const c = CRYPTO.find(x => x.id === S.method);
+    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Withdraw to ${c.name}</h2><p>From your wallet (${usd(S.user.wallet)}). Minimum $${MIN_WITHDRAW}.</p>
+      <form class="form-row" data-form="withdraw">
+        <input class="field" name="amt" type="number" min="${MIN_WITHDRAW}" step="0.01" max="${S.user.wallet}" placeholder="Amount ($)" required>
+        <input class="field" name="addr" placeholder="Your ${c.code} address" required>
+        <button class="btn btn-accent btn-block" type="submit">Request withdrawal</button>
+      </form>
+      ${S.user.wallet < MIN_WITHDRAW ? `<p class="note">Your wallet has less than $${MIN_WITHDRAW}. Redeem credits from a game first.</p>` : ''}`);
+  }
+  if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
+  if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; refresh(); toast('Break started. Deposits and loading are paused.'); }
+  if (a === 'exclude') openModal(`<h2>Self-exclude?</h2><p>This closes deposits and loading on your account. You can still redeem and withdraw what you have. To reopen, you will need to contact support.</p><button class="btn btn-outline btn-block danger" data-act="exclude-go">Yes, self-exclude me</button>`);
+  if (a === 'exclude-go') { S.user.excluded = true; closeModal(); refresh(); toast('Self-exclusion is on'); }
 });
 
 document.addEventListener('submit', e => {
@@ -607,49 +812,87 @@ document.addEventListener('submit', e => {
   e.preventDefault();
   const d = Object.fromEntries(new FormData(f));
   const k = f.dataset.form;
+  const amt = Number(d.amt);
   if (k === 'quick') { pending.email = d.email; signupStep(1); }
   if (k === 'email') { pending.first = d.first.trim(); pending.email = d.email.trim(); signupStep(2); }
   if (k === 'code') {
-    S.user = { first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) };
-    store.set('pp_user', S.user);
-    store.set('pp_account', S.user);
+    S.user = normUser({ first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) });
     S.showPw = true;
-    location.hash = '#/games';
+    save();
+    location.hash = '#/';
     render();
     signupStep(3);
   }
   if (k === 'login') {
-    const acct = store.get('pp_account', null);
+    const saved = normUser(store.get('pp_account', null));
     const name = d.u.trim();
-    const match = acct && (name.toLowerCase() === acct.username.toLowerCase() || name.toLowerCase() === acct.email.toLowerCase());
-    const user = match ? acct : { first: name.split('@')[0], email: name.includes('@') ? name : `${name}@example.com`, username: name, password: d.p, since: new Date().toISOString().slice(0, 10) };
-    S.user = user;
-    store.set('pp_user', user);
-    store.set('pp_account', user);
-    closeModal(); goHome(); toast(`Welcome back, ${user.first}`);
+    const match = saved && (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === saved.email.toLowerCase());
+    S.user = match ? saved : demoUser(name, d.p);
+    save();
+    closeModal(); goHome(); toast(`Welcome back, ${S.user.first}`);
   }
   if (k === 'pw') {
-    const acct = store.get('pp_account', S.user);
-    if (d.cur !== acct.password) { toast('Current password is wrong'); return; }
-    S.user.password = d.next;
-    store.set('pp_user', S.user);
-    store.set('pp_account', S.user);
-    f.reset(); render(true); toast(`Password updated on ${PLATFORMS.length} platforms`);
+    if (d.cur !== S.user.password) { toast('Current password is wrong'); return; }
+    S.user.password = d.next; f.reset(); refresh(); toast('Password updated');
   }
   if (k === 'user') {
-    const acct = store.get('pp_account', S.user);
-    if (d.cur !== acct.password) { toast('Current password is wrong'); return; }
+    if (d.cur !== S.user.password) { toast('Current password is wrong'); return; }
     const next = d.next.trim();
     if (next === S.user.username) { toast('That is already your username'); return; }
-    S.user.username = next;
-    store.set('pp_user', S.user);
-    store.set('pp_account', S.user);
-    render(true); toast(`Username changed to ${next}`);
+    S.user.username = next; refresh(); toast(`Username changed to ${next}`);
   }
-  if (k === 'deposit' || k === 'withdraw') { closeModal(); toast(k === 'deposit' ? `Deposit of $${d.amt} to ${plat(d.plat).name} started (demo)` : `Withdrawal of $${d.amt} from ${plat(d.plat).name} started (demo)`); }
-  if (k === 'transfer') { if (d.from === d.to) { toast('Pick two different platforms'); return; } f.reset(); toast(`Moved ${d.amt} SC from ${plat(d.from).name} to ${plat(d.to).name} (demo)`); }
-  if (k === 'p2p') { f.reset(); toast(`Sent ${d.amt} SC to ${d.to} (demo)`); }
-  if (k === 'voucher') { f.reset(); toast('That voucher code is not valid'); }
+  if (k === 'deposit') {
+    const stop = blocked();
+    if (stop) { toast(stop); return; }
+    if (S.user.limit && todayDeposits() + amt > S.user.limit) { toast(`That would pass your $${S.user.limit} daily limit`); return; }
+    const c = CRYPTO.find(x => x.id === S.method);
+    const addr = c.pre + Array.from({ length: 30 }, () => 'abcdefghjkmnpqrstuvwxyz023456789'[Math.floor(Math.random() * 32)]).join('');
+    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Send ${usd(amt)} in ${c.code}</h2><p>Send to this address. Only send ${c.code} on the ${c.name} network.</p>
+      <div class="addr"><div class="qr" aria-hidden="true">${Array.from({ length: 49 }, (_, i) => `<i class="${(i * 7 + addr.charCodeAt(i % addr.length)) % 3 ? '' : 'on'}"></i>`).join('')}</div>
+        <div class="cred"><label>Deposit address (demo)</label><div class="cred-row"><code>${addr}</code><button class="icon-btn" data-copyval="${addr}" data-what="Address">${I.copy}</button></div></div></div>
+      <div class="warn">This address is for this deposit only. Your wallet updates after the network confirms it.</div>
+      <button class="btn btn-accent btn-block" data-act="sent" data-amount="${amt}" style="margin-top:16px">I've sent it</button>`);
+  }
+  if (k === 'withdraw') {
+    if (amt > S.user.wallet) { toast('More than your wallet balance'); return; }
+    const c = CRYPTO.find(x => x.id === S.method);
+    S.user.wallet -= amt;
+    addTx({ kind: 'Withdrawals', label: `Withdrawal (${c.name})`, amt: -amt, status: 'pending' });
+    closeModal(); refresh(); toast(`Withdrawal of ${usd(amt)} requested. Track it under Activity.`);
+  }
+  if (k === 'load') {
+    const stop = blocked();
+    if (stop) { toast(stop); return; }
+    if (amt > S.user.wallet) { toast(`Not enough in your wallet (${usd(S.user.wallet)})`); return; }
+    S.user.wallet -= amt;
+    S.user.accounts[d.plat].credits += amt;
+    S.loadPlat = d.plat;
+    addTx({ kind: 'Loads', label: 'Loaded credits', p: d.plat, amt: -amt, status: 'done' });
+    closeModal(); refresh(); toast(`${usd(amt)} loaded into ${plat(d.plat).name}`);
+  }
+  if (k === 'redeem') {
+    const a = S.user.accounts[d.plat];
+    if (amt > a.credits) { toast('More than your credits'); return; }
+    a.credits -= amt;
+    const id = rid();
+    S.user.tx.unshift({ id, kind: 'Redeems', label: 'Redeemed credits', p: d.plat, amt, when: now(), status: 'pending' });
+    settleLater(id, () => { S.user.wallet += amt; toast(`${usd(amt)} from ${plat(d.plat).name} is in your wallet`); });
+    closeModal(); refresh(); toast('Redeem requested. It lands in your wallet shortly (demo: 4 seconds).');
+  }
+  if (k === 'p2p') {
+    if (amt > S.user.wallet) { toast('More than your wallet balance'); return; }
+    S.user.wallet -= amt;
+    addTx({ kind: 'P2P', label: `Sent to ${d.to}`, amt: -amt, status: 'done' });
+    f.reset(); refresh(); toast(`Sent ${usd(amt)} to ${d.to}`);
+  }
+  if (k === 'voucher') {
+    if (d.code.trim().toUpperCase() === 'WELCOME5' && !S.user.tx.some(t => t.label === 'Voucher WELCOME5')) {
+      S.user.wallet += 5;
+      addTx({ kind: 'Vouchers', label: 'Voucher WELCOME5', amt: 5, status: 'done' });
+      refresh(); toast('$5.00 added to your wallet');
+    } else { f.reset(); toast('That voucher code is not valid'); }
+  }
+  if (k === 'limit') { S.user.limit = Number(d.limit); refresh(); toast(S.user.limit ? `Daily deposit limit set to $${S.user.limit}` : 'Daily deposit limit removed'); }
   if (k === 'reason' || k === 'chat') {
     S.chat.push({ me: true, t: k === 'reason' ? d.r : d.m });
     S.chat.push({ t: 'Thanks. An agent will reply here shortly.' });

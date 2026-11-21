@@ -649,6 +649,7 @@ function menuHtml() {
     <nav class="drawer-nav">${links.map(([h, t]) => `<a href="${h}">${t}${I.chev}</a>`).join('')}
       <a href="#" data-act="foot-doc" data-doc="How it works">How it works${I.chev}</a>
       <a href="#" data-act="chat">Help &amp; chat${I.chev}</a></nav>
+    <div class="theme-pick" data-theme-pick>${themePick()}</div>
     <div class="drawer-foot">${S.user
       ? `<button class="btn btn-ghost btn-block" data-act="logout">Sign out</button>`
       : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
@@ -684,6 +685,19 @@ const DOCS = {
     </div>`
 };
 
+/* ---------- theme ---------- */
+
+const THEMES = [['plum', 'Plum', '#1d1022', '#170c1b'], ['navy', 'Navy', '#0f1428', '#0b0f20'], ['wine', 'Wine', '#210d16', '#1a0911'], ['charcoal', 'Charcoal', '#17181c', '#141518']];
+const curTheme = () => document.documentElement.dataset.theme || 'plum';
+const themePick = () => `<span>Colour</span>${THEMES.map(([k, n, bg]) => `<button class="${curTheme() === k ? 'on' : ''}" style="background:${bg}" data-theme-set="${k}" title="${n}" aria-label="${n} theme"></button>`).join('')}`;
+function setTheme(k) {
+  document.documentElement.dataset.theme = k;
+  try { localStorage.setItem('pp_theme', k); } catch (e) {}
+  const m = document.querySelector('meta[name="theme-color"]');
+  if (m) m.content = THEMES.find(t => t[0] === k)[3];
+  document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
+}
+
 /* ---------- router ---------- */
 
 function route() {
@@ -700,6 +714,7 @@ function render(keepScroll) {
   document.body.classList.toggle('has-ticker', name === 'home');
   document.querySelectorAll('.tabbar [data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
   if (!keepScroll) window.scrollTo(0, 0);
+  document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
   if (S.user && name !== 'rewards') syncQuests();
 }
 
@@ -891,7 +906,7 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-bal-go],[data-close-after],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-bal-go],[data-close-after],.drawer-nav a');
   if (!t) return;
   if (t.dataset.balGo) S.bal = t.dataset.balGo;
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -901,6 +916,7 @@ document.addEventListener('click', e => {
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
+  if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES.find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
   if (t.dataset.amt) { t.closest('form').amt.value = t.dataset.amt; return; }
   if (t.dataset.game) { const g = game(t.dataset.game); return playModal(g.p, g.id); }
   if (t.dataset.cat) {

@@ -224,7 +224,6 @@ function viewHome() {
   const hot = ['firekirin', 'milkyway', 'orion'].map(plat);
   const guest = !S.user;
   return `${ticker()}<div class="page home">
-    ${S.user ? "" : `<a class="top-banner" href="#" data-act="signup" aria-label="All fish games and slots platform under one roof. Sign up"><img src="assets/banner-fish-slots.webp" alt="All Fish Games &amp; Slots: platform under one roof" width="2000" height="667"></a>`}
     <section class="hero">
       <div class="hero-txt">
         ${guest
@@ -236,8 +235,8 @@ function viewHome() {
              </form>
              <p class="hl-note">Already have one? <a href="#" data-act="login">Log in</a></p>`
           : `<h1>Welcome back, <span>${esc(S.user.first)}</span></h1>
-             <p class="hero-sub">${unlockedCount() ? `You have ${unlockedCount()} of ${PLATFORMS.length} game accounts unlocked.` : `Unlock your first game account to start playing.`}</p>
-             <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-outline btn-lg" href="#/games">${unlockedCount() ? 'My games' : 'Unlock a game'}</a></div>`}
+             <p class="hero-sub">Fish games and slots from every platform, all in one place.</p>
+             <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/games">Play now</a></div>`}
         <div class="hot-strip">
           <div class="hot-label">${I.bolt}Hot right now</div>
           <div class="hot-chips">${hot.map((p, i) => `<a class="hot-chip" href="#/platform/${p.id}">
@@ -252,6 +251,7 @@ function viewHome() {
     </section>
 
     ${platBand()}
+    ${promoBanner()}
 
     ${guest ? `<section class="steps3 four">
       <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your ${BRAND()} login.</p></div>
@@ -265,7 +265,7 @@ function viewHome() {
       <div class="win-pane" data-pane="latest">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="wrow">${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name} &middot; ${d}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
       <div class="win-pane" data-pane="month" hidden>${MONTHLY.map(([pid, u, a], i) => `<div class="wrow ${i === 0 ? 'top1' : ''}"><span class="wrank">#${i + 1}</span>${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
     </section>
-    ${S.user ? '' : reviewsSection() + blogVideoSection()}
+    ${S.user ? '' : reviewsSection()}
   </div>
   `;
 }
@@ -819,50 +819,81 @@ const VIDEOS = [
   { id: 'redeem', img: 'assets/games/super-double-up.jpg', len: '2:05', title: 'How to redeem to your wallet', sub: 'Step by step' }
 ];
 
-/* Sample reviews: four cards, one flips at a time to a new review from the pool.
+function promoBanner() {
+  if (S.user) return '';
+  return `<a class="promo-banner" href="#" data-act="signup" aria-label="All fish games and slots platform under one roof. Sign up">
+    <img src="assets/banner-fish-slots-purple.webp" alt="All Fish Games &amp; Slots: platform under one roof" width="2000" height="580" loading="lazy"></a>`;
+}
+
+/* Sample reviews: six cards, one flips at a time to a new review from the pool.
    Keep the "Sample review" label until these are swapped for real ones. */
 const REVIEWS = [
-  ['I like having my game platforms together in one place.', 'R', '#a3445f'],
-  ['The game categories make it easy to find what I want to explore.', 'M', '#2f7a5a'],
-  ['The layout feels clear on my phone and my tablet.', 'J', '#b0652a'],
-  ['Switching between the light and dark themes is a nice touch.', 'A', '#5a5fc4'],
-  ['Loading credits into a game takes just a couple of taps.', 'K', '#8a4fc0'],
-  ['Seeing every game login in one place saves me time.', 'D', '#1f7f95'],
-  ['The Daily 1st bonus is a fun reason to check in each day.', 'S', '#b8862a'],
-  ['Redeeming back to my wallet is simple to follow.', 'L', '#3f8f4a'],
-  ['Live chat answered my question quickly.', 'T', '#c0485a'],
-  ['I like that each game keeps its own balance.', 'C', '#4b6fd0'],
-  ['The deposit limit setting helps me stay on budget.', 'N', '#7a5a3a'],
-  ['Being able to switch to Spanish is really helpful.', 'E', '#2f8f7f']
+  ['I like having my game platforms together in one place.', 'R', '#a3445f', 'milkyway'],
+  ['The game categories make it easy to find what I want to explore.', 'M', '#2f7a5a', 'firekirin'],
+  ['The layout feels clear on my phone and my tablet.', 'J', '#b0652a', 'orion'],
+  ['Switching between the light and dark themes is a nice touch.', 'A', '#5a5fc4', 'juwa'],
+  ['Loading credits into a game takes just a couple of taps.', 'K', '#8a4fc0', 'firekirin'],
+  ['Seeing every game login in one place saves me time.', 'D', '#1f7f95', 'panda'],
+  ['The Daily 1st bonus is a fun reason to check in each day.', 'S', '#b8862a', 'orion'],
+  ['Redeeming back to my wallet is simple to follow.', 'L', '#3f8f4a', 'milkyway'],
+  ['Live chat answered my question quickly.', 'T', '#c0485a', 'vegas'],
+  ['I like that each game keeps its own balance.', 'C', '#4b6fd0', 'juwa'],
+  ['The deposit limit setting helps me stay on budget.', 'N', '#7a5a3a', 'panda'],
+  ['Being able to switch to Spanish is really helpful.', 'E', '#2f8f7f', 'vegas']
+];
+/* Video reviews: drop each clip in assets/reviews/ and fill src (mp4) + poster (jpg).
+   Empty src shows a "coming soon" tile. */
+const VIDEO_REVIEWS = [
+  { src: '', poster: '', game: 'firekirin' },
+  { src: '', poster: '', game: 'milkyway' },
+  { src: '', poster: '', game: 'orion' },
+  { src: '', poster: '', game: 'juwa' },
+  { src: '', poster: '', game: 'panda' }
 ];
 /* Trustpilot: paste the business unit ID from Trustpilot Business (Integrations > TrustBox)
    to show the official widget. Until then a placeholder shows. */
 const TRUSTPILOT = { businessUnitId: '', url: '' };
 
-const rvCard = (i, k) => { const [q, init, c] = REVIEWS[i]; return `<figure class="rv-card" data-rv="${k}" data-ri="${i}"><div class="rv-in">
-    <div class="rv-top"><span class="rv-q">&ldquo;</span><small>Sample review</small></div>
+const STARS = '<span class="rv-stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>';
+const rvCard = (i, k) => { const [q, init, c, pid] = REVIEWS[i]; const p = plat(pid); return `<figure class="rv-card" data-rv="${k}" data-ri="${i}"><div class="rv-in">
+    <div class="rv-top">${STARS}<small>Sample review</small></div>
     <blockquote>${q}</blockquote>
-    <figcaption><span class="rv-av" style="background:${c}">${init}</span><span><b>Sample player</b><small>Preview content</small></span></figcaption>
+    <figcaption><span class="rv-av" style="background:${c}">${init}</span><span class="rv-who"><b>Sample player</b><small>Plays ${p.name}</small></span>${coin(p, 'xs')}</figcaption>
   </div></figure>`; };
 function trustpilotHtml() {
   const tp = TRUSTPILOT;
   if (tp.businessUnitId) return `<div class="rv-tp live"><div class="trustpilot-widget" data-locale="${LANG === 'es' ? 'es-ES' : 'en-US'}" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="${tp.businessUnitId}" data-style-height="150px" data-style-width="100%" data-theme="dark">${tp.url ? `<a href="${tp.url}" target="_blank" rel="noopener">Trustpilot</a>` : ''}</div></div>`;
   return `<div class="rv-tp"><span class="rv-tp-star" aria-hidden="true">&#9733;</span><span><b>Trustpilot</b><small>Our Trustpilot rating will show here once the business profile is connected.</small></span></div>`;
 }
+function vidCard(v, i) {
+  const p = plat(v.game), g = GAMES.find(x => x.p === v.game);
+  const bg = v.poster || g.img;
+  return `<button class="vr-card ${v.src ? '' : 'soon'}" data-vreview="${i}" style="--c1:${p.c1};--c2:${p.c2}">
+    <span class="vr-bg" style="background-image:url(${bg})"></span><span class="vr-shade"></span>
+    ${v.src ? '' : '<span class="vr-tag">Coming soon</span>'}
+    <span class="vr-play">${I.play}</span>
+    <span class="vr-foot">${coin(p, 'xs')}<span><b>Player video review</b><small>${p.name}</small></span></span>
+  </button>`;
+}
+function videoReviewModal(i) {
+  const v = VIDEO_REVIEWS[i], p = plat(v.game);
+  openModal(v.src
+    ? `<div class="vr-player"><video src="${v.src}" ${v.poster ? `poster="${v.poster}"` : ''} controls autoplay playsinline></video></div><p class="vr-cap">${coin(p, 'xs')} Player video review &middot; ${p.name}</p>`
+    : `<div class="modal-coin">${coin(p, 'md')}</div><h2>Video review</h2><p>This player video goes here once the clip is uploaded.</p>`);
+  $('#modalBox').classList.add('vr-box');
+}
 function reviewsSection() {
-  const order = [...REVIEWS.keys()].sort(() => Math.random() - .5).slice(0, 4);
+  const order = [...REVIEWS.keys()].sort(() => Math.random() - .5).slice(0, 6);
   return `<section class="rv">
-    <div class="rv-body">
-      <div class="rv-intro">
-        <small class="rv-kick">The ${BRAND()} community</small>
-        <h2>Every player.<br>A different story.</h2>
-        <p>A place for the experiences, favorites, and feedback that make our community.</p>
-        <span class="rv-badge">Design preview &middot; sample reviews</span>
-        <p class="rv-disc">These examples show the layout. They are not customer testimonials.</p>
-        ${trustpilotHtml()}
-      </div>
-      <div class="rv-grid">${order.map((i, k) => rvCard(i, k)).join('')}</div>
+    <div class="rv-head">
+      <div><small class="rv-kick">The ${BRAND()} community</small>
+        <h2>What our customers have to say</h2>
+        <p>Hear from players across Milky Way, Fire Kirin, Orion Stars and more.</p></div>
+      ${trustpilotHtml()}
     </div>
+    <div class="vr-row">${VIDEO_REVIEWS.map(vidCard).join('')}</div>
+    <div class="rv-grid">${order.map((i, k) => rvCard(i, k)).join('')}</div>
+    <p class="rv-disc"><span class="rv-badge">Design preview &middot; sample reviews</span> These examples show the layout. They are not customer testimonials.</p>
   </section>`;
 }
 let rvTimer, rvLast = -1;
@@ -987,8 +1018,7 @@ function walletBoxB() {
 function viewHomeB() {
   const mine = PLATFORMS.filter(p => acct(p.id));
   return `<div class="page b-home">
-    ${S.user ? "" : `<a class="top-banner" href="#" data-act="signup" aria-label="All fish games and slots platform under one roof. Sign up"><img src="assets/banner-fish-slots.webp" alt="All Fish Games &amp; Slots: platform under one roof" width="2000" height="667"></a>`}
-    <div class="b-top">
+    <div class="b-top ${S.user ? 'solo' : ''}">
       <section class="b-hero">
         ${B_SLIDES.map((x, i) => { const g = game(x.g), p = plat(g.p); return `<div class="b-slide ${i === S.bslide ? 'on' : ''}">
           <div class="b-slide-bg" style="background-image:url(${g.img})"></div>
@@ -998,13 +1028,13 @@ function viewHomeB() {
         </div>`; }).join('')}
         <div class="b-dots">${B_SLIDES.map((_, i) => `<button class="${i === S.bslide ? 'on' : ''}" data-bslide="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
       </section>
-      ${walletBoxB()}
+      ${S.user ? '' : walletBoxB()}
     </div>
-    ${mine.length ? `<section class="b-sec"><div class="b-sec-h"><h2>My Games</h2><a href="#/games">Manage ${I.chev}</a></div><div class="b-plats">${mine.map(platCardB).join('')}</div></section>` : ''}
-    <section class="b-sec"><div class="b-sec-h"><h2>${mine.length ? 'More platforms' : 'Platforms'}</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.filter(p => !acct(p.id)).map(platCardB).join('')}</div></section>
+    <section class="b-sec"><div class="b-sec-h"><h2>Platforms</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.map(platCardB).join('')}</div></section>
+    ${promoBanner()}
     <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
       <div class="b-wins">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
-    ${S.user ? '' : reviewsSection() + blogVideoSection()}
+    ${S.user ? '' : reviewsSection()}
   </div>`;
 }
 
@@ -1098,6 +1128,7 @@ function openModal(html, wide) {
   if (f) setTimeout(() => f.focus(), 50);
 }
 function closeModal() {
+  document.querySelectorAll('#modalBox video').forEach(v => v.pause());
   $('#modal').hidden = true;
   document.body.style.overflow = '';
   clearInterval(S.launchTimer);
@@ -1425,7 +1456,7 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a');
   if (!t) return;
   if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; S.pkg = null; S.method = null; }
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -1437,6 +1468,7 @@ document.addEventListener('click', e => {
   if (t.dataset.close !== undefined) return closeModal();
   if (t.dataset.post) { postModal(t.dataset.post); return; }
   if (t.dataset.video) { videoModal(t.dataset.video); return; }
+  if (t.dataset.vreview) { videoReviewModal(+t.dataset.vreview); return; }
   if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
   if (t.dataset.langSet) { setLang(t.dataset.langSet); if ($('#chooser').hidden) render(true); if (document.body.classList.contains('menu-open')) setMenu(true); return; }
   if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }

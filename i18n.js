@@ -234,6 +234,10 @@ const ES = {
 
   // pieces found in the Spanish sweep
   'All fish games and slots platform under one roof. Sign up': 'Todos los juegos de pesca y tragamonedas en una sola plataforma. Regístrate',
+  'What our customers have to say': 'Lo que dicen nuestros clientes', 'Hear from players across Milky Way, Fire Kirin, Orion Stars and more.': 'Escucha a jugadores de Milky Way, Fire Kirin, Orion Stars y más.',
+  'Player video review': 'Reseña en video', 'Coming soon': 'Muy pronto', 'Plays Fire Kirin': 'Juega Fire Kirin', '5 stars': '5 estrellas', 'Video review': 'Reseña en video',
+  'This player video goes here once the clip is uploaded.': 'El video del jugador aparecerá aquí cuando se suba.',
+  'Fish games and slots from every platform, all in one place.': 'Juegos de pesca y tragamonedas de todas las plataformas, en un solo lugar.',
   'Our platforms': 'Nuestras plataformas', 'All games': 'Ver todo',
   '5 fish table tips for beginners': '5 consejos de mesas de pesca para principiantes',
   "Don't have one yet? Unlock it now!": '¿Aún no tienes una? ¡Desbloquéala ahora!', '6 available': '6 disponibles', '9 games': '9 juegos', '2 accounts': '2 cuentas',

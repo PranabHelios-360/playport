@@ -42,7 +42,7 @@ function normUser(u) {
   if (!u) return null;
   return {
     wallet: 0, accounts: {}, tx: [], twofa: false, limit: 0, coolUntil: 0, excluded: false,
-    points: 0, lifetime: 0, cashable: 0, checkin: { last: '', streak: 0 }, claimed: [], pts: [], avatar: '', refCode: Math.random().toString(36).slice(2, 8).toUpperCase(), promos: [],
+    points: 0, lifetime: 0, cashable: 0, phone: '', kyc: 'none', music: true, volume: 40, lang: 'English', checkin: { last: '', streak: 0 }, claimed: [], pts: [], avatar: '', refCode: Math.random().toString(36).slice(2, 8).toUpperCase(), promos: [],
     ...u
   };
 }
@@ -427,6 +427,82 @@ function viewAccount() {
     <div class="set-list"><button class="set-row" data-act="logout"><span class="set-txt"><b>Logout</b></span>${I.out}</button></div>
   </div>`;
 }
+/* ---------- Loaded777 dashboard ---------- */
+
+const D_ICO = {
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2" stroke-linecap="round"/></svg>',
+  id: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13.5h3" stroke-linecap="round"/></svg>',
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6Z"/><path d="M14 3v4h4M9 12h6M9 16h6" stroke-linecap="round"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>',
+  sound: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 9h4l5-4v14l-5-4H4Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  sliders: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
+  globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z"/></svg>',
+  up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m-5 5 5-5 5 5M5 15v4h14v-4"/></svg>'
+};
+
+function dashboardHtml(inPanel) {
+  const u = S.user;
+  const head = inPanel
+    ? `<div class="dash-top"><button class="icon-btn" data-close-menu aria-label="Close">${I.x}</button><span class="logo">${logoInner()}</span><button class="dash-lang" data-act="lang">${D_ICO.globe}<span>${u ? esc(u.lang) : 'English'}</span></button></div>`
+    : '';
+  if (!u) return head + `<div class="dash-guest"><h2>Welcome to ${BRAND()}</h2><p>Sign up to get your wallet, game accounts and rewards.</p>
+      <button class="btn btn-accent btn-block" data-act="signup">Create account</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button></div>
+      <nav class="dash-links">${[['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards']].map(([h, t]) => `<a href="${h}">${t}</a>`).join('')}</nav>`;
+  const n = unlockedCount();
+  const row = (ico, title, sub, attrs, right) => `<button class="d-row" ${attrs}><span class="d-ico">${ico}</span><span class="d-txt"><b>${title}</b><small>${sub}</small></span>${right === undefined ? I.chev : right}</button>`;
+  const recent = u.tx.slice(0, 4);
+  return head + `
+    <div class="dash-id"><span class="avatar" ${u.avatar ? `style="background:${u.avatar}"` : ''}>${esc((u.first[0] || 'L').toUpperCase())}</span>
+      <div><b>${esc(u.first)}</b><button class="pid" data-copyval="${esc(u.username)}" data-what="Player ID"><span>ID: ${esc(u.username)}</span>${I.copy}</button></div>
+      ${inPanel ? `<nav class="dash-quick"><a href="#/">${I.home}</a><a href="#/games">${navIco.games}</a><a href="#/rewards">${navIco.rewards}</a></nav>` : ''}</div>
+    <section class="dash-bal">
+      <div class="db-half"><div class="db-h"><span class="db-coin w">W</span><b>Wallet</b></div><strong>${usd(u.wallet)}</strong><span class="db-pill">Withdrawable</span></div>
+      <div class="db-half"><div class="db-h"><span class="db-coin g">G</span><b>Game credits</b></div><strong class="db-green">${usd(creditsTotal())}</strong>
+        <div class="db-sub"><span><small>In games</small><em><i class="dot-b"></i>${n}</em></span><span><small>Points</small><em><i class="dot-g"></i>${u.points.toLocaleString('en-US')}</em></span></div></div>
+    </section>
+    <div class="dash-acts"><a class="d-round" href="#/balance" data-bal-go="deposit"><span class="dr-ico dep">${I.plus}</span>Deposit</a><a class="d-round" href="#/balance" data-bal-go="withdraw"><span class="dr-ico wd">${D_ICO.up}</span>Withdraw</a></div>
+    <div class="d-list">
+      ${row(D_ICO.phone, 'Bind/Change Phone', u.phone ? esc(u.phone) : 'Not Bound', 'data-dsheet="phone"')}
+      ${row(I.lock, 'Change Password', 'Security settings', 'data-sheet="pw"')}
+      ${row(D_ICO.id, 'Identity Verification', u.kyc === 'pending' ? 'Under review' : 'Not Verified', 'data-dsheet="kyc"')}
+      ${row(I.user, 'Change Username', esc(u.username), 'data-sheet="user"')}
+      ${row(I.shield, 'Two-step Login', u.twofa ? 'On' : 'Off', 'data-act="twofa"', `<span class="switch ${u.twofa ? 'on' : ''}"><i></i></span>`)}
+      ${row(I.key, 'Game Accounts', `${n} of ${PLATFORMS.length} unlocked`, 'data-sheet="games"')}
+    </div>
+    <div class="d-list">
+      ${row(I.gift.replace('<svg', '<svg class="gift-ico"'), 'Invite & Earn', 'Share your link, earn rewards when friends deposit', 'data-rw="you"')}
+      <details class="d-exp"><summary class="d-row"><span class="d-ico">${D_ICO.doc}</span><span class="d-txt"><b>Transactions</b><small>Order History</small></span>${I.down}</summary>
+        <div class="d-exp-body">${recent.length ? recent.map(t => `<div class="d-tx"><span>${t.label}<small>${t.when}</small></span><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${usd(Math.abs(t.amt))}</b></div>`).join('') : '<p class="card-sub">No transactions yet.</p>'}<a class="d-more" href="#/activity">View all ${I.chev}</a></div></details>
+      <details class="d-exp"><summary class="d-row"><span class="d-ico">${I.help}</span><span class="d-txt"><b>Help Center</b><small>FAQ and live chat</small></span>${I.down}</summary>
+        <div class="d-exp-body"><button class="d-link" data-act="foot-doc" data-doc="How it works">How it works</button><button class="d-link" data-act="foot-doc" data-doc="FAQ">FAQ</button><button class="d-link" data-act="chat">Live chat</button></div></details>
+    </div>
+    <div class="d-list">
+      <div class="d-row static"><span class="d-ico">${D_ICO.moon}</span><span class="d-txt"><b>Theme</b><small>${(THEMES_NOW().find(t => t[0] === curTheme()) || THEMES_NOW()[0])[1]}</small></span><span class="theme-pick" data-theme-pick>${themePick()}</span></div>
+      ${row(D_ICO.sound, 'Background music', u.music ? 'On' : 'Off', 'data-act="music"', `<span class="switch ${u.music ? 'on' : ''}"><i></i></span>`)}
+      <div class="d-row static"><span class="d-ico">${D_ICO.sliders}</span><span class="d-txt"><b>Music volume</b><small>${u.volume}%</small></span><input class="d-range" type="range" min="0" max="100" step="5" value="${u.volume}" data-volume aria-label="Music volume"></div>
+    </div>
+    <div class="d-list">
+      ${row(I.gauge, 'Daily deposit limit', u.limit ? `$${u.limit} per day` : 'No limit', 'data-sheet="limit"')}
+      ${row(I.pause, 'Take a break', blocked() || 'Pause deposits, or self-exclude', 'data-sheet="break"')}
+      ${inPanel ? row(navIco.swap, 'Switch site', 'Recharge777 or Loaded777', 'data-act="choose-site"') : ''}
+      ${row(I.out, 'Logout', '', 'data-act="logout"', '')}
+    </div>`;
+}
+
+function viewAccountB() {
+  if (!S.user) return needLogin('Dashboard');
+  return `<div class="page narrow-page dash-page">${crumb(['Dashboard'])}${dashboardHtml(false)}</div>`;
+}
+
+function openDashSheet(k) {
+  const u = S.user;
+  if (k === 'phone') return openModal(`<h2>${u.phone ? 'Change phone' : 'Bind phone'}</h2><p>We text a code to confirm it. Used for login alerts and recovery.</p>
+    <form class="form-row" data-form="phone"><input class="field" name="phone" type="tel" inputmode="tel" placeholder="+1 555 000 1234" value="${esc(u.phone || '')}" required>
+    <button class="btn btn-accent btn-block" type="submit">Send code</button></form><p class="note">Demo: the number is saved straight away.</p>`);
+  if (k === 'kyc') return openModal(`<h2>Identity Verification</h2><p>${u.kyc === 'pending' ? 'Your documents are under review. We will email you when it is done.' : 'Verify once to unlock withdrawals and higher limits. Have a photo ID ready.'}</p>
+    ${u.kyc === 'pending' ? '' : '<div class="kyc-steps"><span>1. Photo of your ID (front and back)</span><span>2. A quick selfie</span><span>3. Proof of address</span></div><button class="btn btn-accent btn-block" data-act="kyc-start">Start verification</button>'}`);
+}
+
 function openSheet(k) {
   const u = S.user;
   if (k === 'user') return openModal(`<h2>Change username</h2><p>4 to 20 letters, numbers or underscores.</p>
@@ -897,7 +973,7 @@ function route() {
 function render(keepScroll) {
   const { name, r, arg } = route();
   const isB = S.site === 'b';
-  const views = { home: isB ? viewHomeB : viewHome, games: r === 'platform' ? () => viewPlatform(arg) : (isB ? viewGamesB : viewGames), balance: viewBalance, activity: viewActivity, account: viewAccount, rewards: viewRewards };
+  const views = { home: isB ? viewHomeB : viewHome, games: r === 'platform' ? () => viewPlatform(arg) : (isB ? viewGamesB : viewGames), balance: viewBalance, activity: viewActivity, account: isB ? viewAccountB : viewAccount, rewards: viewRewards };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
   document.body.classList.toggle('has-ticker', name === 'home' && !isB);
@@ -1109,7 +1185,7 @@ function toast(t) {
 }
 
 function setMenu(open) {
-  if (open) $('#drawer').innerHTML = menuHtml();
+  if (open) { const d = $('#drawer'); const dash = S.site === 'b'; d.classList.toggle('dash-drawer', dash); d.innerHTML = dash ? dashboardHtml(true) : menuHtml(); }
   document.body.classList.toggle('menu-open', open);
 }
 function setChat(open) {
@@ -1126,13 +1202,13 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],[data-balsheet],[data-sheet],[data-wtab],.m-list a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],.m-list a');
   if (!t) return;
   if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; }
   if (t.dataset.closeAfter !== undefined) closeModal();
   if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') { closeModal(); render(true); } return; }
   if (t.dataset.closeAfter !== undefined && !t.dataset.act) return;
-  if (t.matches('.m-list a') && !t.dataset.act) { setMenu(false); return; }
+  if (t.matches('.m-list a, .dash-quick a, .dash-links a') && !t.dataset.act) { setMenu(false); return; }
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
@@ -1152,7 +1228,8 @@ document.addEventListener('click', e => {
   }
   if (t.dataset.bal) { S.bal = t.dataset.bal; return render(true); }
   if (t.dataset.balsheet) { openBalSheet(t.dataset.balsheet); return; }
-  if (t.dataset.sheet) { openSheet(t.dataset.sheet); return; }
+  if (t.dataset.sheet) { setMenu(false); openSheet(t.dataset.sheet); return; }
+  if (t.dataset.dsheet) { setMenu(false); openDashSheet(t.dataset.dsheet); return; }
   if (t.dataset.wtab) { const w = t.closest('.winners'); w.querySelectorAll('[data-wtab]').forEach(b => b.classList.toggle('on', b === t)); w.querySelectorAll('.win-pane').forEach(p => { p.hidden = p.dataset.pane !== t.dataset.wtab; }); return; }
   if (t.dataset.method) { S.method = t.dataset.method; $('#balPanel').innerHTML = balPanel(S.bal); return; }
   if (t.dataset.tab) { S.actTab = t.dataset.tab; return render(true); }
@@ -1270,7 +1347,10 @@ document.addEventListener('click', e => {
       </form>
       ${S.user.wallet < MIN_WITHDRAW ? `<p class="note">Your wallet has less than $${MIN_WITHDRAW}. Redeem credits from a game first.</p>` : ''}`);
   }
-  if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
+  if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
+  if (a === 'music') { S.user.music = !S.user.music; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Background music ${S.user.music ? 'on' : 'off'}`); }
+  if (a === 'lang') toast('More languages coming soon');
+  if (a === 'kyc-start') { S.user.kyc = 'pending'; closeModal(); refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast('Documents submitted for review (demo)'); }
   if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; closeModal(); refresh(); toast('Break started. Deposits and loading are paused.'); }
   if (a === 'exclude') openModal(`<h2>Self-exclude?</h2><p>This closes deposits and loading on your account. You can still redeem and withdraw what you have. To reopen, you will need to contact support.</p><button class="btn btn-outline btn-block danger" data-act="exclude-go">Yes, self-exclude me</button>`);
   if (a === 'exclude-go') { S.user.excluded = true; closeModal(); refresh(); toast('Self-exclusion is on'); }
@@ -1369,6 +1449,7 @@ document.addEventListener('submit', e => {
     addTx({ kind: 'P2P', label: `Sent to ${d.to}`, amt: -amt, status: 'done' });
     f.reset(); closeModal(); refresh(); toast(`Sent ${usd(amt)} to ${d.to}`);
   }
+  if (k === 'phone') { S.user.phone = d.phone.trim(); closeModal(); refresh(); toast('Phone number saved'); }
   if (k === 'voucher') {
     if (d.code.trim().toUpperCase() === 'WELCOME5' && !S.user.tx.some(t => t.label === 'Voucher WELCOME5')) {
       S.user.wallet += 5;
@@ -1393,6 +1474,7 @@ document.addEventListener('submit', e => {
 });
 
 document.addEventListener('input', e => {
+  if (e.target.matches('[data-volume]')) { S.user.volume = Number(e.target.value); save(); const sm = e.target.closest('.d-row').querySelector('small'); if (sm) sm.textContent = S.user.volume + '%'; }
   if (e.target.matches('[data-search]')) {
     S.q = e.target.value;
     const grid = $('#gameGrid');

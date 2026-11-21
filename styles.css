@@ -1850,3 +1850,16 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
   .pay { margin-top: 38px; }
   .pay-coin { width: 74px; }
 }
+
+/* ===== menu: one profile row with Player ID inside ===== */
+.m-prof { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; margin-bottom: 10px; border-radius: 16px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--card)), var(--card)); border: 1px solid var(--line-2); }
+.m-prof-link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; }
+.m-prof .avatar { width: 46px; height: 46px; font-size: 19px; flex: none; }
+.m-prof-txt { min-width: 0; display: grid; }
+.m-prof-txt b { font-size: 17px; font-weight: 800; }
+.m-prof-txt small { color: var(--mute); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-prof-id { flex: none; display: grid; grid-template-columns: auto 16px; column-gap: 6px; align-items: center; text-align: left; padding: 7px 10px; border-radius: 12px; background: var(--sunk); max-width: 50%; }
+.m-prof-id small { grid-column: 1 / -1; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); }
+.m-prof-id code { font: 700 13.5px var(--mono); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.m-prof-id svg { width: 15px; height: 15px; color: var(--accent-text); }

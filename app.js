@@ -730,14 +730,14 @@ const LOGO = () => logoInner();
 function menuHtml() {
   const row = (ico, label, attrs) => `<a class="m-row" ${attrs}>${ico}<span>${label}</span>${I.chev}</a>`;
   return `<div class="drawer-h"><h2>Menu</h2><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
-    ${S.user ? `<button class="m-row pid-row" data-copyval="${esc(S.user.username)}" data-what="Player ID">${I.user}<span>Player ID: ${esc(S.user.username)}</span>${I.copy}</button>` : ''}
+    ${S.user ? `<div class="m-prof"><a class="m-prof-link" href="#/account"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'P').toUpperCase())}</span><span class="m-prof-txt"><b>Profile</b><small>${esc(S.user.first)}</small></span></a><button class="m-prof-id" data-copyval="${esc(S.user.username)}" data-what="Player ID" aria-label="Copy Player ID"><small>Player ID</small><code>${esc(S.user.username)}</code>${I.copy}</button></div>` : ''}
     <nav class="m-list">
       ${row(I.home, 'Home', 'href="#/"')}
       ${row(navIco.games, 'Games', 'href="#/games"')}
       ${row(navIco.rewards, 'Rewards', 'href="#/rewards"')}
       ${row(navIco.balance, 'Balance', 'href="#/balance"')}
       ${S.user ? row(I2.coins, 'Shop', 'href="#" data-act="shop"') : ''}
-      ${row(I.user, 'Profile', 'href="#/account"')}
+      ${S.user ? '' : row(I.user, 'Profile', 'href="#/account"')}
       ${row(I.bellO, 'Notifications', 'href="#" data-act="bell"')}
       ${row(I.tg, 'Join our Telegram', 'href="#" data-act="telegram"')}
       ${row(I.dl, 'Download App', 'href="#" data-act="get-app"')}
@@ -1472,13 +1472,13 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a,.m-prof-link');
   if (!t) return;
   if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; S.pkg = null; S.method = null; }
   if (t.dataset.closeAfter !== undefined) closeModal();
   if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') { closeModal(); render(true); } return; }
   if (t.dataset.closeAfter !== undefined && !t.dataset.act) return;
-  if (t.matches('.m-list a, .dash-quick a, .dash-links a') && !t.dataset.act) { setMenu(false); return; }
+  if (t.matches('.m-list a, .m-prof-link, .dash-quick a, .dash-links a') && !t.dataset.act) { setMenu(false); return; }
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();

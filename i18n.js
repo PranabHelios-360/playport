@@ -243,6 +243,7 @@ const ES = {
   'Move money from your wallet into Fire Kirin. First load each day gets +10%.': 'Pasa dinero de tu billetera a Fire Kirin. La primera carga de cada día recibe +10%.',
   'Move money from your wallet into Fire Kirin.': 'Pasa dinero de tu billetera a Fire Kirin.',
   'Open the Fire Kirin web version or app and log in.': 'Abre la versión web o la app de Fire Kirin e inicia sesión.',
+  'Player ID': 'ID de jugador', 'Copy Player ID': 'Copiar ID de jugador',
   'Player Reviews': 'Reseñas de jugadores', 'View All': 'Ver todas', 'See more': 'Ver más', 'See less': 'Ver menos', 'Previous review': 'Reseña anterior', 'Next review': 'Siguiente reseña',
   'Our rating shows here once the Trustpilot profile is connected.': 'Nuestra calificación aparecerá aquí cuando se conecte el perfil de Trustpilot.',
   'Sample reviews. Once Trustpilot is connected, View All opens your Trustpilot page.': 'Reseñas de ejemplo. Cuando se conecte Trustpilot, Ver todas abrirá su página.',

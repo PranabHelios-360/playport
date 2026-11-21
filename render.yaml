@@ -8,3 +8,6 @@ services:
       - path: /*
         name: X-Robots-Tag
         value: noindex, nofollow
+      - path: /*
+        name: Cache-Control
+        value: no-cache

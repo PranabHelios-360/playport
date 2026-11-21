@@ -1061,3 +1061,110 @@ body.chat-open .chat { transform: none; opacity: 1; pointer-events: auto; }
 @media (max-width: 360px) {
   .rw-tabs button { font-size: 12px; }
 }
+
+/* ===== compact phone layout ===== */
+@media (max-width: 600px) {
+  :root { --tab-h: 64px; }
+  body { font-size: 15px; }
+  .page { padding: 18px var(--gut) 12px; }
+  .tabbar a { padding: 5px 8px; gap: 2px; font-size: 11px; }
+  .tabbar svg { width: 23px; height: 23px; }
+
+  /* hero (Loaded777) */
+  .hero-art { height: 240px; }
+  .art-badge { left: 10px; bottom: 10px; padding: 7px 10px; }
+  .art-badge b { font-size: 13px; }
+  .art-badge span { font-size: 11.5px; }
+  .hero-txt { padding: 18px 16px 18px; }
+  .hero h1 { font-size: 28px; }
+  .hero-sub { font-size: 15px; margin: 8px 0 16px; }
+  .hero-acts .btn-lg, .hl-form .btn-lg, .hl-form .field { height: 48px; font-size: 16px; }
+  .hero-stats { gap: 18px; margin-top: 18px; padding-top: 14px; }
+  .hero-stats b { font-size: 18px; }
+  .hero-stats span { font-size: 12px; }
+  .hot-strip { margin-top: 16px; }
+
+  /* how it works: compact 2x2 */
+  .steps3.four { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+  .steps3 div { padding: 14px 12px; border-radius: 14px; }
+  .steps3 span { width: 28px; height: 28px; font-size: 14px; }
+  .steps3 b { font-size: 14.5px; margin-top: 8px; line-height: 1.25; }
+  .steps3 p { font-size: 12.5px; }
+
+  /* winners: shorter lists */
+  .boards { margin-top: 24px; gap: 14px; }
+  .board { padding: 14px 12px; border-radius: 16px; }
+  .board-h { margin-bottom: 12px; }
+  .board-h h2 { font-size: 17px; gap: 8px; }
+  .win-list .win:nth-child(n+4), .rank-list .rank:nth-child(n+4) { display: none; }
+  .win { padding: 10px; gap: 10px; }
+  .win small, .rank small { font-size: 11.5px; }
+  .win b { font-size: 15px; }
+  .win-amt b { font-size: 16px; }
+  .coin.sm { --s: 40px; }
+  .rank-head { display: none; }
+  .rank { padding: 10px; grid-template-columns: 40px 1fr auto; border-radius: 10px; margin-bottom: 6px; }
+  .rank-list { gap: 0; }
+  .rank-user b { font-size: 15px; }
+  .rank-amt { font-size: 15px; }
+
+  /* live activity strip */
+  .ticker { height: 42px; gap: 6px; }
+  .ticker-label { font-size: 0; gap: 0; padding: 6px; margin-left: 8px; }
+  .ticker-label i { width: 8px; height: 8px; }
+  .tick { height: 30px; font-size: 12px; padding: 0 10px 0 4px; gap: 6px; }
+  .tick .coin.xs { --s: 22px; }
+  body.has-ticker { padding-bottom: calc(var(--tab-h) + 52px); }
+
+  /* blog + videos */
+  .bv { margin-top: 28px; }
+  .bv-h { margin-bottom: 12px; }
+  .post { flex-basis: 72%; }
+  .post-body { padding: 12px 14px 14px; }
+  .post-body h3 { font-size: 16px; }
+  .post-body p { font-size: 13.5px; }
+  .vid { flex-basis: 62%; }
+
+  /* lists and pages */
+  .crumb { font-size: 17px; }
+  .list-h { margin: 22px 0 12px; }
+  .list-h h2 { font-size: 18px; }
+  .row-card { border-radius: 14px; }
+  .coin { --s: 52px; }
+  .plat-top { margin-top: 16px; }
+  .pts-card { margin-top: 14px; }
+  .pts-num { font-size: 46px; }
+  .rw-tabs { margin: 14px 0; }
+  .panel-card, .promo-box, .ck { margin-bottom: 14px; }
+  .acct { gap: 14px; margin-top: 18px; }
+  .card { padding: 18px 16px; }
+  .split-left { padding-top: 18px; }
+  .acc-item { height: 54px; }
+  .wallet-card { margin-top: 16px; padding: 14px 16px; }
+  .wallet-card b { font-size: 26px; }
+  .foot { margin-top: 28px; }
+  .foot-top { padding: 22px var(--gut) 16px; gap: 18px 14px; }
+  .foot-col { gap: 7px; }
+  .foot-col a { font-size: 14px; }
+
+  /* Lucky Lounge */
+  .b-hero { height: 300px; }
+  .b-slide-txt h1 { font-size: 30px; }
+  .b-slide-art { width: 50%; }
+  .b-wallet { padding: 16px; gap: 8px; align-items: stretch; }
+  .b-wallet h2 { font-size: 22px; }
+  .b-wallet .form-row { width: 100%; }
+  .b-bal { font-size: 30px; }
+  .b-sec { margin-top: 26px; }
+  .b-sec-h { margin: 18px 0 12px; }
+  .b-plat-top .coin.lg { --s: 56px; }
+  .b-plat-top .tag.live { display: none; }
+  .b-plat { gap: 8px; }
+  .b-wins .b-win:nth-child(n+5) { display: none; }
+}
+/* join card: always full width */
+.b-wallet.join { align-items: stretch; }
+.b-wallet.join .form-row { width: 100%; }
+@media (max-width: 600px) {
+  .b-home .grid .tile:nth-child(n+5) { display: none; }
+}

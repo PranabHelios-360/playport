@@ -596,7 +596,8 @@ document.addEventListener('click', e => {
   }
   if (a === 'cashier') toast(`${plat(t.dataset.plat).name} cashier opens here in the live version`);
   if (a === 'redeem') toast(`Redeem request for ${plat(t.dataset.plat).name} opens here in the live version`);
-  if (a === 'chat') { setMenu(false); setChat(true); }
+  if (a === 'chat') { closeModal(); setMenu(false); setChat(true); }
+  if (a === 'foot-doc') openModal(`<h2>${esc(t.dataset.doc)}</h2><p>This page is coming soon. For help now, use live chat.</p><button class="btn btn-accent btn-block" data-act="chat">Open live chat</button>`);
   if (a === 'chat-close') setChat(false);
 });
 

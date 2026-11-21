@@ -82,10 +82,11 @@ const logoInner = () => site().img
 function applySite(k) {
   S.site = k;
   document.documentElement.dataset.site = k;
+  let saved = null; try { saved = localStorage.getItem('pp_theme_' + k); } catch (e) {}
+  setTheme(saved || SITE_THEMES[k][0][0], true);
   document.title = SITES[k].name;
   document.querySelectorAll('header .logo, .foot .logo').forEach(el => { el.innerHTML = logoInner(); el.setAttribute('aria-label', SITES[k].name + ' home'); });
   const c = document.querySelector('.copy'); if (c) c.innerHTML = `&copy; 2026 ${SITES[k].name}. All rights reserved.`;
-  if (k === 'b') { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = SITES.b.theme; }
 }
 
 /* ---------- demo feed data ---------- */
@@ -142,6 +143,16 @@ const I = {
   ticket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4Z"/><path d="M14 7v10" stroke-dasharray="2 2"/></svg>',
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6Z"/><path d="m9 12 2 2 4-4" stroke-linecap="round"/></svg>',
+  eyeO: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  lockO: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7.5a4 4 0 0 1 7.6-1.7"/></svg>',
+  bellO: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 16V10a6 6 0 0 1 12 0v6l2 2H4Z"/><path d="M10 20a2 2 0 0 0 4 0" stroke-linecap="round"/></svg>',
+  tg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#2aa3e0"/><path d="m6 11.6 10.7-4.2c.5-.2.9.1.8.8l-1.8 8.6c-.1.6-.5.7-1 .5l-2.8-2-1.3 1.3c-.2.2-.3.3-.6.3l.2-2.9 5.2-4.7c.2-.2 0-.3-.3-.1l-6.4 4-2.8-.9c-.6-.2-.6-.6.1-.9Z" fill="#fff"/></svg>',
+  out: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H5v16h5M14 8l4 4-4 4M18 12H9"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg>',
+  help: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14M12 17.5v.01"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></svg>',
+  gauge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/></svg>',
+  wallet: '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="wlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent-hi)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient></defs><rect x="6" y="18" width="48" height="36" rx="9" fill="url(#wlg)"/><path d="M12 18 40 8l6 10" fill="none" style="stroke:var(--accent)" stroke-width="3" stroke-linejoin="round"/><rect x="38" y="30" width="20" height="12" rx="6" fill="#fff" opacity=".9"/><circle cx="45" cy="36" r="2.6" style="fill:var(--accent)"/><circle cx="20" cy="12" r="5" fill="#f2b62f"/><circle cx="29" cy="8" r="4" fill="#ffd25a"/></svg>',
   gift: '<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2" fill="#e2483a"/><rect x="2" y="7" width="20" height="5" rx="1.5" fill="#ff6a52"/><rect x="10.5" y="7" width="3" height="14" fill="#ffd25a"/><path d="M12 7c-2-4-6-4-6-1.5S10 7 12 7c2 0 6-1 6-1.5S14 3 12 7Z" fill="#ffd25a"/></svg>',
   bell: '<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6v4l-2 3h16l-2-3V9a6 6 0 0 0-6-6Z" fill="#ffc83d"/><path d="M9.5 18a2.5 2.5 0 0 0 5 0Z" fill="#e6a313"/></svg>'
 };
@@ -192,16 +203,10 @@ function tile(g) {
 
 function platRow(p) {
   const a = acct(p.id);
-  const actions = a
-    ? `<span class="credits"><small>Credits</small><b>${usd(a.credits)}</b></span>
-       <button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load</button>
-       <button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>
-       <button class="sq-btn" data-act="gcreds" data-plat="${p.id}" aria-label="${p.name} login">${I.key}</button>`
-    : `<button class="btn btn-outline" data-act="unlock" data-plat="${p.id}">Unlock Account</button>
-       <button class="sq-btn" data-act="download" data-plat="${p.id}" aria-label="Download ${p.name}">${I.dl}</button>`;
-  return `<div class="row-card">
-    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}${a ? `<em class="linked">${I.check}Unlocked</em>` : ''}</b>${tags(p)}<small>${p.games} games &middot; ${p.blurb}</small></span></a>
-    <div class="row-acts">${actions}</div>
+  return `<div class="row-card clean">
+    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}</b><small>${a ? `${usd(a.credits)} credits` : `${p.games} games`}</small></span></a>
+    ${a ? `<button class="btn btn-outline btn-row" data-act="gcreds" data-plat="${p.id}">${I.eyeO}View</button>`
+        : `<button class="btn btn-outline btn-row" data-act="unlock" data-plat="${p.id}">${I.lockO}Unlock</button>`}
   </div>`;
 }
 
@@ -232,11 +237,6 @@ function viewHome() {
           : `<h1>Welcome back, <span>${esc(S.user.first)}</span></h1>
              <p class="hero-sub">${unlockedCount() ? `You have ${unlockedCount()} of ${PLATFORMS.length} game accounts unlocked.` : `Unlock your first game account to start playing.`}</p>
              <div class="hero-acts"><a class="btn btn-accent btn-lg" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-outline btn-lg" href="#/games">${unlockedCount() ? 'My games' : 'Unlock a game'}</a></div>`}
-        <div class="hero-stats">
-          ${guest
-            ? `<div><b>${PLATFORMS.length}</b><span>game platforms</span></div><div><b>${GAMES.length}</b><span>games</span></div><div><b>$${MIN_DEPOSIT}</b><span>min deposit</span></div>`
-            : `<div><b>${usd(S.user.wallet)}</b><span>wallet</span></div><div><b>${usd(creditsTotal())}</b><span>in games</span></div><div><b>${unlockedCount()}/${PLATFORMS.length}</b><span>unlocked</span></div>`}
-        </div>
         <div class="hot-strip">
           <div class="hot-label">${I.bolt}Hot right now</div>
           <div class="hot-chips">${hot.map((p, i) => `<a class="hot-chip" href="#/platform/${p.id}">
@@ -257,25 +257,10 @@ function viewHome() {
       <div><span>4</span><b>Play, then redeem</b><p>Redeem credits back to your wallet, then withdraw.</p></div>
     </section>` : ''}
 
-    <section class="boards">
-      <div class="board">
-        <div class="board-h"><h2>${I.trophy}Latest Big Winners</h2><span class="pill">LATEST ${BIG.length}</span></div>
-        <div class="win-list">${BIG.map(([pid, u, d, a]) => `<div class="win">
-          ${coin(plat(pid), 'sm')}
-          <div><small>USER</small><b>${esc(u)}</b></div>
-          <div class="win-date"><small>DATE</small><span>${d}</span></div>
-          <div class="win-amt"><small>REDEEM</small><b>$${a.toLocaleString('en-US')}</b></div>
-        </div>`).join('')}</div>
-      </div>
-      <div class="board">
-        <div class="board-h"><h2>${I.trophy}Top Monthly Winners</h2><span class="pill">NOVEMBER</span></div>
-        <div class="rank-head"><span>RANK</span><span>USER</span><span>REDEEM</span></div>
-        <div class="rank-list">${MONTHLY.map(([pid, u, a], i) => `<div class="rank ${i === 0 ? 'first' : ''}">
-          <span class="rank-n r${i}">${i < 3 ? I.trophy : `#${i + 1}`}</span>
-          <span class="rank-user">${coin(plat(pid), 'sm')}<span><small>User</small><b>${esc(u)}</b></span></span>
-          <b class="rank-amt">$${a.toLocaleString('en-US')}</b>
-        </div>`).join('')}</div>
-      </div>
+    <section class="winners">
+      <div class="win-h"><h2>${I.trophy}Winners</h2><div class="seg"><button class="on" data-wtab="latest">Latest</button><button data-wtab="month">This month</button></div></div>
+      <div class="win-pane" data-pane="latest">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="wrow">${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name} &middot; ${d}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
+      <div class="win-pane" data-pane="month" hidden>${MONTHLY.map(([pid, u, a], i) => `<div class="wrow ${i === 0 ? 'top1' : ''}"><span class="wrank">#${i + 1}</span>${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
     </section>
     ${blogVideoSection()}
   </div>
@@ -283,14 +268,12 @@ function viewHome() {
 }
 
 function viewGames() {
-  const n = unlockedCount();
-  return `<div class="page">
+  const mine = PLATFORMS.filter(p => acct(p.id)), rest = PLATFORMS.filter(p => !acct(p.id));
+  return `<div class="page narrow-page">
     ${crumb(['Games'])}
-    <p class="lede">Here you'll find your <b>Gaming Accounts</b>. ${S.user && n ? `You have ${n} unlocked. Load credits from your wallet and tap Play.` : `Don't have one yet? Unlock it now!`}</p>
-    ${S.user && n ? `<div class="list-h"><h2>My Games</h2><span>${n} unlocked</span></div>
-      <div class="rows">${PLATFORMS.filter(p => acct(p.id)).map(platRow).join('')}</div>` : ''}
-    ${PLATFORMS.length - n ? `<div class="list-h"><h2>${n ? 'More Games' : 'Games'}</h2><span>${PLATFORMS.length - n} available</span></div>
-      <div class="rows">${PLATFORMS.filter(p => !acct(p.id)).map(platRow).join('')}</div>` : ''}
+    <p class="lede">Here you'll find your <b>Gaming Accounts</b>. ${mine.length ? 'Tap View to play, load or redeem.' : "Don't have one yet? Unlock it now!"}</p>
+    ${mine.length ? `<div class="list-h"><h2>Your Games</h2><span>${mine.length} account${mine.length === 1 ? '' : 's'}</span></div><div class="rows">${mine.map(platRow).join('')}</div>` : ''}
+    ${rest.length ? `<div class="list-h"><h2>More Games</h2><span>${rest.length} available</span></div><div class="rows">${rest.map(platRow).join('')}</div>` : ''}
   </div>`;
 }
 
@@ -324,12 +307,12 @@ function viewPlatform(id) {
 }
 
 const BAL_ITEMS = [
-  { id: 'deposit', label: 'Deposit', color: '#1fbf8f', icon: I.plus },
-  { id: 'withdraw', label: 'Withdraw', color: '#e0334f', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>' },
-  { id: 'transfer', label: 'Load a game', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
-  { id: 'redeem', label: 'Redeem', color: '#e0709e', icon: I.arrowL },
-  { id: 'p2p', label: 'P2P', color: '#c9961a', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2.1 0 3.6 1.2 4 3.5"/></svg>' },
-  { id: 'voucher', label: 'Voucher', color: '#0ea5b7', icon: I.ticket, plus: true }
+  { id: 'deposit', label: 'Deposit', sub: 'Fund your wallet in seconds', color: '#1fbf8f', icon: I.plus },
+  { id: 'withdraw', label: 'Withdraw', sub: 'Withdraw your winnings', color: '#e0334f', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>' },
+  { id: 'transfer', label: 'Transfer', sub: 'Send funds to a game', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
+  { id: 'redeem', label: 'Redeem', sub: 'Redeem credits to your balance', color: '#a855f7', icon: I.arrowL },
+  { id: 'p2p', label: 'P2P', sub: 'Send funds to other players', color: '#c9961a', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2.1 0 3.6 1.2 4 3.5"/></svg>' },
+  { id: 'voucher', label: 'Voucher', sub: 'Redeem a voucher code', color: '#0ea5b7', icon: I.ticket }
 ];
 
 const CRYPTO = [
@@ -378,16 +361,17 @@ function balPanel(id) {
 
 function viewBalance() {
   if (!S.user) return needLogin('Balance');
-  return `<div class="page split">
-    <aside class="split-left">
-      ${crumb(['Balance'])}
-      <p class="lede">Here you can manage your Deposits, Withdrawals and Transfers!</p>
-      <div class="wallet-card"><small>Wallet</small><b>${usd(S.user.wallet)}</b><span>${usd(creditsTotal())} in game credits</span></div>
-      <div class="acc">${BAL_ITEMS.map(b => `<button class="acc-item ${S.bal === b.id ? 'on' : ''}" data-bal="${b.id}" style="--ic:${b.color}">
-        <span class="mini-ico" style="background:${b.color}">${b.icon}</span><b>${b.label}</b>${b.plus ? I.plus : S.bal === b.id ? I.chev : I.down}</button>`).join('')}</div>
-    </aside>
-    <section class="split-right" id="balPanel">${balPanel(S.bal)}</section>
+  return `<div class="page narrow-page">
+    ${crumb(['Balance'])}
+    <p class="lede">Manage your funds, transfers and rewards</p>
+    <section class="total-card"><div><small>Total Balance</small><b>${usd(S.user.wallet)}</b><span>${usd(creditsTotal())} in game credits</span></div><span class="total-art">${I.wallet}</span></section>
+    <div class="act-grid">${BAL_ITEMS.map(b => `<button class="act-card" data-balsheet="${b.id}" style="--ic:${b.color}">
+      <span class="mini-ico" style="background:${b.color}">${b.icon}</span><span class="act-txt"><b>${b.label}</b><small>${b.sub}</small></span>${I.chev}</button>`).join('')}</div>
   </div>`;
+}
+function openBalSheet(id) {
+  S.bal = id;
+  openModal(`<div id="balPanel" class="bal-sheet">${balPanel(id)}</div>`);
 }
 
 function viewActivity() {
@@ -410,75 +394,55 @@ function viewActivity() {
 }
 
 function viewAccount() {
-  if (!S.user) return needLogin('My account');
-  const u = S.user;
-  const games = PLATFORMS.filter(p => acct(p.id));
-  return `<div class="page">
-    ${crumb(['My account'])}
-    <p class="lede">${esc(u.email)} &middot; member since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
-    <div class="acct">
-      <div class="card">
-        <h2>${BRAND()} login</h2>
-        <p class="card-sub">For this site: your wallet, deposits and withdrawals.</p>
-        ${credRow('Username', u.username, u.username)}
-        ${credRow('Password', u.password, u.password, true)}
-      </div>
-      <div class="card">
-        <h2>Change username</h2>
-        <p class="card-sub">4 to 20 letters, numbers or underscores.</p>
-        <form class="form-row" data-form="user">
-          <input class="field" name="next" placeholder="New username" value="${esc(u.username)}" pattern="[A-Za-z0-9_]{4,20}" title="4 to 20 letters, numbers or _" autocomplete="username" required>
-          <input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required>
-          <button class="btn btn-accent btn-block" type="submit">Save username</button>
-        </form>
-      </div>
-      <div class="card">
-        <h2>Change password</h2>
-        <p class="card-sub">Your game logins are separate and don't change.</p>
-        <form class="form-row" data-form="pw">
-          <input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required>
-          <input class="field" type="password" name="next" placeholder="New password (8+ characters)" minlength="8" autocomplete="new-password" required>
-          <button class="btn btn-accent btn-block" type="submit">Update password</button>
-        </form>
-      </div>
+  if (!S.user) return needLogin('Profile');
+  const u = S.user, n = unlockedCount();
+  const row = (ico, title, sub, attrs, right) => `<${attrs.startsWith('href') ? 'a' : 'button'} class="set-row" ${attrs}><span class="set-ico">${ico}</span><span class="set-txt"><b>${title}</b><small>${sub}</small></span>${right || I.chev}</${attrs.startsWith('href') ? 'a' : 'button'}>`;
+  return `<div class="page narrow-page">
+    ${crumb(['Profile'])}
+    <section class="prof-card">
+      <span class="avatar big" ${u.avatar ? `style="background:${u.avatar}"` : ''}>${esc((u.first[0] || 'P').toUpperCase())}</span>
+      <div class="prof-txt"><b>${esc(u.first)}</b><button class="pid" data-copyval="${esc(u.username)}" data-what="Player ID"><span>Player ID: ${esc(u.username)}</span>${I.copy}</button>
+        <small>${esc(u.email)} &middot; since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</small></div>
+    </section>
+    <section class="money-card">
+      <div class="mc-cols"><div><small>Wallet</small><b>${usd(u.wallet)}</b></div><div><small>In games</small><b>${usd(creditsTotal())}</b></div><div><small>Points</small><b>${u.points.toLocaleString('en-US')}</b></div></div>
+      <div class="mc-acts"><a class="round-act" href="#/balance" data-bal-go="deposit"><span class="ra-ico dep">${I.plus}</span>Deposit</a><a class="round-act" href="#/balance" data-bal-go="withdraw"><span class="ra-ico wd">${I.dl}</span>Withdraw</a></div>
+    </section>
+    <div class="set-list">
+      ${row(I.user, 'Change username', esc(u.username), 'data-sheet="user"')}
+      ${row(I.lock, 'Change password', 'Security settings', 'data-sheet="pw"')}
+      ${row(I.shield, 'Two-step login', u.twofa ? 'On: a code is asked at every login' : 'Off', 'data-act="twofa"', `<span class="switch ${u.twofa ? 'on' : ''}"><i></i></span>`)}
+      ${row(I.key, 'Game accounts', `${n} of ${PLATFORMS.length} unlocked`, 'data-sheet="games"')}
     </div>
-
-    <div class="list-h"><h2>Game accounts</h2><span>${games.length} of ${PLATFORMS.length} unlocked</span></div>
-    ${games.length ? `<table class="tbl"><thead><tr><th>Game</th><th>Username</th><th>Password</th><th class="num">Credits</th></tr></thead>
-      <tbody>${games.map(p => { const a = acct(p.id); return `<tr><td><span class="pname">${coin(p, 'xs')}${p.name}</span></td>
-        <td><span class="mono-cell">${esc(a.username)}<button class="icon-btn" data-copyval="${esc(a.username)}" data-what="Username">${I.copy}</button></span></td>
-        <td><span class="mono-cell">${S.showPw ? esc(a.password) : '&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;'}<button class="icon-btn" data-act="pw" aria-label="Show passwords">${S.showPw ? I.eyeOff : I.eye}</button><button class="icon-btn" data-copyval="${esc(a.password)}" data-what="Password">${I.copy}</button></span></td>
-        <td class="num">${usd(a.credits)}</td></tr>`; }).join('')}</tbody></table>`
-      : `<div class="card soft"><p class="card-sub">No game accounts yet.</p><a class="btn btn-accent" href="#/games">Unlock a game</a></div>`}
-
-    <div class="list-h"><h2>Security &amp; responsible play</h2><span></span></div>
-    <div class="acct">
-      <div class="card">
-        <h2>${I.shield}Two-step login</h2>
-        <p class="card-sub">Ask for a code from your email every time you log in.</p>
-        <button class="switch ${u.twofa ? 'on' : ''}" data-act="twofa" role="switch" aria-checked="${u.twofa}"><i></i><span>${u.twofa ? 'On' : 'Off'}</span></button>
-      </div>
-      <div class="card">
-        <h2>Daily deposit limit</h2>
-        <p class="card-sub">Lower it any time. Raising it takes 24 hours.</p>
-        <form class="form-row" data-form="limit">
-          <select class="field" name="limit">${[0, 50, 100, 250, 500, 1000].map(v => `<option value="${v}" ${u.limit === v ? 'selected' : ''}>${v ? `$${v} per day` : 'No limit'}</option>`).join('')}</select>
-          <button class="btn btn-ghost btn-block" type="submit">Save limit</button>
-        </form>
-      </div>
-      <div class="card">
-        <h2>Take a break</h2>
-        <p class="card-sub">${blocked() || 'Pause deposits and loading credits for a while.'}</p>
-        <div class="break-btns">
-          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="24">24 hours</button>
-          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="168">7 days</button>
-          <button class="btn btn-ghost btn-sm" data-act="cool" data-h="720">30 days</button>
-        </div>
-        <button class="btn btn-outline btn-block danger" data-act="exclude" style="margin-top:12px">Self-exclude</button>
-      </div>
+    <div class="set-list">
+      ${row(I.gift.replace('<svg', '<svg class="gift-ico"'), 'Invite & Earn', 'Share your link, earn rewards when friends deposit', 'data-rw="you"')}
+      ${row(I.list, 'Transactions', 'Order history', 'href="#/activity"')}
+      ${row(I.help, 'Help Center', 'Chat with support', 'data-act="chat"')}
     </div>
-    <button class="btn btn-ghost" data-act="logout" style="margin-top:26px">Sign out</button>
+    <div class="set-list">
+      ${row(I.gauge, 'Daily deposit limit', u.limit ? `$${u.limit} per day` : 'No limit', 'data-sheet="limit"')}
+      ${row(I.pause, 'Take a break', blocked() || 'Pause deposits for a while, or self-exclude', 'data-sheet="break"')}
+      <div class="set-row static"><span class="set-ico">${navIco.swap}</span><span class="set-txt"><b>Theme</b><small>${(THEMES_NOW().find(t => t[0] === curTheme()) || THEMES_NOW()[0])[1]}</small></span><span class="theme-pick" data-theme-pick>${themePick()}</span></div>
+    </div>
+    <div class="set-list"><button class="set-row" data-act="logout"><span class="set-txt"><b>Logout</b></span>${I.out}</button></div>
   </div>`;
+}
+function openSheet(k) {
+  const u = S.user;
+  if (k === 'user') return openModal(`<h2>Change username</h2><p>4 to 20 letters, numbers or underscores.</p>
+    <form class="form-row" data-form="user"><input class="field" name="next" value="${esc(u.username)}" pattern="[A-Za-z0-9_]{4,20}" title="4 to 20 letters, numbers or _" autocomplete="username" required>
+    <input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required><button class="btn btn-accent btn-block" type="submit">Save username</button></form>`);
+  if (k === 'pw') return openModal(`<h2>Change password</h2><p>Your game logins are separate and don't change.</p>
+    ${credRow('Current password', u.password, u.password, true)}
+    <form class="form-row" data-form="pw" style="margin-top:14px"><input class="field" type="password" name="cur" placeholder="Current password" autocomplete="current-password" required>
+    <input class="field" type="password" name="next" placeholder="New password (8+ characters)" minlength="8" autocomplete="new-password" required><button class="btn btn-accent btn-block" type="submit">Update password</button></form>`);
+  if (k === 'games') { const games = PLATFORMS.filter(p => acct(p.id)); return openModal(`<h2>Game accounts</h2><p>Each game has its own login.</p>
+    ${games.length ? `<div class="ga-list">${games.map(p => `<button class="opt" data-act="gcreds" data-plat="${p.id}">${coin(p, 'sm')}<b>${p.name}</b><small>${esc(acct(p.id).username)}</small>${I.chev}</button>`).join('')}</div>` : '<a class="btn btn-accent btn-block" href="#/games">Unlock a game</a>'}`); }
+  if (k === 'limit') return openModal(`<h2>Daily deposit limit</h2><p>Lower it any time. Raising it takes 24 hours.</p>
+    <form class="form-row" data-form="limit"><select class="field" name="limit">${[0, 50, 100, 250, 500, 1000].map(v => `<option value="${v}" ${u.limit === v ? 'selected' : ''}>${v ? `$${v} per day` : 'No limit'}</option>`).join('')}</select><button class="btn btn-accent btn-block" type="submit">Save limit</button></form>`);
+  if (k === 'break') return openModal(`<h2>Take a break</h2><p>${blocked() || 'Pause deposits and loading credits for a while.'}</p>
+    <div class="sheet-grid three"><button class="btn btn-outline" data-act="cool" data-h="24">24 hours</button><button class="btn btn-outline" data-act="cool" data-h="168">7 days</button><button class="btn btn-outline" data-act="cool" data-h="720">30 days</button></div>
+    <button class="btn btn-outline btn-block danger" data-act="exclude" style="margin-top:14px">Self-exclude</button>`);
 }
 
 /* ---------- rewards ---------- */
@@ -668,16 +632,24 @@ function needLogin(title) {
 const LOGO = () => logoInner();
 
 function menuHtml() {
-  const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
-  return `<div class="drawer-h"><a class="logo" href="#/">${LOGO()}</a><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
-    ${S.user ? `<div class="drawer-user"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'P').toUpperCase())}</span><div><b>${esc(S.user.first)}</b><small>Wallet ${usd(S.user.wallet)}</small></div></div>` : ''}
-    <nav class="drawer-nav">${links.map(([h, t]) => `<a href="${h}">${t}${I.chev}</a>`).join('')}
-      <a href="#" data-act="foot-doc" data-doc="How it works">How it works${I.chev}</a>
-      <a href="#" data-act="chat">Help &amp; chat${I.chev}</a>
-      <a href="#" data-act="choose-site">Switch site${I.chev}</a></nav>
-    <div class="theme-pick" data-theme-pick>${themePick()}</div>
+  const row = (ico, label, attrs) => `<a class="m-row" ${attrs}>${ico}<span>${label}</span>${I.chev}</a>`;
+  return `<div class="drawer-h"><h2>Menu</h2><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
+    ${S.user ? `<button class="m-row pid-row" data-copyval="${esc(S.user.username)}" data-what="Player ID">${I.user}<span>Player ID: ${esc(S.user.username)}</span>${I.copy}</button>` : ''}
+    <nav class="m-list">
+      ${row(I.home, 'Home', 'href="#/"')}
+      ${row(navIco.games, 'Games', 'href="#/games"')}
+      ${row(navIco.rewards, 'Rewards', 'href="#/rewards"')}
+      ${row(navIco.balance, 'Balance', 'href="#/balance"')}
+      ${row(I.user, 'Profile', 'href="#/account"')}
+      ${row(I.bellO, 'Notifications', 'href="#" data-act="bell"')}
+      ${row(I.tg, 'Join our Telegram', 'href="#" data-act="telegram"')}
+      ${row(I.dl, 'Download App', 'href="#" data-act="get-app"')}
+      ${row(I.help, 'Help &amp; chat', 'href="#" data-act="chat"')}
+      ${row(navIco.swap, 'Switch site', 'href="#" data-act="choose-site"')}
+    </nav>
+    <div class="theme-pick m-theme" data-theme-pick>${themePick()}</div>
     <div class="drawer-foot">${S.user
-      ? `<button class="btn btn-ghost btn-block" data-act="logout">Sign out</button>`
+      ? `<button class="m-row logout" data-act="logout"><span>Logout</span>${I.out}</button>`
       : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
 }
 
@@ -713,14 +685,20 @@ const DOCS = () => ({
 
 /* ---------- theme ---------- */
 
-const THEMES = [['navy', 'Navy', '#0f1428', '#0b0f20'], ['plum', 'Plum', '#1d1022', '#170c1b'], ['wine', 'Wine', '#210d16', '#1a0911'], ['charcoal', 'Charcoal', '#17181c', '#141518']];
-const curTheme = () => document.documentElement.dataset.theme || 'navy';
-const themePick = () => `<span>Colour</span>${THEMES.map(([k, n, bg]) => `<button class="${curTheme() === k ? 'on' : ''}" style="background:${bg}" data-theme-set="${k}" title="${n}" aria-label="${n} theme"></button>`).join('')}`;
-function setTheme(k) {
+const SITE_THEMES = {
+  a: [['plum', 'Plum', '#1e0f2b', '#170a22'], ['navy', 'Navy', '#0f1630', '#0b1126'], ['white', 'White', '#f6f3fa', '#ffffff']],
+  b: [['wine', 'Wine', '#2a0e17', '#220a12'], ['navy', 'Navy', '#0d1a33', '#0a152b'], ['white', 'White', '#faf6ee', '#ffffff']]
+};
+const THEMES_NOW = () => SITE_THEMES[S.site || 'a'];
+const curTheme = () => document.documentElement.dataset.theme || THEMES_NOW()[0][0];
+const themePick = () => `<span>Colour</span>${THEMES_NOW().map(([k, n, bg]) => `<button class="${curTheme() === k ? 'on' : ''}" style="background:${bg}" data-theme-set="${k}" title="${n}" aria-label="${n} theme"></button>`).join('')}`;
+function setTheme(k, quiet) {
+  const list = THEMES_NOW();
+  if (!list.some(t => t[0] === k)) k = list[0][0];
   document.documentElement.dataset.theme = k;
-  try { localStorage.setItem('pp_theme', k); } catch (e) {}
+  if (!quiet) { try { localStorage.setItem('pp_theme_' + (S.site || 'a'), k); } catch (e) {} }
   const m = document.querySelector('meta[name="theme-color"]');
-  if (m) m.content = THEMES.find(t => t[0] === k)[3];
+  if (m) m.content = list.find(t => t[0] === k)[3];
   document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
 }
 
@@ -813,11 +791,9 @@ function sideHtml(name) {
 function platCardB(p) {
   const a = acct(p.id);
   return `<div class="b-plat">
-    <a class="b-plat-top" href="#/platform/${p.id}">${coin(p, 'lg')}<b>${p.name}</b>${tags(p)}<small>${p.games} games</small></a>
-    ${a
-      ? `<div class="b-plat-cr"><span>Credits</span><b>${usd(a.credits)}</b></div>
-         <div class="b-plat-acts"><button class="btn btn-ghost btn-sm" data-act="load" data-plat="${p.id}">Load</button><button class="btn btn-accent btn-sm" data-act="play" data-plat="${p.id}">Play</button><button class="icon-btn" data-act="gcreds" data-plat="${p.id}" aria-label="Login">${I.key}</button></div>`
-      : `<div class="b-plat-acts"><button class="btn btn-accent btn-sm" data-act="unlock" data-plat="${p.id}">Unlock</button><button class="icon-btn" data-act="download" data-plat="${p.id}" aria-label="Download">${I.dl}</button></div>`}
+    <a class="b-plat-top" href="#/platform/${p.id}">${coin(p, 'lg')}<b>${p.name}</b><small>${a ? `${usd(a.credits)} credits` : `${p.games} games`}</small></a>
+    ${a ? `<button class="btn btn-outline btn-sm btn-block" data-act="gcreds" data-plat="${p.id}">${I.eyeO}View</button>`
+        : `<button class="btn btn-accent btn-sm btn-block" data-act="unlock" data-plat="${p.id}">${I.lockO}Unlock</button>`}
   </div>`;
 }
 
@@ -856,9 +832,8 @@ function viewHomeB() {
     </div>
     ${mine.length ? `<section class="b-sec"><div class="b-sec-h"><h2>My Games</h2><a href="#/games">Manage ${I.chev}</a></div><div class="b-plats">${mine.map(platCardB).join('')}</div></section>` : ''}
     <section class="b-sec"><div class="b-sec-h"><h2>${mine.length ? 'More platforms' : 'Platforms'}</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.filter(p => !acct(p.id)).map(platCardB).join('')}</div></section>
-    <section class="b-sec"><div class="b-sec-h"><h2>Popular games</h2></div><div class="grid">${GAMES.slice(0, 8).map(tile).join('')}</div></section>
     <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
-      <div class="b-wins">${BIG.map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
+      <div class="b-wins">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
     ${blogVideoSection()}
   </div>`;
 }
@@ -893,16 +868,17 @@ function showChooser() {
       <div class="ch-opts">
         <button class="ch-opt a" data-site-pick="a">
           <div class="ch-prev"><i class="p-top"></i><i class="p-hero"></i><i class="p-rows"></i><i class="p-rows"></i><i class="p-bar"></i></div>
-          <b>Recharge777</b><span>Pink &amp; navy &middot; bottom menu &middot; list layout</span></button>
+          <b>Recharge777</b><span>Neon pink &middot; Plum, Navy or White &middot; bottom menu</span></button>
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
-          <b>Loaded777</b><span>Black, gold &amp; ruby &middot; side menu &middot; card layout</span></button>
+          <b>Loaded777</b><span>Gold &amp; ruby &middot; Wine, Navy or White &middot; side menu</span></button>
       </div>
     </div>`;
   ch.hidden = false;
   document.body.style.overflow = 'hidden';
 }
 function pickSite(k) {
+  if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
   applySite(k);
   showLoader(600, true);
   document.getElementById('chooser').hidden = true;
@@ -927,6 +903,7 @@ function render(keepScroll) {
   document.body.classList.toggle('has-ticker', name === 'home' && !isB);
   const side = $('#side'); if (side) side.innerHTML = isB ? sideHtml(name) : '';
   startBSlides();
+  if (name === 'balance' && S.pendingSheet && S.user) { const k = S.pendingSheet; S.pendingSheet = null; setTimeout(() => openBalSheet(k), 30); }
   document.querySelectorAll('.tabbar [data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
   if (!keepScroll) window.scrollTo(0, 0);
   document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
@@ -1009,12 +986,16 @@ function unlockModal(pid) {
 
 function gameCredsModal(pid, fresh) {
   const p = plat(pid), a = acct(pid);
-  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>${fresh ? `${p.name} account ready` : `${p.name} login`}</h2>
-    <p>${a.linked ? `Linked to your existing ${p.name} account.` : `Use this username and password inside the ${p.name} app or web version.`}</p>
+  openModal(`<div class="sheet-head">${coin(p, 'md')}<div><h2>${fresh ? `${p.name} account ready` : p.name}</h2><p>${a.linked ? 'Linked to your existing account' : 'Use this login in the game'}</p></div></div>
     ${credRow('Username', a.username, a.username)}
     ${credRow('Password', a.password, a.password, true)}
     <div class="wallet-line">Credits <b>${usd(a.credits)}</b></div>
-    <div class="modal-acts"><button class="btn btn-outline" data-act="load" data-plat="${pid}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${pid}">Play ${p.name}</button></div>`);
+    <div class="sheet-grid">
+      <button class="btn btn-accent" data-act="play" data-plat="${pid}">${I.play}Play</button>
+      <button class="btn btn-outline" data-act="load" data-plat="${pid}">Load</button>
+      <button class="btn btn-outline" data-act="redeem" data-plat="${pid}" ${a.credits < 1 ? 'disabled' : ''}>Redeem</button>
+      <button class="btn btn-outline" data-act="download" data-plat="${pid}">${I.dl}Get app</button>
+    </div>`);
 }
 
 function downloadModal(pid) {
@@ -1145,13 +1126,13 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],[data-balsheet],[data-sheet],[data-wtab],.m-list a');
   if (!t) return;
-  if (t.dataset.balGo) S.bal = t.dataset.balGo;
+  if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; }
   if (t.dataset.closeAfter !== undefined) closeModal();
-  if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') render(true); return; }
+  if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') { closeModal(); render(true); } return; }
   if (t.dataset.closeAfter !== undefined && !t.dataset.act) return;
-  if (t.matches('.drawer-nav a') && !t.dataset.act) { setMenu(false); return; }
+  if (t.matches('.m-list a') && !t.dataset.act) { setMenu(false); return; }
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
@@ -1159,7 +1140,7 @@ document.addEventListener('click', e => {
   if (t.dataset.video) { videoModal(t.dataset.video); return; }
   if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
   if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }
-  if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES.find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
+  if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES_NOW().find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
   if (t.dataset.amt) { t.closest('form').amt.value = t.dataset.amt; return; }
   if (t.dataset.game) { const g = game(t.dataset.game); return playModal(g.p, g.id); }
   if (t.dataset.cat) {
@@ -1170,6 +1151,9 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.dataset.bal) { S.bal = t.dataset.bal; return render(true); }
+  if (t.dataset.balsheet) { openBalSheet(t.dataset.balsheet); return; }
+  if (t.dataset.sheet) { openSheet(t.dataset.sheet); return; }
+  if (t.dataset.wtab) { const w = t.closest('.winners'); w.querySelectorAll('[data-wtab]').forEach(b => b.classList.toggle('on', b === t)); w.querySelectorAll('.win-pane').forEach(p => { p.hidden = p.dataset.pane !== t.dataset.wtab; }); return; }
   if (t.dataset.method) { S.method = t.dataset.method; $('#balPanel').innerHTML = balPanel(S.bal); return; }
   if (t.dataset.tab) { S.actTab = t.dataset.tab; return render(true); }
   if (t.dataset.rw) { S.rw = t.dataset.rw; if (location.hash !== '#/rewards') location.hash = '#/rewards'; else render(true); return; }
@@ -1250,6 +1234,8 @@ document.addEventListener('click', e => {
     else { if (navigator.clipboard) navigator.clipboard.writeText(link).catch(() => {}); toast('Invite link copied'); }
   }
   if (a === 'bell') toast('No new notifications');
+  if (a === 'telegram') toast('Your Telegram channel link goes here');
+  if (a === 'get-app') { setMenu(false); openModal(`<h2>Download the app</h2><p>Install ${BRAND()} on your phone for faster access.</p><div class="dl-list"><button class="opt" data-act="store" data-store="Android"><b>Android</b><small>Download the APK</small>${I.dl}</button><button class="opt" data-act="store" data-store="iPhone"><b>iPhone</b><small>Add to Home Screen</small>${I.dl}</button></div>`); }
   if (a === 'choose-site') { setMenu(false); showChooser(); return; }
   if (a === 'chat') { closeModal(); setMenu(false); setChat(true); }
   if (a === 'chat-close') setChat(false);
@@ -1285,7 +1271,7 @@ document.addEventListener('click', e => {
       ${S.user.wallet < MIN_WITHDRAW ? `<p class="note">Your wallet has less than $${MIN_WITHDRAW}. Redeem credits from a game first.</p>` : ''}`);
   }
   if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
-  if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; refresh(); toast('Break started. Deposits and loading are paused.'); }
+  if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; closeModal(); refresh(); toast('Break started. Deposits and loading are paused.'); }
   if (a === 'exclude') openModal(`<h2>Self-exclude?</h2><p>This closes deposits and loading on your account. You can still redeem and withdraw what you have. To reopen, you will need to contact support.</p><button class="btn btn-outline btn-block danger" data-act="exclude-go">Yes, self-exclude me</button>`);
   if (a === 'exclude-go') { S.user.excluded = true; closeModal(); refresh(); toast('Self-exclusion is on'); }
 });
@@ -1317,13 +1303,13 @@ document.addEventListener('submit', e => {
   }
   if (k === 'pw') {
     if (d.cur !== S.user.password) { toast('Current password is wrong'); return; }
-    S.user.password = d.next; f.reset(); refresh(); toast('Password updated');
+    S.user.password = d.next; f.reset(); closeModal(); refresh(); toast('Password updated');
   }
   if (k === 'user') {
     if (d.cur !== S.user.password) { toast('Current password is wrong'); return; }
     const next = d.next.trim();
     if (next === S.user.username) { toast('That is already your username'); return; }
-    S.user.username = next; refresh(); toast(`Username changed to ${next}`);
+    S.user.username = next; closeModal(); refresh(); toast(`Username changed to ${next}`);
   }
   if (k === 'deposit') {
     const stop = blocked();
@@ -1381,13 +1367,13 @@ document.addEventListener('submit', e => {
     if (amt > S.user.wallet) { toast('More than your wallet balance'); return; }
     S.user.wallet -= amt;
     addTx({ kind: 'P2P', label: `Sent to ${d.to}`, amt: -amt, status: 'done' });
-    f.reset(); refresh(); toast(`Sent ${usd(amt)} to ${d.to}`);
+    f.reset(); closeModal(); refresh(); toast(`Sent ${usd(amt)} to ${d.to}`);
   }
   if (k === 'voucher') {
     if (d.code.trim().toUpperCase() === 'WELCOME5' && !S.user.tx.some(t => t.label === 'Voucher WELCOME5')) {
       S.user.wallet += 5;
       addTx({ kind: 'Vouchers', label: 'Voucher WELCOME5', amt: 5, status: 'done' });
-      refresh(); toast('$5.00 added to your wallet');
+      closeModal(); refresh(); toast('$5.00 added to your wallet');
     } else { f.reset(); toast('That voucher code is not valid'); }
   }
   if (k === 'promo') {
@@ -1398,7 +1384,7 @@ document.addEventListener('submit', e => {
     addPts(`Promo code ${code}`, PROMO_CODES[code]);
     refresh(); toast(`+${PROMO_CODES[code]} pts unlocked`);
   }
-  if (k === 'limit') { S.user.limit = Number(d.limit); refresh(); toast(S.user.limit ? `Daily deposit limit set to $${S.user.limit}` : 'Daily deposit limit removed'); }
+  if (k === 'limit') { S.user.limit = Number(d.limit); closeModal(); refresh(); toast(S.user.limit ? `Daily deposit limit set to $${S.user.limit}` : 'Daily deposit limit removed'); }
   if (k === 'reason' || k === 'chat') {
     S.chat.push({ me: true, t: k === 'reason' ? d.r : d.m });
     S.chat.push({ t: 'Thanks. An agent will reply here shortly.' });
@@ -1427,6 +1413,7 @@ document.addEventListener('keydown', e => {
 });
 
 window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); showLoader(420); render(); });
+if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
 applySite('a');
 render();
 showLoader(1300, true);

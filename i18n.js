@@ -233,6 +233,7 @@ const ES = {
   'Bitcoin': 'Bitcoin', 'Bitcoin Cash': 'Bitcoin Cash', 'Binance Coin': 'Binance Coin',
 
   // pieces found in the Spanish sweep
+  'Our platforms': 'Nuestras plataformas', 'All games': 'Ver todo',
   '5 fish table tips for beginners': '5 consejos de mesas de pesca para principiantes',
   "Don't have one yet? Unlock it now!": '¿Aún no tienes una? ¡Desbloquéala ahora!', '6 available': '6 disponibles', '9 games': '9 juegos', '2 accounts': '2 cuentas',
   'Tap View to play, load or redeem.': 'Toca Ver para jugar, cargar o canjear.', 'Any 6 digits work in this demo.': 'En esta demo funciona cualquier código de 6 dígitos.',

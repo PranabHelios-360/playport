@@ -250,6 +250,8 @@ function viewHome() {
       </div>
     </section>
 
+    ${platBand()}
+
     ${guest ? `<section class="steps3 four">
       <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your ${BRAND()} login.</p></div>
       <div><span>2</span><b>Deposit to your wallet</b><p>Send crypto. Your wallet shows it once confirmed.</p></div>
@@ -265,6 +267,15 @@ function viewHome() {
     ${S.user ? '' : reviewsSection() + blogVideoSection()}
   </div>
   `;
+}
+
+function platBand() {
+  return `<section class="pband">
+    <div class="pband-h"><h2>Our platforms</h2><a href="#/games">All games ${I.chev}</a></div>
+    <div class="pband-row">${PLATFORMS.map(p => `<a class="pband-item" href="#/platform/${p.id}" style="--c1:${p.c1};--c2:${p.c2}">
+      ${coin(p, 'sm')}<b>${p.name}</b><small>${p.games} games</small>${p.daily ? `<em>Daily 1st +${p.daily}%</em>` : ''}
+    </a>`).join('')}</div>
+  </section>`;
 }
 
 function viewGames() {
@@ -840,7 +851,6 @@ function trustpilotHtml() {
 function reviewsSection() {
   const order = [...REVIEWS.keys()].sort(() => Math.random() - .5).slice(0, 4);
   return `<section class="rv">
-    <div class="rv-plats">${PLATFORMS.map(p => `<span>${coin(p, 'xs')}<b>${p.name}</b></span>`).join('')}</div>
     <div class="rv-body">
       <div class="rv-intro">
         <small class="rv-kick">The ${BRAND()} community</small>

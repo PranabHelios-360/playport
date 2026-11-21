@@ -642,3 +642,20 @@ body.chat-open .chat { transform: none; opacity: 1; pointer-events: auto; }
   .addr { grid-template-columns: 90px 1fr; gap: 12px; }
   .tbl { display: block; overflow-x: auto; }
 }
+
+/* playgd features */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 2px; }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; letter-spacing: .02em; padding: 2px 9px; border-radius: 6px; font-style: normal; }
+.tag.live { background: rgba(47, 212, 124, .12); color: var(--green); }
+.tag.live i { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.tag.daily { background: rgba(242, 193, 75, .14); color: var(--gold); border: 1px solid rgba(242, 193, 75, .4); }
+.tag.daily.used { opacity: .45; text-decoration: line-through; }
+.tag.mini { font-size: 10.5px; padding: 1px 6px; vertical-align: middle; margin-left: 4px; }
+.plat-top .tags { margin: 6px 0; }
+.login-choice { display: grid; gap: 10px; }
+.login-choice .opt { padding: 14px 16px; gap: 14px; }
+.login-choice .opt > span:nth-child(2) { flex: 1; }
+.login-choice .opt b { display: block; font-size: 17px; }
+.login-choice .opt small { display: block; margin: 0; font-size: 14px; }
+.bonus-note { display: flex; align-items: center; gap: 8px; margin: -8px 0 16px; padding: 10px 14px; border-radius: 10px; background: rgba(242, 193, 75, .1); color: var(--gold); font-weight: 700; font-size: 14px; }
+.bonus-note svg { width: 16px; height: 16px; flex: none; }

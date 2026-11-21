@@ -1,9 +1,9 @@
 const PLATFORMS = [
-  { id: 'milkyway', name: 'Milky Way', c1: '#1d2370', c2: '#7a4dff', logo: 'assets/logos/mw-icon.jpg', blurb: 'Space-themed slots, keno and fish games, with the Milky Way jackpot wheel.' },
-  { id: 'firekirin', name: 'Fire Kirin', c1: '#0b4d26', c2: '#c99a14', logo: 'assets/logos/fk-icon.jpg', blurb: 'Fish tables and lucky slots. Home of Jade Fortune and Space Jet.' },
-  { id: 'orion', name: 'Orion Stars', c1: '#7a2510', c2: '#f29a2e', blurb: 'The biggest catalogue: fish, slots and keno.' },
+  { id: 'milkyway', name: 'Milky Way', c1: '#1d2370', c2: '#7a4dff', logo: 'assets/logos/mw-icon.jpg', daily: 10, blurb: 'Space-themed slots, keno and fish games, with the Milky Way jackpot wheel.' },
+  { id: 'firekirin', name: 'Fire Kirin', c1: '#0b4d26', c2: '#c99a14', logo: 'assets/logos/fk-icon.jpg', daily: 10, blurb: 'Fish tables and lucky slots. Home of Jade Fortune and Space Jet.' },
+  { id: 'orion', name: 'Orion Stars', c1: '#7a2510', c2: '#f29a2e', daily: 15, blurb: 'The biggest catalogue: fish, slots and keno.' },
   { id: 'panda', name: 'Panda Master', c1: '#6e0f28', c2: '#e2486a', blurb: 'Lucky-themed slots with daily bonus drops.' },
-  { id: 'juwa', name: 'Juwa', c1: '#05514a', c2: '#18b89a', blurb: 'Fast fish games and multiplier slots.' },
+  { id: 'juwa', name: 'Juwa', c1: '#05514a', c2: '#18b89a', daily: 10, blurb: 'Fast fish games and multiplier slots.' },
   { id: 'vegas', name: 'Vegas Sweeps', c1: '#4a3208', c2: '#d6a53a', blurb: 'Strip-style reels and classic sevens.' }
 ];
 
@@ -127,6 +127,9 @@ const crumb = (...parts) => `<nav class="crumb"><a href="#/" aria-label="Home">$
 const fmt = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const usd = n => `$${fmt(n)}`;
 const acct = pid => S.user && S.user.accounts[pid];
+const todayKey = () => new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+const dailyUsed = pid => S.user && S.user.tx.some(t => t.kind === 'Bonus' && t.p === pid && t.when.startsWith(todayKey()));
+const tags = p => `<span class="tags"><span class="tag live"><i></i>Active</span>${p.daily ? `<span class="tag daily ${dailyUsed(p.id) ? 'used' : ''}" title="Bonus on your first load each day">Daily 1st +${p.daily}%</span>` : ''}</span>`;
 const unlockedCount = () => S.user ? Object.keys(S.user.accounts).length : 0;
 const creditsTotal = () => S.user ? Object.values(S.user.accounts).reduce((s, a) => s + a.credits, 0) : 0;
 
@@ -172,7 +175,7 @@ function platRow(p) {
     : `<button class="btn btn-outline" data-act="unlock" data-plat="${p.id}">Unlock Account</button>
        <button class="sq-btn" data-act="download" data-plat="${p.id}" aria-label="Download ${p.name}">${I.dl}</button>`;
   return `<div class="row-card">
-    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}${a ? `<em class="linked">${I.check}Unlocked</em>` : ''}</b><small>${p.games} games &middot; ${p.blurb}</small></span></a>
+    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}${a ? `<em class="linked">${I.check}Unlocked</em>` : ''}</b>${tags(p)}<small>${p.games} games &middot; ${p.blurb}</small></span></a>
     <div class="row-acts">${actions}</div>
   </div>`;
 }
@@ -215,7 +218,7 @@ function viewHome() {
         <div class="hot-label">${I.bolt}Hot right now</div>
         ${hot.map((p, i) => `<a class="hot-row" href="#/platform/${p.id}">
           ${coin(p, 'md')}
-          <span class="hot-name"><b>${p.name}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
+          <span class="hot-name"><b>${p.name}${p.daily ? ` <em class="tag daily mini">Daily 1st</em>` : ''}</b><small><i></i>${[1240, 986, 712][i].toLocaleString('en-US')} playing</small></span>
           <span class="btn btn-accent btn-sm">${acct(p.id) ? 'Play' : 'View'}</span>
         </a>`).join('')}
       </div>
@@ -279,7 +282,7 @@ function viewPlatform(id) {
     ${crumb(['Games', '#/games'], [p.name])}
     <div class="plat-top">
       ${coin(p, 'lg')}
-      <div class="plat-top-txt"><h1>${p.name}</h1><p>${p.blurb}</p>
+      <div class="plat-top-txt"><h1>${p.name}</h1>${tags(p)}<p>${p.blurb}</p>
         <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${usd(a.credits)} credits` : `You need a ${p.name} account to play these games.`}</p></div>
       <div class="plat-top-acts">${a
         ? `<button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>`
@@ -498,6 +501,8 @@ const DOCS = {
       <details open><summary>Is my PlayPort login the same as my game logins?</summary><p>No. PlayPort is for your wallet. Each game has its own username and password, shown under My account.</p></details>
       <details><summary>Why are my credits split between games?</summary><p>Each game runs its own balance. Redeem from one game to your wallet, then load another.</p></details>
       <details><summary>How long do withdrawals take?</summary><p>You can see each one under Activity, In progress, until it is sent.</p></details>
+      <details><summary>What is the Daily 1st bonus?</summary><p>Games tagged Daily 1st add bonus credits to your first load of the day in that game.</p></details>
+      <details><summary>I already play one of these games. Can I use my account?</summary><p>Yes. Choose "I have an Account" when you unlock the game and enter your existing login.</p></details>
       <details><summary>Can I limit my spending?</summary><p>Yes. Set a daily deposit limit, take a break, or self-exclude under My account.</p></details>
     </div>`
 };
@@ -585,15 +590,18 @@ function unlockModal(pid) {
   if (!requireLogin()) return;
   const p = plat(pid);
   openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Unlock ${p.name}</h2>
-    <p>${p.name} runs in its own app with its own login. We'll create a ${p.name} account for you and show the username and password here.</p>
-    <button class="btn btn-accent btn-block" data-act="unlock-go" data-plat="${pid}">Create my ${p.name} account</button>
+    <p>${p.name} runs in its own app with its own login. Choose how you want to sign in.</p>
+    <div class="login-choice">
+      <button class="opt" data-act="unlock-go" data-plat="${pid}"><span class="mini-ico" style="background:var(--accent);color:var(--on-accent)">${I.plus}</span><span><b>Auto Create Account</b><small>We make a new ${p.name} login for you.</small></span>${I.chev}</button>
+      <button class="opt" data-act="unlock-link" data-plat="${pid}"><span class="mini-ico" style="background:#3b82f6">${I.key}</span><span><b>I have an Account</b><small>Link the ${p.name} login you already use.</small></span>${I.chev}</button>
+    </div>
     <p class="note">Free. Your ${p.name} credits are kept separate from your other games.</p>`);
 }
 
 function gameCredsModal(pid, fresh) {
   const p = plat(pid), a = acct(pid);
   openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>${fresh ? `${p.name} account ready` : `${p.name} login`}</h2>
-    <p>Use this username and password inside the ${p.name} app or web version.</p>
+    <p>${a.linked ? `Linked to your existing ${p.name} account.` : `Use this username and password inside the ${p.name} app or web version.`}</p>
     ${credRow('Username', a.username, a.username)}
     ${credRow('Password', a.password, a.password, true)}
     <div class="wallet-line">Credits <b>${usd(a.credits)}</b></div>
@@ -647,6 +655,7 @@ function loadModal(pid) {
   if (!a) return unlockModal(pid);
   openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Load ${p.name}</h2><p>Move money from your wallet into your ${p.name} account.</p>
     <div class="wallet-line">Wallet <b>${usd(S.user.wallet)}</b> &middot; ${p.name} credits <b>${usd(a.credits)}</b></div>
+    ${p.daily && !dailyUsed(pid) ? `<div class="bonus-note">${I.bolt}Your first load today gets +${p.daily}% bonus credits.</div>` : ''}
     <form class="form-row" data-form="load"><input type="hidden" name="plat" value="${pid}">
       <div class="quick-amts">${[10, 25, 50, 100].map(v => `<button type="button" class="chip" data-amt="${v}">$${v}</button>`).join('')}</div>
       <input class="field" name="amt" type="number" min="1" step="0.01" placeholder="Amount ($)" required>
@@ -758,6 +767,16 @@ document.addEventListener('click', e => {
     refresh();
     gameCredsModal(pid, true);
   }
+  if (a === 'unlock-link') {
+    const p = plat(pid);
+    openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Link your ${p.name} account</h2><p>Enter the username and password you use in the ${p.name} app.</p>
+      <form class="form-row" data-form="link"><input type="hidden" name="plat" value="${pid}">
+        <input class="field" name="u" placeholder="${p.name} username" autocomplete="off" required>
+        <input class="field" type="password" name="p" placeholder="${p.name} password" autocomplete="off" required>
+        <button class="btn btn-accent btn-block" type="submit">Link account</button>
+      </form>
+      <p class="note"><a href="#" data-act="unlock" data-plat="${pid}">Back</a> &middot; Don't have one? <a href="#" data-act="unlock-go" data-plat="${pid}">Auto create it</a></p>`);
+  }
   if (a === 'gcreds') gameCredsModal(pid);
   if (a === 'download') downloadModal(pid);
   if (a === 'play') playModal(pid);
@@ -868,7 +887,20 @@ document.addEventListener('submit', e => {
     S.user.accounts[d.plat].credits += amt;
     S.loadPlat = d.plat;
     addTx({ kind: 'Loads', label: 'Loaded credits', p: d.plat, amt: -amt, status: 'done' });
-    closeModal(); refresh(); toast(`${usd(amt)} loaded into ${plat(d.plat).name}`);
+    const lp = plat(d.plat);
+    if (lp.daily && !dailyUsed(d.plat)) {
+      const bonus = Math.round(amt * lp.daily) / 100;
+      S.user.accounts[d.plat].credits += bonus;
+      addTx({ kind: 'Bonus', label: `Daily 1st bonus (+${lp.daily}%)`, p: d.plat, amt: bonus, status: 'done' });
+      closeModal(); refresh(); toast(`${usd(amt)} loaded into ${lp.name} + ${usd(bonus)} daily first-load bonus`);
+    } else { closeModal(); refresh(); toast(`${usd(amt)} loaded into ${lp.name}`); }
+  }
+  if (k === 'link') {
+    S.user.accounts[d.plat] = { username: d.u.trim(), password: d.p, credits: 0, linked: true };
+    S.showPw = false;
+    refresh();
+    gameCredsModal(d.plat, true);
+    toast(`${plat(d.plat).name} account linked`);
   }
   if (k === 'redeem') {
     const a = S.user.accounts[d.plat];

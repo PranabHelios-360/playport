@@ -53,7 +53,7 @@ const S = {
   q: '',
   showPw: false,
   bal: 'deposit',
-  method: 'btc',
+  method: null,
   actTab: 'done',
   actChip: 'All',
   chat: [{ t: 'Hi there. How can we help you today?' }],
@@ -262,7 +262,7 @@ function viewHome() {
       <div class="win-pane" data-pane="latest">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="wrow">${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name} &middot; ${d}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
       <div class="win-pane" data-pane="month" hidden>${MONTHLY.map(([pid, u, a], i) => `<div class="wrow ${i === 0 ? 'top1' : ''}"><span class="wrank">#${i + 1}</span>${coin(plat(pid), 'sm')}<span class="wrow-txt"><b>${esc(u)}</b><small>${plat(pid).name}</small></span><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div>
     </section>
-    ${blogVideoSection()}
+    ${S.user ? '' : reviewsSection() + blogVideoSection()}
   </div>
   `;
 }
@@ -307,6 +307,7 @@ function viewPlatform(id) {
 }
 
 const BAL_ITEMS = [
+  { id: 'shop', label: 'Shop', sub: 'Packages with free bonus', color: '#f59e0b', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1.2 10a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9ZM8.5 9V7a3.5 3.5 0 0 1 7 0v2"/></svg>' },
   { id: 'deposit', label: 'Deposit', sub: 'Fund your wallet in seconds', color: '#1fbf8f', icon: I.plus },
   { id: 'withdraw', label: 'Withdraw', sub: 'Withdraw your winnings', color: '#e0334f', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>' },
   { id: 'transfer', label: 'Transfer', sub: 'Send funds to a game', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
@@ -324,6 +325,7 @@ const CRYPTO = [
   { id: 'eth', name: 'Ethereum', code: 'ETH', bg: '#627eea', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 6.5 12 12 15.2 17.5 12Zm0 13.4L6.5 13.2 12 21l5.5-7.8Z"/></svg>', pre: '0x' },
   { id: 'trx', name: 'Tron', code: 'TRX', bg: '#e5262f', sym: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 5l16 3-8 12Zm0 0 8 15m-8-15 13 6"/></svg>', pre: 'T' },
   { id: 'bnb', name: 'Binance Coin', code: 'BNB', bg: '#f3ba2f', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="m12 4 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Zm10 0 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Z"/></svg>', pre: 'bnb1' },
+  { id: 'shib', name: 'Shiba Inu', code: 'SHIB', bg: '#e8590c', sym: '&#x1F415;', pre: '0x' },
   { id: 'usdt', name: 'Tether', code: 'USDT', bg: '#26a17b', sym: '&#8366;', pre: 'T' }
 ];
 const cryptoIco = c => `<span class="cry" style="background:${c.bg}">${c.sym}${c.bolt ? `<i>${I.bolt}</i>` : ''}</span>`;
@@ -336,11 +338,11 @@ function balPanel(id) {
   const unlocked = PLATFORMS.filter(p => acct(p.id));
   const noGames = `<div class="card soft"><b>No game accounts yet</b><p class="card-sub">Unlock a game first. Each game gets its own login.</p><a class="btn btn-accent" href="#/games">Unlock a game</a></div>`;
   const stop = blocked();
-  if (id === 'deposit') return head('Deposit', `Choose the crypto you want to deposit. Minimum $${MIN_DEPOSIT}.`) + walletLine + (stop ? `<div class="warn">${stop}</div>` : cryptoList() +
-    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now">Deposit Now</button></div>`);
+  if (id === 'deposit') return head(S.pkg ? `Buy the ${usd(S.pkg.amt)} package` : 'Deposit', S.pkg ? `Choose the crypto you want to pay with. You get ${usd(S.pkg.amt)} + ${usd(S.pkg.bonus)} free bonus.` : `Choose the crypto you want to deposit. Minimum $${MIN_DEPOSIT}.`) + walletLine + (stop ? `<div class="warn">${stop}</div>` : cryptoList() +
+    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now" ${S.method ? '' : 'disabled'}>${S.method ? `Deposit with ${CRYPTO.find(c => c.id === S.method).name}` : 'Deposit Now'}</button></div>`);
   if (id === 'withdraw') return head('Withdraw', `Send money from your wallet to your crypto address. Minimum $${MIN_WITHDRAW}.`) + walletLine +
     `<p class="hint">Credits inside a game must be redeemed to your wallet first.</p>` + cryptoList() +
-    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="withdraw-now">Withdraw Now</button></div>`;
+    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="withdraw-now" ${S.method ? '' : 'disabled'}>Withdraw Now</button></div>`;
   if (id === 'transfer') return head('Load a game', 'Move money from your wallet into a game account as credits.') + walletLine + (stop ? `<div class="warn">${stop}</div>` : unlocked.length ?
     `<form class="form-row narrow" data-form="load">
       <label class="lbl">Game</label><select class="field" name="plat">${unlocked.map(p => `<option value="${p.id}" ${S.loadPlat === p.id ? 'selected' : ''}>${p.name} (${usd(acct(p.id).credits)} credits)</option>`).join('')}</select>
@@ -423,6 +425,7 @@ function viewAccount() {
       ${row(I.gauge, 'Daily deposit limit', u.limit ? `$${u.limit} per day` : 'No limit', 'data-sheet="limit"')}
       ${row(I.pause, 'Take a break', blocked() || 'Pause deposits for a while, or self-exclude', 'data-sheet="break"')}
       <div class="set-row static"><span class="set-ico">${navIco.swap}</span><span class="set-txt"><b>Theme</b><small>${(THEMES_NOW().find(t => t[0] === curTheme()) || THEMES_NOW()[0])[1]}</small></span><span class="theme-pick" data-theme-pick>${themePick()}</span></div>
+      <div class="set-row static"><span class="set-ico">${D_ICO.globe}</span><span class="set-txt"><b>Language</b><small data-noi18n>${LANG_NAMES[LANG]}</small></span><span data-lang-pick="bare">${langPick(false)}</span></div>
     </div>
     <div class="set-list"><button class="set-row" data-act="logout"><span class="set-txt"><b>Logout</b></span>${I.out}</button></div>
   </div>`;
@@ -443,7 +446,7 @@ const D_ICO = {
 function dashboardHtml(inPanel) {
   const u = S.user;
   const head = inPanel
-    ? `<div class="dash-top"><button class="icon-btn" data-close-menu aria-label="Close">${I.x}</button><span class="logo">${logoInner()}</span><button class="dash-lang" data-act="lang">${D_ICO.globe}<span>${u ? esc(u.lang) : 'English'}</span></button></div>`
+    ? `<div class="dash-top"><button class="icon-btn" data-close-menu aria-label="Close">${I.x}</button><span class="logo">${logoInner()}</span><button class="dash-lang" data-act="lang">${D_ICO.globe}<span data-noi18n>${LANG_NAMES[LANG]}</span></button></div>`
     : '';
   if (!u) return head + `<div class="dash-guest"><h2>Welcome to ${BRAND()}</h2><p>Sign up to get your wallet, game accounts and rewards.</p>
       <button class="btn btn-accent btn-block" data-act="signup">Create account</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button></div>
@@ -460,7 +463,7 @@ function dashboardHtml(inPanel) {
       <div class="db-half"><div class="db-h"><span class="db-coin g">G</span><b>Game credits</b></div><strong class="db-green">${usd(creditsTotal())}</strong>
         <div class="db-sub"><span><small>In games</small><em><i class="dot-b"></i>${n}</em></span><span><small>Points</small><em><i class="dot-g"></i>${u.points.toLocaleString('en-US')}</em></span></div></div>
     </section>
-    <div class="dash-acts"><a class="d-round" href="#/balance" data-bal-go="deposit"><span class="dr-ico dep">${I.plus}</span>Deposit</a><a class="d-round" href="#/balance" data-bal-go="withdraw"><span class="dr-ico wd">${D_ICO.up}</span>Withdraw</a></div>
+    <div class="dash-acts"><a class="d-round" href="#/balance" data-bal-go="deposit"><span class="dr-ico dep">${I.plus}</span>Deposit</a><a class="d-round" href="#" data-act="shop"><span class="dr-ico shop">${I2.coins}</span>Shop</a><a class="d-round" href="#/balance" data-bal-go="withdraw"><span class="dr-ico wd">${D_ICO.up}</span>Withdraw</a></div>
     <div class="d-list">
       ${row(D_ICO.phone, 'Bind/Change Phone', u.phone ? esc(u.phone) : 'Not Bound', 'data-dsheet="phone"')}
       ${row(I.lock, 'Change Password', 'Security settings', 'data-sheet="pw"')}
@@ -478,6 +481,7 @@ function dashboardHtml(inPanel) {
     </div>
     <div class="d-list">
       <div class="d-row static"><span class="d-ico">${D_ICO.moon}</span><span class="d-txt"><b>Theme</b><small>${(THEMES_NOW().find(t => t[0] === curTheme()) || THEMES_NOW()[0])[1]}</small></span><span class="theme-pick" data-theme-pick>${themePick()}</span></div>
+      <div class="d-row static"><span class="d-ico">${D_ICO.globe}</span><span class="d-txt"><b>Language</b><small data-noi18n>${LANG_NAMES[LANG]}</small></span><span data-lang-pick="bare">${langPick(false)}</span></div>
       ${row(D_ICO.sound, 'Background music', u.music ? 'On' : 'Off', 'data-act="music"', `<span class="switch ${u.music ? 'on' : ''}"><i></i></span>`)}
       <div class="d-row static"><span class="d-ico">${D_ICO.sliders}</span><span class="d-txt"><b>Music volume</b><small>${u.volume}%</small></span><input class="d-range" type="range" min="0" max="100" step="5" value="${u.volume}" data-volume aria-label="Music volume"></div>
     </div>
@@ -716,6 +720,7 @@ function menuHtml() {
       ${row(navIco.games, 'Games', 'href="#/games"')}
       ${row(navIco.rewards, 'Rewards', 'href="#/rewards"')}
       ${row(navIco.balance, 'Balance', 'href="#/balance"')}
+      ${S.user ? row(I2.coins, 'Shop', 'href="#" data-act="shop"') : ''}
       ${row(I.user, 'Profile', 'href="#/account"')}
       ${row(I.bellO, 'Notifications', 'href="#" data-act="bell"')}
       ${row(I.tg, 'Join our Telegram', 'href="#" data-act="telegram"')}
@@ -724,6 +729,7 @@ function menuHtml() {
       ${row(navIco.swap, 'Switch site', 'href="#" data-act="choose-site"')}
     </nav>
     <div class="theme-pick m-theme" data-theme-pick>${themePick()}</div>
+    <div class="m-theme m-lang" data-lang-pick>${langPick()}</div>
     <div class="drawer-foot">${S.user
       ? `<button class="m-row logout" data-act="logout"><span>Logout</span>${I.out}</button>`
       : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
@@ -800,6 +806,32 @@ const VIDEOS = [
   { id: 'ocean', img: 'assets/games/ocean-king.jpg', len: '5:40', title: 'Ocean King boss hunt', sub: 'Milky Way' },
   { id: 'redeem', img: 'assets/games/super-double-up.jpg', len: '2:05', title: 'How to redeem to your wallet', sub: 'Step by step' }
 ];
+
+const REVIEWS = [
+  ['I like having my game platforms together in one place.', '#a3445f'],
+  ['The game categories make it easy to find what I want to explore.', '#2f7a5a'],
+  ['The layout feels clear on my phone and my tablet.', '#b0652a'],
+  ['Switching between the light and dark themes is a nice touch.', '#5a5fc4']
+];
+function reviewsSection() {
+  return `<section class="rv">
+    <div class="rv-plats">${PLATFORMS.map(p => `<span>${coin(p, 'xs')}<b>${p.name}</b></span>`).join('')}</div>
+    <div class="rv-body">
+      <div class="rv-intro">
+        <small class="rv-kick">The ${BRAND()} community</small>
+        <h2>Every player.<br>A different story.</h2>
+        <p>A place for the experiences, favorites, and feedback that make our community.</p>
+        <span class="rv-badge">Design preview &middot; sample reviews</span>
+        <p class="rv-disc">These examples show the layout. They are not customer testimonials.</p>
+      </div>
+      <div class="rv-grid">${REVIEWS.map(([q, c]) => `<figure class="rv-card">
+        <div class="rv-top"><span class="rv-q">&ldquo;</span><small>Sample review</small></div>
+        <blockquote>${q}</blockquote>
+        <figcaption><span class="rv-av" style="background:${c}">R</span><span><b>Sample player</b><small>Preview content</small></span></figcaption>
+      </figure>`).join('')}</div>
+    </div>
+  </section>`;
+}
 
 function blogVideoSection() {
   return `<section class="bv">
@@ -910,7 +942,7 @@ function viewHomeB() {
     <section class="b-sec"><div class="b-sec-h"><h2>${mine.length ? 'More platforms' : 'Platforms'}</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.filter(p => !acct(p.id)).map(platCardB).join('')}</div></section>
     <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
       <div class="b-wins">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
-    ${blogVideoSection()}
+    ${S.user ? '' : reviewsSection() + blogVideoSection()}
   </div>`;
 }
 
@@ -940,6 +972,7 @@ function setBSlide(i) {
 function showChooser() {
   const ch = document.getElementById('chooser');
   ch.innerHTML = `<div class="ch-box">
+      <div class="ch-lang" data-lang-pick>${langPick()}</div>
       <h2>Choose your site</h2><p>Same games, same wallet. Pick the look you like.</p>
       <div class="ch-opts">
         <button class="ch-opt a" data-site-pick="a">
@@ -1060,19 +1093,6 @@ function unlockModal(pid) {
     <p class="note">Free. Your ${p.name} credits are kept separate from your other games.</p>`);
 }
 
-function gameCredsModal(pid, fresh) {
-  const p = plat(pid), a = acct(pid);
-  openModal(`<div class="sheet-head">${coin(p, 'md')}<div><h2>${fresh ? `${p.name} account ready` : p.name}</h2><p>${a.linked ? 'Linked to your existing account' : 'Use this login in the game'}</p></div></div>
-    ${credRow('Username', a.username, a.username)}
-    ${credRow('Password', a.password, a.password, true)}
-    <div class="wallet-line">Credits <b>${usd(a.credits)}</b></div>
-    <div class="sheet-grid">
-      <button class="btn btn-accent" data-act="play" data-plat="${pid}">${I.play}Play</button>
-      <button class="btn btn-outline" data-act="load" data-plat="${pid}">Load</button>
-      <button class="btn btn-outline" data-act="redeem" data-plat="${pid}" ${a.credits < 1 ? 'disabled' : ''}>Redeem</button>
-      <button class="btn btn-outline" data-act="download" data-plat="${pid}">${I.dl}Get app</button>
-    </div>`);
-}
 
 function downloadModal(pid) {
   const p = plat(pid);
@@ -1084,17 +1104,173 @@ function downloadModal(pid) {
     </div>`);
 }
 
+
+
+/* ---------- load to game (deposit to game balance) ---------- */
+
+const LOAD_CHIPS = [10, 25, 50, 100, 500];
+const LOAD_TIERS = [[500, 25], [250, 10], [100, 4], [50, 1.5], [25, 0.5]];
+const loadTier = amt => { const t = LOAD_TIERS.find(x => amt >= x[0]); return t ? t[1] : 0; };
+const I2 = {
+  chev2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 6 6 6-6M6 12l6 6 6-6"/></svg>',
+  reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4.5H8"/></svg>',
+  minus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 12h14"/></svg>',
+  ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+  arrowR: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>',
+  coins: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="10" cy="7" rx="6" ry="2.6"/><path d="M4 7v4c0 1.4 2.7 2.6 6 2.6s6-1.2 6-2.6V7M4 11v4c0 1.4 2.7 2.6 6 2.6 1 0 2-.1 2.8-.3"/><circle cx="17.5" cy="16.5" r="3.5"/></svg>',
+  gift: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="4" rx="1"/><path d="M5 12.5V20h14v-7.5M12 8.5V20M12 8.5S10.5 4 8 4.5 6.5 8.5 12 8.5Zm0 0S13.5 4 16 4.5s1.5 4-4 4Z"/></svg>',
+  crown: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5Z"/></svg>',
+  flame: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s5 4.6 5 10a5 5 0 0 1-10 0c0-2.3 1.2-4.2 2.3-5.3.2 1.9 1.2 3.3 2.7 3.3 0-3.2 0-5.4 0-8Z"/></svg>'
+};
+const dollarCoin = (cls = '') => `<span class="usd-coin ${cls}">$</span>`;
+
+function loadModal(pid) {
+  if (!requireLogin()) return;
+  const stop = blocked();
+  if (stop) return openModal(`<h2>Loading is paused</h2><p>${stop}</p>`);
+  if (!acct(pid)) return unlockModal(pid);
+  S.ld = { pid, amt: Math.min(10, Math.floor(S.user.wallet)) };
+  openModal(`<div id="ldBox" class="ld">${ldHtml()}</div>`);
+  $('#modalBox').classList.add('ld-box');
+}
+function ldHtml() {
+  const { pid, amt } = S.ld, p = plat(pid), a = acct(pid);
+  const daily = p.daily && !dailyUsed(pid) ? Math.round(amt * p.daily) / 100 : 0;
+  const bonus = loadTier(amt) + daily;
+  const after = a.credits + amt + bonus;
+  return `<h2 class="ld-title">Load ${p.name}</h2>
+    <div class="ld-bal">
+      <span class="ld-lab">${coin(p, 'xs')}<b>Game credits</b></span>
+      <span class="ld-flow"><em>${fmt(a.credits)}</em>${I2.arrowR}<strong>${fmt(after)}</strong></span>
+    </div>
+    <div class="ld-wallet"><span>${dollarCoin()}Wallet</span><b>${usd(S.user.wallet)}</b><a href="#" class="ld-top" data-act="shop" aria-label="Add money">${I.plus}</a></div>
+    <p class="ld-info">${I.help}Pick an amount from your wallet to load into ${p.name}.</p>
+    <div class="ld-down">${I2.chev2}</div>
+    <div class="ld-game">${coin(p, 'md')}<b>${p.name}</b><button class="btn btn-outline btn-sm" data-act="play" data-plat="${pid}">${I.play}Start Game</button></div>
+    <div class="ld-amt">
+      <div class="ld-amt-h"><span>${I2.coins}<b>Select amount</b></span><button class="ld-reset" data-act="ld-reset" ${amt ? '' : 'disabled'}>${I2.reset}Reset</button></div>
+      <div class="ld-step">
+        <button class="ld-pm" data-act="ld-minus" aria-label="Less" ${amt < 5 ? 'disabled' : ''}>${I2.minus}</button>
+        <div class="ld-val">${dollarCoin()}<span>${fmt(amt)}</span></div>
+        <button class="ld-pm" data-act="ld-plus" aria-label="More" ${amt + 5 > S.user.wallet ? 'disabled' : ''}>${I.plus}</button>
+      </div>
+      <div class="ld-chips">${LOAD_CHIPS.map(v => { const b = loadTier(v); return `<button class="ld-chip" data-act="ld-add" data-v="${v}" ${amt + v > S.user.wallet ? 'disabled' : ''}>+${v}.00${b ? `<i>+${fmt(b)}</i>` : ''}</button>`; }).join('')}
+        <button class="ld-chip" data-act="ld-all" ${S.user.wallet < 1 ? 'disabled' : ''}>All</button></div>
+      ${bonus ? `<p class="ld-bonus">${I.bolt}You get <b>${usd(bonus)}</b> bonus credits${daily ? ` (includes +${p.daily}% Daily 1st)` : ''}.</p>` : `<p class="ld-bonus mute">Load $25 or more for bonus credits.</p>`}
+    </div>
+    <div class="ld-foot"><button class="btn btn-ghost ld-cancel" data-close>Cancel</button>
+      <button class="btn btn-accent ld-go" data-act="ld-go" ${amt < 1 ? 'disabled' : ''}>Load to game ${I2.arrowR}</button></div>
+    ${S.user.wallet < 1 ? `<p class="note">Your wallet is empty. <a href="#" data-act="shop">Add money</a></p>` : ''}`;
+}
+function ldSet(v) { S.ld.amt = Math.max(0, Math.min(Math.floor(S.user.wallet * 100) / 100, Math.round(v * 100) / 100)); $('#ldBox').innerHTML = ldHtml(); }
+function ldGo() {
+  const { pid, amt } = S.ld, p = plat(pid), a = S.user.accounts[pid];
+  const stop = blocked();
+  if (stop) { toast(stop); return; }
+  if (amt < 1 || amt > S.user.wallet) { toast(`Not enough in your wallet (${usd(S.user.wallet)})`); return; }
+  S.user.wallet -= amt; a.credits += amt; S.loadPlat = pid;
+  addTx({ kind: 'Loads', label: 'Loaded credits', p: pid, amt: -amt, status: 'done' });
+  if (Math.floor(amt) > 0) addPts(`Loaded ${p.name}`, Math.floor(amt));
+  let extra = 0;
+  const tier = loadTier(amt);
+  if (tier) { a.credits += tier; extra += tier; addTx({ kind: 'Bonus', label: `Load bonus ($${amt.toFixed(0)}+)`, p: pid, amt: tier, status: 'done' }); }
+  if (p.daily && !dailyUsed(pid)) {
+    const d = Math.round(amt * p.daily) / 100;
+    a.credits += d; extra += d;
+    addTx({ kind: 'Bonus', label: `Daily 1st bonus (+${p.daily}%)`, p: pid, amt: d, status: 'done' });
+  }
+  closeModal(); refresh();
+  toast(`${usd(amt)} loaded into ${p.name}${extra ? ` + ${usd(extra)} bonus` : ''}`);
+}
+
+/* ---------- game login card ---------- */
+
+function credLine(label, value, secret) {
+  const shown = !secret || S.showPw;
+  return `<div class="gc-line"><div><small>${label}:</small><b class="${secret && !shown ? 'dots' : ''}">${shown ? esc(value) : '&bull;'.repeat(Math.min(10, value.length))}</b></div>
+    ${secret ? `<button class="gc-btn" data-act="pw" aria-label="${shown ? 'Hide' : 'Show'} password">${shown ? I.eyeOff : I.eye}</button>` : ''}
+    <button class="gc-btn" data-copyval="${esc(value)}" data-what="${label}" aria-label="Copy ${label.toLowerCase()}">${I.copy}</button></div>`;
+}
+function credsCard(pid, opts = {}) {
+  const p = plat(pid), a = acct(pid), g = opts.gameId ? game(opts.gameId) : null;
+  return `<div class="gc-badge">${coin(p, 'lg')}</div>
+    <div class="gc-card">
+      <h2>${g ? esc(g.name) : p.name}</h2>
+      <p class="gc-sub">${opts.fresh ? `Your ${p.name} account is ready. ` : ''}${g ? `In the ${p.name} app. ` : ''}${a.linked ? 'Linked to your existing login.' : 'Log in to the game with these.'}</p>
+      ${credLine('Username', a.username)}
+      ${credLine('Password', a.password, true)}
+      ${a.linked ? '' : `<button class="gc-reset" data-act="reset-pw" data-plat="${pid}">${I2.reset}Reset password</button>`}
+      <button class="btn btn-accent gc-play" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Play ${g ? esc(g.name) : p.name} ${I2.ext}</button>
+      <div class="gc-meta"><span>Credits <b>${usd(a.credits)}</b></span>
+        <a href="#" data-act="load" data-plat="${pid}">Load</a>
+        <a href="#" data-act="redeem" data-plat="${pid}" ${a.credits < 1 ? 'aria-disabled="true" class="off"' : ''}>Redeem</a>
+        <a href="#" data-act="download" data-plat="${pid}">Get app</a></div>
+    </div>`;
+}
+function openCreds(pid, opts) {
+  openModal(credsCard(pid, opts));
+  $('#modalBox').classList.add('gc-box');
+  S.credsOpen = { pid, opts };
+}
+function gameCredsModal(pid, fresh) { openCreds(pid, { fresh }); }
 function playModal(pid, gameId) {
   if (!requireLogin()) return;
-  const p = plat(pid), a = acct(pid);
-  if (!a) return unlockModal(pid);
-  const g = gameId ? game(gameId) : null;
-  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>${g ? esc(g.name) : `Play ${p.name}`}</h2>
-    <p>${g ? `${esc(g.name)} is in the ${p.name} app. ` : ''}Open ${p.name} and log in with this account.</p>
-    ${credRow('Username', a.username, a.username)}
-    ${credRow('Password', a.password, a.password, true)}
-    <div class="wallet-line">Credits <b>${usd(a.credits)}</b>${a.credits < 1 ? ` <a href="#" data-act="load" data-plat="${pid}">Load credits first</a>` : ''}</div>
-    <div class="modal-acts"><button class="btn btn-accent" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Open web version</button><button class="btn btn-outline" data-act="download" data-plat="${pid}">${I.dl}Get the app</button></div>`);
+  if (!acct(pid)) return unlockModal(pid);
+  openCreds(pid, { gameId });
+}
+
+/* ---------- shop (wallet packages) ---------- */
+
+const SHOP_PKGS = [5, 10, 20, 30, 50, 80, 100, 200, 500];
+const PKG_BONUS = 0.10, FIRST_EXTRA = 0.20;
+const firstDone = () => S.user && S.user.tx.some(t => t.kind === 'Deposits');
+
+function shopModal(tab) {
+  if (!requireLogin()) return;
+  S.shopTab = tab || S.shopTab || (firstDone() ? 'packs' : 'first');
+  openModal(`<div id="shopBox">${shopHtml()}</div>`);
+  $('#modalBox').classList.add('shop-box');
+}
+function shopHtml() {
+  const first = S.shopTab === 'first', used = firstDone();
+  const card = v => {
+    const base = Math.round(v * PKG_BONUS * 100) / 100, ex = Math.round(v * FIRST_EXTRA * 100) / 100;
+    return `<div class="pk ${first ? 'pk-first' : ''} ${v === 500 ? 'pk-best' : ''}">
+      ${v === 500 ? '<span class="pk-deal">BEST DEAL</span>' : ''}${first ? `<span class="pk-tag">+${FIRST_EXTRA * 100}% bonus</span>` : ''}
+      <div class="pk-amt">${dollarCoin('lg')}<b>${v.toLocaleString('en-US')}</b></div>
+      <small class="pk-lab">wallet balance</small>
+      <div class="pk-free"><span class="pk-f">FREE</span>${dollarCoin('sm bonus')}<span class="pk-v"><b>+${fmt(first ? base + ex : base)}</b>${first ? `<em>(${fmt(base)}+${fmt(ex)})</em>` : ''}</span></div>
+      <button class="pk-buy" data-act="pkg" data-v="${v}" ${first && used ? 'disabled' : ''}>$${v}.00</button>
+    </div>`;
+  };
+  return `<h2 class="shop-title">Shop</h2>
+    <div class="shop-tabs"><button class="${first ? '' : 'on'}" data-act="shop-tab" data-tab2="packs">${I2.coins}Packages</button><button class="${first ? 'on' : ''}" data-act="shop-tab" data-tab2="first">${I2.crown}First Deposit</button></div>
+    ${first
+      ? `<p class="shop-note first">${I2.flame}${used ? 'You have already made your first deposit. This offer is one-time only.' : `First deposit only: <b>+${FIRST_EXTRA * 100}% extra</b> bonus credits. One time.`}</p>`
+      : `<p class="shop-note">${I2.gift}Buy a package, get FREE bonus credits on top.</p>`}
+    <div class="pk-grid">${SHOP_PKGS.map(card).join('')}</div>
+    <p class="note">Paid in crypto. Bonus credits land in your wallet with the deposit.</p>`;
+}
+function buyPackage(v) {
+  const first = S.shopTab === 'first' && !firstDone();
+  const bonus = Math.round(v * (PKG_BONUS + (first ? FIRST_EXTRA : 0)) * 100) / 100;
+  S.pkg = { amt: v, bonus, first };
+  S.method = null;
+  openBalSheet('deposit');
+}
+
+/* ---------- deposit address (shared by deposit + shop) ---------- */
+
+function depositAddress(amt) {
+  const c = CRYPTO.find(x => x.id === S.method);
+  const addr = c.pre + Array.from({ length: 30 }, () => 'abcdefghjkmnpqrstuvwxyz023456789'[Math.floor(Math.random() * 32)]).join('');
+  const pk = S.pkg && S.pkg.amt === amt ? S.pkg : null;
+  openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Send ${usd(amt)} in ${c.code}</h2><p>Send to this address. Only send ${c.code} on the ${c.name} network.</p>
+    ${pk ? `<div class="bonus-note">${I.bolt}Includes ${usd(pk.bonus)} free bonus with the ${usd(amt)} package.</div>` : ''}
+    <div class="addr"><div class="qr" aria-hidden="true">${Array.from({ length: 49 }, (_, i) => `<i class="${(i * 7 + addr.charCodeAt(i % addr.length)) % 3 ? '' : 'on'}"></i>`).join('')}</div>
+      <div class="cred"><label>Deposit address (demo)</label><div class="cred-row"><code>${addr}</code><button class="icon-btn" data-copyval="${addr}" data-what="Address">${I.copy}</button></div></div></div>
+    <div class="warn">This address is for this deposit only. Your wallet updates after the network confirms it.</div>
+    <button class="btn btn-accent btn-block" data-act="sent" data-amount="${amt}" style="margin-top:16px">I've sent it</button>`);
 }
 
 /* ---------- coin loader ---------- */
@@ -1137,22 +1313,6 @@ function launch(pid, gameId) {
   }, 200);
 }
 
-function loadModal(pid) {
-  if (!requireLogin()) return;
-  const stop = blocked();
-  if (stop) return openModal(`<h2>Loading is paused</h2><p>${stop}</p>`);
-  const p = plat(pid), a = acct(pid);
-  if (!a) return unlockModal(pid);
-  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Load ${p.name}</h2><p>Move money from your wallet into your ${p.name} account.</p>
-    <div class="wallet-line">Wallet <b>${usd(S.user.wallet)}</b> &middot; ${p.name} credits <b>${usd(a.credits)}</b></div>
-    ${p.daily && !dailyUsed(pid) ? `<div class="bonus-note">${I.bolt}Your first load today gets +${p.daily}% bonus credits.</div>` : ''}
-    <form class="form-row" data-form="load"><input type="hidden" name="plat" value="${pid}">
-      <div class="quick-amts">${[10, 25, 50, 100].map(v => `<button type="button" class="chip" data-amt="${v}">$${v}</button>`).join('')}</div>
-      <input class="field" name="amt" type="number" min="1" step="0.01" placeholder="Amount ($)" required>
-      <button class="btn btn-accent btn-block" type="submit">Load credits</button>
-    </form>
-    ${S.user.wallet < 1 ? `<p class="note">Your wallet is empty. <a href="#/balance" data-bal-go="deposit" data-close-after>Deposit first</a></p>` : ''}`);
-}
 
 function redeemModal(pid) {
   const p = plat(pid), a = acct(pid);
@@ -1202,9 +1362,9 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],.m-list a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a');
   if (!t) return;
-  if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; }
+  if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; S.pkg = null; S.method = null; }
   if (t.dataset.closeAfter !== undefined) closeModal();
   if (t.dataset.balGo && !t.dataset.act) { if (location.hash === '#/balance') { closeModal(); render(true); } return; }
   if (t.dataset.closeAfter !== undefined && !t.dataset.act) return;
@@ -1215,6 +1375,7 @@ document.addEventListener('click', e => {
   if (t.dataset.post) { postModal(t.dataset.post); return; }
   if (t.dataset.video) { videoModal(t.dataset.video); return; }
   if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
+  if (t.dataset.langSet) { setLang(t.dataset.langSet); if ($('#chooser').hidden) render(true); if (document.body.classList.contains('menu-open')) setMenu(true); return; }
   if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }
   if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES_NOW().find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
   if (t.dataset.amt) { t.closest('form').amt.value = t.dataset.amt; return; }
@@ -1227,7 +1388,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.dataset.bal) { S.bal = t.dataset.bal; return render(true); }
-  if (t.dataset.balsheet) { openBalSheet(t.dataset.balsheet); return; }
+  if (t.dataset.balsheet) { S.pkg = null; S.method = null; if (t.dataset.balsheet === 'shop') shopModal(); else openBalSheet(t.dataset.balsheet); return; }
   if (t.dataset.sheet) { setMenu(false); openSheet(t.dataset.sheet); return; }
   if (t.dataset.dsheet) { setMenu(false); openDashSheet(t.dataset.dsheet); return; }
   if (t.dataset.wtab) { const w = t.closest('.winners'); w.querySelectorAll('[data-wtab]').forEach(b => b.classList.toggle('on', b === t)); w.querySelectorAll('.win-pane').forEach(p => { p.hidden = p.dataset.pane !== t.dataset.wtab; }); return; }
@@ -1245,6 +1406,7 @@ document.addEventListener('click', e => {
   if (a === 'pw') {
     S.showPw = !S.showPw;
     if ($('#modal').hidden) render(true);
+    else if ($('#modalBox .gc-card') && S.credsOpen) openCreds(S.credsOpen.pid, S.credsOpen.opts);
     else document.querySelectorAll('#modalBox .cred').forEach(c => { const b = c.querySelector('[data-act="pw"]'); if (b) { const v = c.querySelector('[data-copyval]').dataset.copyval; c.outerHTML = credRow('Password', v, v, true); } });
   }
   if (a === 'signup') { setMenu(false); signupStep(1); }
@@ -1283,6 +1445,16 @@ document.addEventListener('click', e => {
   if (a === 'web') launch(pid, t.dataset.gameId);
   if (a === 'store') toast(`${t.dataset.store} download link goes here in the live site`);
   if (a === 'load') loadModal(pid);
+  if (a === 'ld-add') ldSet(S.ld.amt + Number(t.dataset.v));
+  if (a === 'ld-plus') ldSet(S.ld.amt + 5);
+  if (a === 'ld-minus') ldSet(S.ld.amt - 5);
+  if (a === 'ld-reset') ldSet(0);
+  if (a === 'ld-all') ldSet(S.user.wallet);
+  if (a === 'ld-go') ldGo();
+  if (a === 'shop') { setMenu(false); shopModal(); }
+  if (a === 'shop-tab') { S.shopTab = t.dataset.tab2; $('#shopBox').innerHTML = shopHtml(); }
+  if (a === 'pkg') buyPackage(Number(t.dataset.v));
+  if (a === 'reset-pw') { S.user.accounts[pid].password = makePw(); S.showPw = true; refresh(); openCreds(pid, S.credsOpen && S.credsOpen.pid === pid ? S.credsOpen.opts : {}); toast('New password made. Use it next time you log in.'); }
   if (a === 'redeem') redeemModal(pid);
   if (a === 'checkin') {
     const st = checkinState();
@@ -1323,6 +1495,8 @@ document.addEventListener('click', e => {
   }
   if (a === 'deposit-now') {
     const c = CRYPTO.find(x => x.id === S.method);
+    if (!c) return;
+    if (S.pkg) { const stop = blocked(); if (stop) { toast(stop); return; } if (S.user.limit && todayDeposits() + S.pkg.amt > S.user.limit) { toast(`That would pass your $${S.user.limit} daily limit`); return; } depositAddress(S.pkg.amt); return; }
     openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Deposit with ${c.name}</h2><p>How much do you want to add to your wallet? Minimum $${MIN_DEPOSIT}.</p>
       <form class="form-row" data-form="deposit">
         <div class="quick-amts">${[25, 50, 100, 250].map(v => `<button type="button" class="chip" data-amt="${v}">$${v}</button>`).join('')}</div>
@@ -1334,7 +1508,8 @@ document.addEventListener('click', e => {
     const amt = Number(t.dataset.amount), c = CRYPTO.find(x => x.id === S.method);
     const id = rid();
     S.user.tx.unshift({ id, kind: 'Deposits', label: `Deposit (${c.name})`, amt, when: now(), status: 'pending' });
-    settleLater(id, () => { S.user.wallet += amt; toast(`Deposit confirmed: ${usd(amt)} added to your wallet`); });
+    const pk = S.pkg && S.pkg.amt === amt ? S.pkg : null; S.pkg = null;
+    settleLater(id, () => { S.user.wallet += amt; if (pk) { S.user.wallet += pk.bonus; addTx({ kind: 'Bonus', label: `${pk.first ? 'First deposit' : 'Package'} bonus`, amt: pk.bonus, status: 'done' }); } toast(`Deposit confirmed: ${usd(amt + (pk ? pk.bonus : 0))} added to your wallet`); });
     closeModal(); refresh(); toast('Waiting for network confirmation (demo: about 4 seconds)');
   }
   if (a === 'withdraw-now') {
@@ -1349,7 +1524,7 @@ document.addEventListener('click', e => {
   }
   if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
   if (a === 'music') { S.user.music = !S.user.music; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Background music ${S.user.music ? 'on' : 'off'}`); }
-  if (a === 'lang') toast('More languages coming soon');
+  if (a === 'lang') { setLang(LANG === 'en' ? 'es' : 'en'); render(true); if (document.body.classList.contains('menu-open')) setMenu(true); }
   if (a === 'kyc-start') { S.user.kyc = 'pending'; closeModal(); refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast('Documents submitted for review (demo)'); }
   if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; closeModal(); refresh(); toast('Break started. Deposits and loading are paused.'); }
   if (a === 'exclude') openModal(`<h2>Self-exclude?</h2><p>This closes deposits and loading on your account. You can still redeem and withdraw what you have. To reopen, you will need to contact support.</p><button class="btn btn-outline btn-block danger" data-act="exclude-go">Yes, self-exclude me</button>`);
@@ -1395,13 +1570,7 @@ document.addEventListener('submit', e => {
     const stop = blocked();
     if (stop) { toast(stop); return; }
     if (S.user.limit && todayDeposits() + amt > S.user.limit) { toast(`That would pass your $${S.user.limit} daily limit`); return; }
-    const c = CRYPTO.find(x => x.id === S.method);
-    const addr = c.pre + Array.from({ length: 30 }, () => 'abcdefghjkmnpqrstuvwxyz023456789'[Math.floor(Math.random() * 32)]).join('');
-    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Send ${usd(amt)} in ${c.code}</h2><p>Send to this address. Only send ${c.code} on the ${c.name} network.</p>
-      <div class="addr"><div class="qr" aria-hidden="true">${Array.from({ length: 49 }, (_, i) => `<i class="${(i * 7 + addr.charCodeAt(i % addr.length)) % 3 ? '' : 'on'}"></i>`).join('')}</div>
-        <div class="cred"><label>Deposit address (demo)</label><div class="cred-row"><code>${addr}</code><button class="icon-btn" data-copyval="${addr}" data-what="Address">${I.copy}</button></div></div></div>
-      <div class="warn">This address is for this deposit only. Your wallet updates after the network confirms it.</div>
-      <button class="btn btn-accent btn-block" data-act="sent" data-amount="${amt}" style="margin-top:16px">I've sent it</button>`);
+    depositAddress(amt);
   }
   if (k === 'withdraw') {
     if (amt > S.user.wallet) { toast('More than your wallet balance'); return; }
@@ -1498,5 +1667,7 @@ window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModa
 if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
 applySite('a');
 render();
+fillLangPicks();
+I18N.start();
 showLoader(1300, true);
 setTimeout(showChooser, 1300);

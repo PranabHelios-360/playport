@@ -56,6 +56,7 @@ const S = {
   q: '',
   showPw: false,
   bal: 'deposit',
+  method: 'btc',
   actTab: 'done',
   actChip: 'All',
   chat: [{ t: 'Hi there. How can we help you today?' }]
@@ -266,21 +267,51 @@ function viewPlatform(id) {
 
 const BAL_ITEMS = [
   { id: 'deposit', label: 'Deposit', color: '#1fbf8f', icon: I.plus },
+  { id: 'withdraw', label: 'Withdraw', color: '#e0334f', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>' },
+  { id: 'transfer', label: 'Transfer', color: '#3b82f6', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>' },
   { id: 'redeem', label: 'Redeem', color: '#e0709e', icon: I.arrowL },
-  { id: 'balances', label: 'My balances', color: '#3b82f6', icon: I.list },
-  { id: 'voucher', label: 'Voucher', color: '#0ea5b7', icon: I.ticket }
+  { id: 'p2p', label: 'P2P', color: '#c9961a', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2.1 0 3.6 1.2 4 3.5"/></svg>' },
+  { id: 'voucher', label: 'Voucher', color: '#0ea5b7', icon: I.ticket, plus: true }
 ];
 
+const CRYPTO = [
+  { id: 'btc', name: 'Bitcoin', code: 'BTC', bg: '#f7931a', sym: '&#8383;' },
+  { id: 'btcln', name: 'Bitcoin Lightning', code: 'BTCLightning', bg: '#f7931a', sym: '&#8383;', bolt: true },
+  { id: 'sol', name: 'Solana', code: 'SOL', bg: 'linear-gradient(135deg,#9945ff,#14f195)', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M6 7h13l-2 2H4Zm0 4h13l-2 2H4Zm2 4h13l-2 2H6Z"/></svg>' },
+  { id: 'ltc', name: 'Litecoin', code: 'LTC', bg: '#345d9d', sym: '&#321;' },
+  { id: 'bch', name: 'Bitcoin Cash', code: 'BCH', bg: '#0ac18e', sym: '&#8383;' },
+  { id: 'eth', name: 'Ethereum', code: 'ETH', bg: '#627eea', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3 6.5 12 12 15.2 17.5 12Zm0 13.4L6.5 13.2 12 21l5.5-7.8Z"/></svg>' },
+  { id: 'trx', name: 'Tron', code: 'TRX', bg: '#e5262f', sym: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M4 5l16 3-8 12Zm0 0 8 15m-8-15 13 6"/></svg>' },
+  { id: 'bnb', name: 'Binance Coin', code: 'BNB', bg: '#f3ba2f', sym: '<svg viewBox="0 0 24 24" fill="#fff"><path d="m12 4 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Zm10 0 3 3-3 3-3-3Zm-5 5 3 3-3 3-3-3Z"/></svg>' },
+  { id: 'usdt', name: 'Tether', code: 'USDT', bg: '#26a17b', sym: '&#8366;' }
+];
+const cryptoIco = c => `<span class="cry" style="background:${c.bg}">${c.sym}${c.bolt ? `<i>${I.bolt}</i>` : ''}</span>`;
+
 function balPanel(id) {
-  const head = (t, s) => `<div class="panel-h"><span class="mini-ico" style="background:${BAL_ITEMS.find(b => b.id === id).color}">${BAL_ITEMS.find(b => b.id === id).icon}</span><div><h2>${t}</h2><p>${s}</p></div></div>`;
-  if (id === 'deposit') return head('Deposit', 'Choose the platform you want to add coins to.') +
-    `<div class="opt-list">${PLATFORMS.map(p => `<button class="opt" data-act="cashier" data-plat="${p.id}">${coin(p, 'sm')}<b>${p.name}</b><small>${fmt(BALANCES[p.id][0])} SC</small>${I.chev}</button>`).join('')}</div>`;
+  const it = BAL_ITEMS.find(b => b.id === id);
+  const head = (t, s) => `<div class="panel-h"><span class="mini-ico" style="background:${it.color}">${it.icon}</span><div><h2>${t}</h2><p>${s}</p></div></div>`;
+  const cryptoList = () => `<div class="opt-list">${CRYPTO.map(c => `<button class="opt cry-opt ${S.method === c.id ? 'on' : ''}" data-method="${c.id}">${cryptoIco(c)}<b>${c.name}</b><small>(${c.code})</small>${S.method === c.id ? `<span class="tick-ok">${I.check}</span>` : ''}</button>`).join('')}</div>`;
+  const platOpts = () => PLATFORMS.map(p => `<option value="${p.id}">${p.name} (${fmt(BALANCES[p.id][0])} SC)</option>`).join('');
+  if (id === 'deposit') return head('Deposit', 'Choose the crypto you want to deposit.') + cryptoList() +
+    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now">Deposit Now</button></div>`;
+  if (id === 'withdraw') return head('Withdraw', 'Choose the crypto you want to receive.') + cryptoList() +
+    `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="withdraw-now">Withdraw Now</button></div>`;
+  if (id === 'transfer') return head('Transfer', 'Move Sweeps Coins from one of your platforms to another.') +
+    `<form class="form-row narrow" data-form="transfer">
+      <label class="lbl">From</label><select class="field" name="from">${platOpts()}</select>
+      <label class="lbl">To</label><select class="field" name="to">${platOpts()}</select>
+      <label class="lbl">Amount (SC)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
+      <button class="btn btn-accent" type="submit">Transfer</button>
+    </form>`;
   if (id === 'redeem') return head('Redeem', 'Redeem Sweeps Coins you won on a platform.') +
     `<div class="opt-list">${PLATFORMS.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${BALANCES[p.id][0] < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${fmt(BALANCES[p.id][0])} SC available</small>${I.chev}</button>`).join('')}</div>`;
-  if (id === 'balances') return head('My balances', 'Each platform keeps its own coins.') +
-    `<table class="tbl"><thead><tr><th>Platform</th><th class="num">Sweeps Coins</th><th class="num">Gold Coins</th></tr></thead>
-     <tbody>${PLATFORMS.map(p => `<tr><td><span class="pname">${coin(p, 'xs')}${p.name}</span></td><td class="num">${fmt(BALANCES[p.id][0])}</td><td class="num">${BALANCES[p.id][1].toLocaleString('en-US')}</td></tr>`).join('')}
-     <tr class="tot"><td>Total</td><td class="num">${fmt(totalSC())}</td><td class="num">${Object.values(BALANCES).reduce((s, b) => s + b[1], 0).toLocaleString('en-US')}</td></tr></tbody></table>`;
+  if (id === 'p2p') return head('P2P', 'Send Sweeps Coins to another PlayPort player.') +
+    `<form class="form-row narrow" data-form="p2p">
+      <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. pp_mike1234" required>
+      <label class="lbl">From platform</label><select class="field" name="from">${platOpts()}</select>
+      <label class="lbl">Amount (SC)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
+      <button class="btn btn-accent" type="submit">Send</button>
+    </form>`;
   return head('Voucher', 'Got a voucher code? Enter it here.') +
     `<form class="form-row narrow" data-form="voucher"><input class="field" name="code" placeholder="Voucher code" required><button class="btn btn-accent" type="submit">Apply voucher</button></form>`;
 }
@@ -290,9 +321,9 @@ function viewBalance() {
   return `<div class="page split">
     <aside class="split-left">
       ${crumb(['Balance'])}
-      <p class="lede">Here you can manage your deposits, redeems and vouchers.</p>
+      <p class="lede">Here you can manage your Deposits, Withdrawals and Transfers!</p>
       <div class="acc">${BAL_ITEMS.map(b => `<button class="acc-item ${S.bal === b.id ? 'on' : ''}" data-bal="${b.id}" style="--ic:${b.color}">
-        <span class="mini-ico" style="background:${b.color}">${b.icon}</span><b>${b.label}</b>${S.bal === b.id ? I.chev : I.down}</button>`).join('')}</div>
+        <span class="mini-ico" style="background:${b.color}">${b.icon}</span><b>${b.label}</b>${b.plus ? I.plus : S.bal === b.id ? I.chev : I.down}</button>`).join('')}</div>
     </aside>
     <section class="split-right" id="balPanel">${balPanel(S.bal)}</section>
   </div>`;
@@ -507,7 +538,7 @@ function setChat(open) {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copy],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copy],[data-cat],[data-close],[data-close-menu],[data-bal],[data-method],[data-tab],[data-chip],[data-menu],.drawer-nav a');
   if (!t) return;
   if (t.matches('.drawer-nav a') && !t.dataset.act) { setMenu(false); return; }
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
@@ -522,6 +553,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.dataset.bal) { S.bal = t.dataset.bal; return render(true); }
+  if (t.dataset.method) { S.method = t.dataset.method; $('#balPanel').innerHTML = balPanel(S.bal); return; }
   if (t.dataset.tab) { S.actTab = t.dataset.tab; return render(true); }
   if (t.dataset.chip) { S.actChip = t.dataset.chip; return render(true); }
   if (t.dataset.copy) {
@@ -551,6 +583,17 @@ document.addEventListener('click', e => {
   if (a === 'creds') credsModal();
   if (a === 'gift') toast('Daily bonus: +1.00 SC added');
   if (a === 'bell') toast('No new notifications');
+  if (a === 'deposit-now' || a === 'withdraw-now') {
+    const c = CRYPTO.find(x => x.id === S.method);
+    const dep = a === 'deposit-now';
+    openModal(`<h2>${dep ? 'Deposit' : 'Withdraw'} with ${c.name}</h2><p>${dep ? 'Pick the platform to add coins to and the amount.' : 'Pick the platform to redeem from and the amount.'}</p>
+      <form class="form-row" data-form="${dep ? 'deposit' : 'withdraw'}">
+        <select class="field" name="plat">${PLATFORMS.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}</select>
+        <input class="field" name="amt" type="number" min="5" step="1" placeholder="Amount in USD (min 5)" required>
+        <button class="btn btn-accent btn-block" type="submit">Continue</button>
+      </form>
+      <p class="note">Demo only. The live version shows the ${c.code} address or payment page here.</p>`);
+  }
   if (a === 'cashier') toast(`${plat(t.dataset.plat).name} cashier opens here in the live version`);
   if (a === 'redeem') toast(`Redeem request for ${plat(t.dataset.plat).name} opens here in the live version`);
   if (a === 'chat') { setMenu(false); setChat(true); }
@@ -602,6 +645,9 @@ document.addEventListener('submit', e => {
     store.set('pp_account', S.user);
     render(true); toast(`Username changed to ${next}`);
   }
+  if (k === 'deposit' || k === 'withdraw') { closeModal(); toast(k === 'deposit' ? `Deposit of $${d.amt} to ${plat(d.plat).name} started (demo)` : `Withdrawal of $${d.amt} from ${plat(d.plat).name} started (demo)`); }
+  if (k === 'transfer') { if (d.from === d.to) { toast('Pick two different platforms'); return; } f.reset(); toast(`Moved ${d.amt} SC from ${plat(d.from).name} to ${plat(d.to).name} (demo)`); }
+  if (k === 'p2p') { f.reset(); toast(`Sent ${d.amt} SC to ${d.to} (demo)`); }
   if (k === 'voucher') { f.reset(); toast('That voucher code is not valid'); }
   if (k === 'reason' || k === 'chat') {
     S.chat.push({ me: true, t: k === 'reason' ? d.r : d.m });

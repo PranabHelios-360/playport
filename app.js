@@ -68,13 +68,15 @@ function save() {
 /* ---------- sites ---------- */
 
 const SITES = {
-  a: { name: 'Recharge777', word: 'Recharge<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20' },
+  a: { name: 'Recharge777', word: 'Recharge<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20', img: 'assets/logos/r777-logo.png' },
   b: { name: 'Lucky Lounge', word: 'Lucky<b>Lounge</b>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#081310' }
 };
 S.site = null;
 const site = () => SITES[S.site || 'a'];
 const BRAND = () => site().name;
-const logoInner = () => `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/>${site().mark}</svg><span>${site().word}</span>`;
+const logoInner = () => site().img
+  ? `<img class="logo-img" src="${site().img}" alt=""><span>${site().word}</span>`
+  : `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/>${site().mark}</svg><span>${site().word}</span>`;
 
 function applySite(k) {
   S.site = k;
@@ -901,6 +903,7 @@ function showChooser() {
 }
 function pickSite(k) {
   applySite(k);
+  showLoader(600, true);
   document.getElementById('chooser').hidden = true;
   document.body.style.overflow = '';
   render();
@@ -1036,10 +1039,33 @@ function playModal(pid, gameId) {
     <div class="modal-acts"><button class="btn btn-accent" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Open web version</button><button class="btn btn-outline" data-act="download" data-plat="${pid}">${I.dl}Get the app</button></div>`);
 }
 
+/* ---------- coin loader ---------- */
+
+function coinHtml(size) {
+  const face = site().img
+    ? `<img src="${site().img}" alt="">`
+    : `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#f2c14b"/><circle cx="16" cy="16" r="12.5" fill="#0f211b"/><path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="#f2c14b"/></svg>`;
+  const edges = Array.from({ length: 11 }, (_, i) => `<i class="c-edge" style="transform:translateZ(${(i - 5) * 1.1}px)"></i>`).join('');
+  return `<div class="coin3d-wrap" style="--cs:${size}px" role="img" aria-label="Loading"><span class="coin3d-glow"></span>
+    <div class="coin3d"><span class="c-face back">${face}</span>${edges}<span class="c-face front">${face}</span></div></div>`;
+}
+
+let loaderTimer;
+function showLoader(ms = 450, full = false) {
+  const el = document.getElementById('loader');
+  if (!el) return;
+  el.innerHTML = coinHtml(full ? 140 : 92);
+  el.classList.toggle('soft', !full);
+  el.classList.remove('off');
+  clearTimeout(loaderTimer);
+  loaderTimer = setTimeout(hideLoader, ms);
+}
+function hideLoader() { const el = document.getElementById('loader'); if (el) el.classList.add('off'); }
+
 function launch(pid, gameId) {
   const p = plat(pid), a = acct(pid), g = gameId ? game(gameId) : GAMES.find(x => x.p === pid);
   openModal(`<div class="launch-stage"><div class="launch-blur" style="background-image:url(${g.img})"></div>
-      <div class="launch-mid"><img class="launch-art" src="${g.img}" alt=""><h3>${p.name}</h3><p id="lmsg">Opening ${p.name}&hellip;</p><div class="bar"><i id="lbar"></i></div></div></div>
+      <div class="launch-mid"><div id="lcoin">${coinHtml(110)}</div><h3>${p.name}</h3><p id="lmsg">Opening ${p.name}&hellip;</p><div class="bar"><i id="lbar"></i></div></div></div>
     <div class="launch-foot">${coin(p, 'xs')}<span>${p.name}</span><span>as <code>${esc(a.username)}</code></span><span>${usd(a.credits)} credits</span>
       <button class="btn btn-ghost btn-sm" data-close>Back</button></div>`, true);
   let pct = 0;
@@ -1048,8 +1074,8 @@ function launch(pid, gameId) {
     const bar = $('#lbar'), msg = $('#lmsg');
     if (!bar) return clearInterval(S.launchTimer);
     bar.style.width = pct + '%';
-    if (pct >= 100) { clearInterval(S.launchTimer); msg.textContent = `In the live site this opens the ${p.name} web version in a new tab.`; }
-  }, 140);
+    if (pct >= 100) { clearInterval(S.launchTimer); msg.textContent = `In the live site this opens the ${p.name} web version in a new tab.`; const lc = $('#lcoin'); if (lc) lc.innerHTML = `<img class="launch-art" src="${g.img}" alt="">`; }
+  }, 200);
 }
 
 function loadModal(pid) {
@@ -1398,7 +1424,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Backspace' && e.target.closest('.code-in') && !e.target.value && e.target.previousElementSibling) e.target.previousElementSibling.focus();
 });
 
-window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); render(); });
+window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); showLoader(420); render(); });
 applySite('a');
 render();
-showChooser();
+showLoader(1300, true);
+setTimeout(showChooser, 1300);

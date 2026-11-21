@@ -1170,9 +1170,43 @@ body.chat-open .chat { transform: none; opacity: 1; pointer-events: auto; }
 }
 
 /* real-phone hardening (Recharge777) */
-html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+html { overflow-x: clip; }
+body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 .ticker, .ticker-track { contain: paint; }
 @media (max-width: 860px) {
-  .ticker { position: relative; bottom: auto; left: auto; right: auto; z-index: 1; height: 46px; border-top: 0; border-bottom: 1px solid var(--line); }
+  .ticker { position: sticky; top: var(--top-h); bottom: auto; left: auto; right: auto; z-index: 25; height: 46px; border-top: 0; border-bottom: 1px solid var(--line); background: var(--bar); }
   body.has-ticker { padding-bottom: calc(var(--tab-h) + 20px); }
+}
+
+/* ===== logo image ===== */
+.logo .logo-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 14px rgba(255, 79, 168, .45); }
+@media (max-width: 860px) { .logo .logo-img { width: 34px; height: 34px; } }
+
+/* ===== 3D flipping coin loader ===== */
+.loader { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; background: radial-gradient(circle at 50% 46%, rgba(255, 79, 168, .14), transparent 38%), var(--bg); transition: opacity .35s ease, visibility .35s ease; }
+.loader.soft { background: rgba(6, 8, 18, .5); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+.loader.off { opacity: 0; visibility: hidden; pointer-events: none; }
+.coin3d-wrap { position: relative; width: var(--cs, 120px); height: var(--cs, 120px); perspective: 800px; }
+.coin3d-glow { position: absolute; inset: -18%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 79, 168, .55) 0%, rgba(255, 79, 168, .18) 45%, transparent 70%); animation: coin-glow 2s ease-in-out infinite; }
+.coin3d { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; animation: coin-flip 2s linear infinite; }
+.c-face { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: #2a0a1f; }
+.c-face img, .c-face svg { width: 100%; height: 100%; display: block; object-fit: cover; }
+.c-face.front { transform: translateZ(6px); }
+.c-face.back { transform: rotateY(180deg) translateZ(6px); filter: brightness(.82) saturate(1.1); }
+.c-face.front::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .5) 50%, transparent 62%); background-size: 260% 100%; animation: coin-shine 2s linear infinite; mix-blend-mode: screen; }
+.c-edge { position: absolute; inset: 2%; border-radius: 50%; background: linear-gradient(90deg, #4a0a32 0%, #b3155f 18%, #ff5fb5 34%, #ffd36b 50%, #ff5fb5 66%, #b3155f 82%, #4a0a32 100%); }
+@keyframes coin-flip { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes coin-glow { 0%, 100% { opacity: .55; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@keyframes coin-shine { from { background-position: 160% 0; } to { background-position: -60% 0; } }
+.launch-mid #lcoin { display: flex; justify-content: center; margin: 4px 0 18px; }
+@media (prefers-reduced-motion: reduce) {
+  .coin3d { animation: coin-flip 2s linear infinite !important; }
+}
+
+@media (max-width: 420px) {
+  .top .logo { font-size: 17px; gap: 7px; }
+  .top .logo .logo-img { width: 30px; height: 30px; }
+  .top-right { gap: 6px; }
+  .top-right a.round-btn[href="#/rewards"] { display: none; }
+  .round-btn { width: 40px; }
 }

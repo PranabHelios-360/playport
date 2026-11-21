@@ -69,13 +69,14 @@ function save() {
 
 const SITES = {
   a: { name: 'Recharge777', word: 'Recharge<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20', img: 'assets/logos/r777-logo.png' },
-  b: { name: 'Lucky Lounge', word: 'Lucky<b>Lounge</b>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#081310' }
+  b: { name: 'Loaded777', word: 'Loaded<b>777</b>', svg: '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="l7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a1"/><stop offset=".45" stop-color="#e3a21a"/><stop offset=".75" stop-color="#ffd25a"/><stop offset="1" stop-color="#b9780c"/></linearGradient><radialGradient id="l7c" cx=".5" cy=".38" r=".65"><stop offset="0" stop-color="#3d1418"/><stop offset="1" stop-color="#120607"/></radialGradient></defs><circle cx="32" cy="32" r="31" fill="url(#l7g)"/><circle cx="32" cy="32" r="25.5" fill="url(#l7c)" stroke="#7a4a08" stroke-width="1.2"/><path d="M20.5 17.5h24v6.2L33.6 46.5h-8.4l10.6-21.2H20.5Z" fill="#e2343f" stroke="#ffd36b" stroke-width="2.2" stroke-linejoin="round"/><path d="M23 20.4h18.5" stroke="#ff9aa0" stroke-width="1.6" stroke-linecap="round" opacity=".75"/></svg>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#0c0809' }
 };
 S.site = null;
 const site = () => SITES[S.site || 'a'];
 const BRAND = () => site().name;
 const logoInner = () => site().img
   ? `<img class="logo-img" src="${site().img}" alt=""><span>${site().word}</span>`
+  : site().svg ? `<span class="logo-svg">${site().svg}</span><span>${site().word}</span>`
   : `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/>${site().mark}</svg><span>${site().word}</span>`;
 
 function applySite(k) {
@@ -778,7 +779,7 @@ function videoModal(id) {
     <div class="launch-foot"><span>${BRAND()} videos</span><button class="btn btn-ghost btn-sm" data-close>Close</button></div>`, true);
 }
 
-/* ---------- Lucky Lounge (site b) ---------- */
+/* ---------- Loaded777 (site b) ---------- */
 
 const B_SLIDES = [
   { g: 'milkyway--shooting-star', t: 'Shooting Star', s: 'Rubies, cherries and a Grand jackpot. New on Milky Way.' },
@@ -895,7 +896,7 @@ function showChooser() {
           <b>Recharge777</b><span>Pink &amp; navy &middot; bottom menu &middot; list layout</span></button>
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
-          <b>Lucky Lounge</b><span>Gold &amp; emerald &middot; side menu &middot; card layout</span></button>
+          <b>Loaded777</b><span>Black, gold &amp; ruby &middot; side menu &middot; card layout</span></button>
       </div>
     </div>`;
   ch.hidden = false;
@@ -1044,6 +1045,7 @@ function playModal(pid, gameId) {
 function coinHtml(size) {
   const face = site().img
     ? `<img src="${site().img}" alt="">`
+    : site().svg ? site().svg
     : `<svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="#f2c14b"/><circle cx="16" cy="16" r="12.5" fill="#0f211b"/><path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="#f2c14b"/></svg>`;
   const edges = Array.from({ length: 11 }, (_, i) => `<i class="c-edge" style="transform:translateZ(${(i - 5) * 1.1}px)"></i>`).join('');
   return `<div class="coin3d-wrap" style="--cs:${size}px" role="img" aria-label="Loading"><span class="coin3d-glow"></span>

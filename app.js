@@ -274,6 +274,7 @@ function viewHome() {
         </div>`).join('')}</div>
       </div>
     </section>
+    ${blogVideoSection()}
   </div>
   ${ticker()}`;
 }
@@ -720,6 +721,61 @@ function setTheme(k) {
   document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
 }
 
+/* ---------- blog + videos ---------- */
+
+const POSTS = [
+  { id: 'load', cat: 'Guide', img: 'assets/games/jade-fortune.jpg', date: 'Nov 19, 2026', read: '3 min', title: 'How to load credits into a game',
+    excerpt: 'Move money from your wallet into any game account in a few taps.',
+    body: ['Every game has its own balance. Your wallet is where deposits land; credits are what you play with inside a game.', 'Open Games, tap Load on the game you want, pick an amount and confirm. The credits show on that game straight away.', 'Tip: the first load of the day on games tagged Daily 1st adds bonus credits on top.'] },
+  { id: 'daily', cat: 'Promos', img: 'assets/games/lucky-weekends.jpg', date: 'Nov 17, 2026', read: '2 min', title: 'The Daily 1st bonus, explained',
+    excerpt: 'Get extra credits on your first load of the day in selected games.',
+    body: ['Games with the Daily 1st tag add a percentage on top of your first load each day.', 'Milky Way, Fire Kirin and Juwa give +10%. Orion Stars gives +15%.', 'The tag greys out once you have used it for the day and resets the next day.'] },
+  { id: 'fish', cat: 'Tips', img: 'assets/games/ocean-king.jpg', date: 'Nov 14, 2026', read: '4 min', title: '5 fish table tips for beginners',
+    excerpt: 'Pick your targets, pace your shots and know when to switch tables.',
+    body: ['Start on a low bet to learn how each fish moves before raising it.', 'Big targets pay more but take more shots. Mix small, steady targets in between.', 'Set a budget before you start and use the deposit limit under My account to stick to it.'] },
+  { id: 'redeem', cat: 'Guide', img: 'assets/games/neon-777.jpg', date: 'Nov 10, 2026', read: '3 min', title: 'How redeeming and withdrawing work',
+    excerpt: 'Bring credits back to your wallet, then send them to your crypto address.',
+    body: ['Redeem first: open Balance, choose Redeem, pick the game and the amount. It lands in your wallet once processed.', 'Then withdraw: choose Withdraw, pick a crypto, enter your address and the amount.', 'You can follow every step under Activity, In progress.'] }
+];
+const VIDEOS = [
+  { id: 'start', img: 'assets/games/shooting-star.jpg', len: '1:02', title: 'Getting started in 60 seconds', sub: 'Sign up, deposit, unlock a game' },
+  { id: 'jade', img: 'assets/games/jade-fortune.jpg', len: '4:18', title: 'Jade Fortune gameplay', sub: 'Fire Kirin' },
+  { id: 'ocean', img: 'assets/games/ocean-king.jpg', len: '5:40', title: 'Ocean King boss hunt', sub: 'Milky Way' },
+  { id: 'redeem', img: 'assets/games/super-double-up.jpg', len: '2:05', title: 'How to redeem to your wallet', sub: 'Step by step' }
+];
+
+function blogVideoSection() {
+  return `<section class="bv">
+      <div class="bv-h"><h2>From the blog</h2><a href="#" data-act="foot-doc" data-doc="How it works">How it works ${I.chev}</a></div>
+      <div class="bv-posts">${POSTS.map(p => `<article class="post" data-post="${p.id}" tabindex="0">
+        <div class="post-img"><img src="${p.img}" alt="" loading="lazy"><span class="post-cat">${p.cat}</span></div>
+        <div class="post-body"><small>${p.date} &middot; ${p.read} read</small><h3>${p.title}</h3><p>${p.excerpt}</p><span class="post-more">Read more ${I.chev}</span></div>
+      </article>`).join('')}</div>
+    </section>
+    <section class="bv">
+      <div class="bv-h"><h2>Videos</h2></div>
+      <div class="bv-vids">${VIDEOS.map(v => `<button class="vid" data-video="${v.id}">
+        <div class="vid-img"><img src="${v.img}" alt="" loading="lazy"><span class="vid-play">${I.play}</span><span class="vid-len">${v.len}</span></div>
+        <b>${v.title}</b><small>${v.sub}</small>
+      </button>`).join('')}</div>
+    </section>`;
+}
+
+function postModal(id) {
+  const p = POSTS.find(x => x.id === id);
+  openModal(`<div class="art-img"><img src="${p.img}" alt=""></div>
+    <small class="art-meta">${p.cat} &middot; ${p.date} &middot; ${p.read} read</small>
+    <h2>${p.title}</h2>${p.body.map(t => `<p class="art-p">${t}</p>`).join('')}
+    <button class="btn btn-ghost btn-block" data-close style="margin-top:12px">Back</button>`);
+}
+
+function videoModal(id) {
+  const v = VIDEOS.find(x => x.id === id);
+  openModal(`<div class="launch-stage"><div class="launch-blur" style="background-image:url(${v.img})"></div>
+      <div class="launch-mid"><span class="vid-play big">${I.play}</span><h3>${v.title}</h3><p>${v.sub} &middot; ${v.len}</p><p class="note">The video player goes here once the clip is uploaded.</p></div></div>
+    <div class="launch-foot"><span>${BRAND()} videos</span><button class="btn btn-ghost btn-sm" data-close>Close</button></div>`, true);
+}
+
 /* ---------- Lucky Lounge (site b) ---------- */
 
 const B_SLIDES = [
@@ -800,6 +856,7 @@ function viewHomeB() {
     <section class="b-sec"><div class="b-sec-h"><h2>Popular games</h2></div><div class="grid">${GAMES.slice(0, 8).map(tile).join('')}</div></section>
     <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
       <div class="b-wins">${BIG.map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
+    ${blogVideoSection()}
   </div>`;
 }
 
@@ -1060,7 +1117,7 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-bal-go],[data-close-after],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],.drawer-nav a');
   if (!t) return;
   if (t.dataset.balGo) S.bal = t.dataset.balGo;
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -1070,6 +1127,8 @@ document.addEventListener('click', e => {
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
+  if (t.dataset.post) { postModal(t.dataset.post); return; }
+  if (t.dataset.video) { videoModal(t.dataset.video); return; }
   if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
   if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }
   if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES.find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }

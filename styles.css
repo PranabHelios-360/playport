@@ -1653,3 +1653,23 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .dash-acts { gap: 30px; }
 .d-round { flex: none; width: 84px; text-align: center; }
 @media (max-width: 420px) { .dash-acts { gap: 18px; } }
+
+/* review flips + Trustpilot slot */
+.rv-grid { perspective: 1200px; }
+.rv-card { padding: 0; display: block; }
+.rv-in { height: 100%; display: grid; gap: 14px; align-content: space-between; padding: 22px; }
+.rv-card.flip-out { animation: rvOut .3s ease-in forwards; }
+.rv-card.flip-in { animation: rvIn .35s ease-out; }
+@keyframes rvOut { to { transform: rotateX(90deg); opacity: .2; } }
+@keyframes rvIn { from { transform: rotateX(-90deg); opacity: .2; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .rv-card.flip-out { animation: rvFade .3s forwards; }
+  .rv-card.flip-in { animation: rvFade .35s reverse; }
+  @keyframes rvFade { to { opacity: 0; } }
+}
+.rv-tp { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 12px 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--line-2); }
+.rv-tp.live { display: block; padding: 8px; }
+.rv-tp-star { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 8px; background: #00b67a; color: #fff; font-size: 20px; }
+.rv-tp b { display: block; font-size: 15px; }
+.rv-tp small { display: block; color: var(--mute); font-size: 12.5px; line-height: 1.4; }
+@media (max-width: 520px) { .rv-in { padding: 18px; } }

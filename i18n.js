@@ -52,6 +52,15 @@ const ES = {
   'The game categories make it easy to find what I want to explore.': 'Las categorías facilitan encontrar lo que quiero explorar.',
   'The layout feels clear on my phone and my tablet.': 'El diseño se ve claro en mi teléfono y mi tableta.',
   'Switching between the light and dark themes is a nice touch.': 'Poder cambiar entre tema claro y oscuro es un buen detalle.',
+  'Loading credits into a game takes just a couple of taps.': 'Cargar créditos en un juego toma solo un par de toques.',
+  'Seeing every game login in one place saves me time.': 'Ver todos mis accesos de juego en un solo lugar me ahorra tiempo.',
+  'The Daily 1st bonus is a fun reason to check in each day.': 'El bono Daily 1st es un buen motivo para entrar cada día.',
+  'Redeeming back to my wallet is simple to follow.': 'Canjear de vuelta a mi billetera es fácil de seguir.',
+  'Live chat answered my question quickly.': 'El chat en vivo respondió mi pregunta rápido.',
+  'I like that each game keeps its own balance.': 'Me gusta que cada juego tenga su propio saldo.',
+  'The deposit limit setting helps me stay on budget.': 'El límite de depósito me ayuda a no pasarme del presupuesto.',
+  'Being able to switch to Spanish is really helpful.': 'Poder cambiar a español es muy útil.',
+  'Our Trustpilot rating will show here once the business profile is connected.': 'Nuestra calificación de Trustpilot aparecerá aquí cuando se conecte el perfil de empresa.',
 
   // blog + videos
   'From the blog': 'Del blog', 'How it works': 'Cómo funciona', 'Guide': 'Guía', 'Promos': 'Promociones', 'Tips': 'Consejos', 'Read more': 'Leer más',

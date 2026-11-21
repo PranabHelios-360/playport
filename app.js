@@ -807,13 +807,38 @@ const VIDEOS = [
   { id: 'redeem', img: 'assets/games/super-double-up.jpg', len: '2:05', title: 'How to redeem to your wallet', sub: 'Step by step' }
 ];
 
+/* Sample reviews: four cards, one flips at a time to a new review from the pool.
+   Keep the "Sample review" label until these are swapped for real ones. */
 const REVIEWS = [
-  ['I like having my game platforms together in one place.', '#a3445f'],
-  ['The game categories make it easy to find what I want to explore.', '#2f7a5a'],
-  ['The layout feels clear on my phone and my tablet.', '#b0652a'],
-  ['Switching between the light and dark themes is a nice touch.', '#5a5fc4']
+  ['I like having my game platforms together in one place.', 'R', '#a3445f'],
+  ['The game categories make it easy to find what I want to explore.', 'M', '#2f7a5a'],
+  ['The layout feels clear on my phone and my tablet.', 'J', '#b0652a'],
+  ['Switching between the light and dark themes is a nice touch.', 'A', '#5a5fc4'],
+  ['Loading credits into a game takes just a couple of taps.', 'K', '#8a4fc0'],
+  ['Seeing every game login in one place saves me time.', 'D', '#1f7f95'],
+  ['The Daily 1st bonus is a fun reason to check in each day.', 'S', '#b8862a'],
+  ['Redeeming back to my wallet is simple to follow.', 'L', '#3f8f4a'],
+  ['Live chat answered my question quickly.', 'T', '#c0485a'],
+  ['I like that each game keeps its own balance.', 'C', '#4b6fd0'],
+  ['The deposit limit setting helps me stay on budget.', 'N', '#7a5a3a'],
+  ['Being able to switch to Spanish is really helpful.', 'E', '#2f8f7f']
 ];
+/* Trustpilot: paste the business unit ID from Trustpilot Business (Integrations > TrustBox)
+   to show the official widget. Until then a placeholder shows. */
+const TRUSTPILOT = { businessUnitId: '', url: '' };
+
+const rvCard = (i, k) => { const [q, init, c] = REVIEWS[i]; return `<figure class="rv-card" data-rv="${k}" data-ri="${i}"><div class="rv-in">
+    <div class="rv-top"><span class="rv-q">&ldquo;</span><small>Sample review</small></div>
+    <blockquote>${q}</blockquote>
+    <figcaption><span class="rv-av" style="background:${c}">${init}</span><span><b>Sample player</b><small>Preview content</small></span></figcaption>
+  </div></figure>`; };
+function trustpilotHtml() {
+  const tp = TRUSTPILOT;
+  if (tp.businessUnitId) return `<div class="rv-tp live"><div class="trustpilot-widget" data-locale="${LANG === 'es' ? 'es-ES' : 'en-US'}" data-template-id="53aa8807dec7e10d38f59f36" data-businessunit-id="${tp.businessUnitId}" data-style-height="150px" data-style-width="100%" data-theme="dark">${tp.url ? `<a href="${tp.url}" target="_blank" rel="noopener">Trustpilot</a>` : ''}</div></div>`;
+  return `<div class="rv-tp"><span class="rv-tp-star" aria-hidden="true">&#9733;</span><span><b>Trustpilot</b><small>Our Trustpilot rating will show here once the business profile is connected.</small></span></div>`;
+}
 function reviewsSection() {
+  const order = [...REVIEWS.keys()].sort(() => Math.random() - .5).slice(0, 4);
   return `<section class="rv">
     <div class="rv-plats">${PLATFORMS.map(p => `<span>${coin(p, 'xs')}<b>${p.name}</b></span>`).join('')}</div>
     <div class="rv-body">
@@ -823,14 +848,39 @@ function reviewsSection() {
         <p>A place for the experiences, favorites, and feedback that make our community.</p>
         <span class="rv-badge">Design preview &middot; sample reviews</span>
         <p class="rv-disc">These examples show the layout. They are not customer testimonials.</p>
+        ${trustpilotHtml()}
       </div>
-      <div class="rv-grid">${REVIEWS.map(([q, c]) => `<figure class="rv-card">
-        <div class="rv-top"><span class="rv-q">&ldquo;</span><small>Sample review</small></div>
-        <blockquote>${q}</blockquote>
-        <figcaption><span class="rv-av" style="background:${c}">R</span><span><b>Sample player</b><small>Preview content</small></span></figcaption>
-      </figure>`).join('')}</div>
+      <div class="rv-grid">${order.map((i, k) => rvCard(i, k)).join('')}</div>
     </div>
   </section>`;
+}
+let rvTimer, rvLast = -1;
+function startReviews() {
+  clearInterval(rvTimer);
+  if (!document.querySelector('.rv-grid')) return;
+  if (TRUSTPILOT.businessUnitId && !window.Trustpilot && !document.getElementById('tpjs')) {
+    const sc = document.createElement('script'); sc.id = 'tpjs'; sc.async = true;
+    sc.src = 'https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js';
+    sc.onload = () => document.querySelectorAll('.trustpilot-widget').forEach(el => window.Trustpilot && window.Trustpilot.loadFromElement(el));
+    document.head.appendChild(sc);
+  } else if (window.Trustpilot) document.querySelectorAll('.trustpilot-widget').forEach(el => window.Trustpilot.loadFromElement(el));
+  rvTimer = setInterval(() => {
+    const cards = [...document.querySelectorAll('.rv-card')];
+    if (!cards.length) return clearInterval(rvTimer);
+    if (document.hidden) return;
+    let k; do { k = Math.floor(Math.random() * cards.length); } while (k === rvLast && cards.length > 1);
+    rvLast = k;
+    const shown = new Set(cards.map(c => +c.dataset.ri));
+    const pool = [...REVIEWS.keys()].filter(i => !shown.has(i));
+    const next = pool[Math.floor(Math.random() * pool.length)];
+    const card = cards[k];
+    card.classList.add('flip-out');
+    setTimeout(() => {
+      card.outerHTML = rvCard(next, k);
+      const fresh = document.querySelector(`.rv-card[data-rv="${k}"]`);
+      if (fresh) { fresh.classList.add('flip-in'); setTimeout(() => fresh.classList.remove('flip-in'), 400); }
+    }, 300);
+  }, 3200);
 }
 
 function blogVideoSection() {
@@ -1012,6 +1062,7 @@ function render(keepScroll) {
   document.body.classList.toggle('has-ticker', name === 'home' && !isB);
   const side = $('#side'); if (side) side.innerHTML = isB ? sideHtml(name) : '';
   startBSlides();
+  startReviews();
   if (name === 'balance' && S.pendingSheet && S.user) { const k = S.pendingSheet; S.pendingSheet = null; setTimeout(() => openBalSheet(k), 30); }
   document.querySelectorAll('.tabbar [data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
   if (!keepScroll) window.scrollTo(0, 0);

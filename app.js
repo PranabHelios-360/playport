@@ -460,7 +460,7 @@ function dashboardHtml(inPanel) {
     : '';
   if (!u) return head + `<div class="dash-guest"><h2>Welcome to ${BRAND()}</h2><p>Sign up to get your wallet, game accounts and rewards.</p>
       <button class="btn btn-accent btn-block" data-act="signup">Create account</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button></div>
-      <nav class="dash-links">${[['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards']].map(([h, t]) => `<a href="${h}">${t}</a>`).join('')}</nav>`;
+      <nav class="dash-links"><a href="#" data-act="telegram">Join our Telegram</a><a href="#" data-act="get-app">Download App</a><a href="#" data-act="foot-doc" data-doc="How it works">How it works</a><a href="#" data-act="choose-site">Switch site</a></nav>`;
   const n = unlockedCount();
   const row = (ico, title, sub, attrs, right) => `<button class="d-row" ${attrs}><span class="d-ico">${ico}</span><span class="d-txt"><b>${title}</b><small>${sub}</small></span>${right === undefined ? I.chev : right}</button>`;
   const recent = u.tx.slice(0, 4);
@@ -724,7 +724,7 @@ function menuHtml() {
   return `<div class="drawer-h"><h2>Menu</h2><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
     ${S.user ? `<div class="m-prof"><a class="m-prof-link" href="#/account">${avatarHtml(S.user)}<span class="m-prof-txt"><b>Profile</b><small>${esc(S.user.first)}</small></span></a><button class="m-prof-id" data-copyval="${esc(S.user.username)}" data-what="Player ID" aria-label="Copy Player ID"><small>Player ID</small><code>${esc(S.user.username)}</code>${I.copy}</button></div>` : ''}
     <nav class="m-list">
-      ${row(navIco.rewards, 'Rewards', 'href="#/rewards"')}
+      ${S.user ? row(navIco.rewards, 'Rewards', 'href="#/rewards"') : ''}
       ${row(I.tg, 'Join our Telegram', 'href="#" data-act="telegram"')}
       ${row(I.dl, 'Download App', 'href="#" data-act="get-app"')}
       ${row(I.help, 'How it works', 'href="#" data-act="foot-doc" data-doc="How it works"')}

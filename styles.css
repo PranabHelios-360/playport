@@ -1036,3 +1036,28 @@ body.chat-open .chat { transform: none; opacity: 1; pointer-events: auto; }
   .vid { flex: 0 0 70%; scroll-snap-align: start; }
   .art-img { margin: -24px -18px 16px; }
 }
+
+/* small phones */
+@media (max-width: 420px) {
+  .row-acts { flex-wrap: wrap; }
+  .row-acts .credits { flex: 1 0 100%; flex-direction: row; justify-content: space-between; align-items: baseline; margin: 0 0 4px; padding: 8px 12px; border-radius: 10px; background: var(--sunk); }
+  .row-acts .credits small { font-size: 13px; }
+}
+
+/* tablet: Lucky Lounge wallet in two columns */
+@media (min-width: 600px) and (max-width: 860px) {
+  .b-wallet:not(.join) { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; row-gap: 8px; align-items: start; }
+  .b-wallet:not(.join) > small, .b-wallet:not(.join) > .b-bal, .b-wallet:not(.join) > .b-sub, .b-wallet:not(.join) > .b-wal-acts { grid-column: 1; }
+  .b-wallet:not(.join) > .b-ck { grid-column: 2; grid-row: 1 / 3; align-self: stretch; }
+  .b-wallet:not(.join) > .b-pts { grid-column: 2; grid-row: 3 / 5; align-self: end; margin-top: 0; }
+}
+
+/* phone fixes */
+.addr > * { min-width: 0; }
+@media (max-width: 860px) {
+  .rw-tabs { grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: visible; gap: 2px; padding: 4px; }
+  .rw-tabs button { padding: 0 2px; font-size: 13.5px; height: 42px; border-radius: 10px; }
+}
+@media (max-width: 360px) {
+  .rw-tabs button { font-size: 12px; }
+}

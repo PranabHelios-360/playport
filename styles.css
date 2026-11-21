@@ -1168,3 +1168,11 @@ body.chat-open .chat { transform: none; opacity: 1; pointer-events: auto; }
 @media (max-width: 600px) {
   .b-home .grid .tile:nth-child(n+5) { display: none; }
 }
+
+/* real-phone hardening (Recharge777) */
+html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+.ticker, .ticker-track { contain: paint; }
+@media (max-width: 860px) {
+  .ticker { position: relative; bottom: auto; left: auto; right: auto; z-index: 1; height: 46px; border-top: 0; border-bottom: 1px solid var(--line); }
+  body.has-ticker { padding-bottom: calc(var(--tab-h) + 20px); }
+}

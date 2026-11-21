@@ -68,7 +68,7 @@ function save() {
 /* ---------- sites ---------- */
 
 const SITES = {
-  a: { name: 'Loaded777', word: 'Loaded<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20' },
+  a: { name: 'Recharge777', word: 'Recharge<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20' },
   b: { name: 'Lucky Lounge', word: 'Lucky<b>Lounge</b>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#081310' }
 };
 S.site = null;
@@ -215,7 +215,7 @@ function ticker() {
 function viewHome() {
   const hot = ['firekirin', 'milkyway', 'orion'].map(plat);
   const guest = !S.user;
-  return `<div class="page home">
+  return `${ticker()}<div class="page home">
     <section class="hero">
       <div class="hero-txt">
         ${guest
@@ -276,7 +276,7 @@ function viewHome() {
     </section>
     ${blogVideoSection()}
   </div>
-  ${ticker()}`;
+  `;
 }
 
 function viewGames() {
@@ -489,7 +489,7 @@ const SHOP = [
   { id: 'c10', name: '$10 cashable', cost: 850, cash: 10 },
   { id: 'c25', name: '$25 cashable', cost: 2000, cash: 25 }
 ];
-const PROMO_CODES = { BONUS50: 50, LOADED100: 100 };
+const PROMO_CODES = { BONUS50: 50, RECHARGE100: 100 };
 
 const yesterdayKey = () => { const d = new Date(Date.now() - 864e5); return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }); };
 const countTx = (kind, status = 'done') => S.user.tx.filter(t => t.kind === kind && t.status === status).length;
@@ -574,7 +574,7 @@ function rwPromos() {
       <h3 class="rw-h">GOT A PROMO CODE?</h3>
       <p>Codes from emails, posts or your host unlock extra offers.</p>
       <form class="promo-form" data-form="promo"><input class="field" name="code" placeholder="ENTER A CODE" autocomplete="off" required><button class="btn btn-accent" type="submit">Unlock</button></form>
-      <p class="note">Demo codes: BONUS50, LOADED100</p>
+      <p class="note">Demo codes: BONUS50, RECHARGE100</p>
     </section>
     <section class="panel-card">
       <h3 class="rw-h">OFFERS FOR YOU</h3>
@@ -611,7 +611,7 @@ function rwShop() {
 
 function rwYou() {
   const lv = levelInfo();
-  const link = `https://loaded777.com/r/${S.user.refCode}`;
+  const link = `https://recharge777.com/r/${S.user.refCode}`;
   return `<section class="panel-card">
       <h3 class="rw-h">INVITE FRIENDS</h3>
       <p>Earn <b>+250 points</b> when a friend signs up with your code and makes their first deposit.</p>
@@ -890,7 +890,7 @@ function showChooser() {
       <div class="ch-opts">
         <button class="ch-opt a" data-site-pick="a">
           <div class="ch-prev"><i class="p-top"></i><i class="p-hero"></i><i class="p-rows"></i><i class="p-rows"></i><i class="p-bar"></i></div>
-          <b>Loaded777</b><span>Pink &amp; navy &middot; bottom menu &middot; list layout</span></button>
+          <b>Recharge777</b><span>Pink &amp; navy &middot; bottom menu &middot; list layout</span></button>
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
           <b>Lucky Lounge</b><span>Gold &amp; emerald &middot; side menu &middot; card layout</span></button>
@@ -986,7 +986,7 @@ function makePw() {
 }
 function makeCreds(first) {
   const base = first.toLowerCase().replace(/[^a-z]/g, '').slice(0, 8) || 'player';
-  return { username: `ld_${base}${Math.floor(1000 + Math.random() * 9000)}`, password: makePw() };
+  return { username: `rc_${base}${Math.floor(1000 + Math.random() * 9000)}`, password: makePw() };
 }
 
 function requireLogin() { if (!S.user) { signupStep(1); return false; } return true; }
@@ -1173,7 +1173,7 @@ document.addEventListener('click', e => {
   if (a === 'logout') { setMenu(false); S.user = null; store.set('pp_user', null); S.showPw = false; goHome(); toast('Signed out'); }
   if (a === 'unlock') unlockModal(pid);
   if (a === 'unlock-go') {
-    S.user.accounts[pid] = { username: `${S.user.username.replace(/^(pp|ld)_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
+    S.user.accounts[pid] = { username: `${S.user.username.replace(/^(pp|ld|rc)_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
     S.showPw = true;
     refresh();
     gameCredsModal(pid, true);

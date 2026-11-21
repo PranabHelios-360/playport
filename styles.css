@@ -12,12 +12,12 @@
   --font: "Figtree", system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
 }
-:root, :root[data-theme="plum"] {
+:root[data-theme="plum"] {
   --bg: #1d1022; --bar: #170c1b; --card: #2a1832; --card-2: #34203d; --panel: #251429;
   --line: #3a2542; --line-2: #4a3253; --sunk: #160b1a; --raise: #2f1c37; --raise-2: #3a2443;
   --mute: #b9a3c0; --soft: #e3d4e7; --soft-2: #f0e6f2;
 }
-:root[data-theme="navy"] {
+:root, :root[data-theme="navy"] {
   --bg: #0f1428; --bar: #0b0f20; --card: #1a2140; --card-2: #222a4d; --panel: #151b35;
   --line: #28305a; --line-2: #343d6c; --sunk: #0b1022; --raise: #1e2647; --raise-2: #283157;
   --mute: #a3abcc; --soft: #d5d9ee; --soft-2: #e6e9f7;

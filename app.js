@@ -687,8 +687,8 @@ const DOCS = {
 
 /* ---------- theme ---------- */
 
-const THEMES = [['plum', 'Plum', '#1d1022', '#170c1b'], ['navy', 'Navy', '#0f1428', '#0b0f20'], ['wine', 'Wine', '#210d16', '#1a0911'], ['charcoal', 'Charcoal', '#17181c', '#141518']];
-const curTheme = () => document.documentElement.dataset.theme || 'plum';
+const THEMES = [['navy', 'Navy', '#0f1428', '#0b0f20'], ['plum', 'Plum', '#1d1022', '#170c1b'], ['wine', 'Wine', '#210d16', '#1a0911'], ['charcoal', 'Charcoal', '#17181c', '#141518']];
+const curTheme = () => document.documentElement.dataset.theme || 'navy';
 const themePick = () => `<span>Colour</span>${THEMES.map(([k, n, bg]) => `<button class="${curTheme() === k ? 'on' : ''}" style="background:${bg}" data-theme-set="${k}" title="${n}" aria-label="${n} theme"></button>`).join('')}`;
 function setTheme(k) {
   document.documentElement.dataset.theme = k;

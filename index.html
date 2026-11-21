@@ -9,7 +9,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,6 +19,7 @@
   <div class="top-right" id="topRight"></div>
 </header>
 
+<aside class="side" id="side" aria-label="Site menu"></aside>
 <main id="app"></main>
 
 <footer class="foot">
@@ -39,7 +40,7 @@
     </div>
     <div class="foot-col">
       <h4>Help</h4>
-      <a href="#" data-act="chat">Live chat</a><a href="#" data-act="foot-doc" data-doc="How it works">How it works</a><a href="#" data-act="foot-doc" data-doc="FAQ">FAQ</a><a href="#" data-act="foot-doc" data-doc="Contact us">Contact us</a>
+      <a href="#" data-act="chat">Live chat</a><a href="#" data-act="foot-doc" data-doc="How it works">How it works</a><a href="#" data-act="foot-doc" data-doc="FAQ">FAQ</a><a href="#" data-act="foot-doc" data-doc="Contact us">Contact us</a><a href="#" data-act="choose-site">Switch site</a>
     </div>
     <div class="foot-col">
       <h4>Legal</h4>
@@ -70,6 +71,7 @@
   <div class="modal-box" role="dialog" aria-modal="true" id="modalBox"></div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="chooser" id="chooser" hidden></div>
 
 <script src="app.js"></script>
 </body>

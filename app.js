@@ -65,6 +65,26 @@ function save() {
   store.set('pp_account', S.user);
 }
 
+/* ---------- sites ---------- */
+
+const SITES = {
+  a: { name: 'Loaded777', word: 'Loaded<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20' },
+  b: { name: 'Lucky Lounge', word: 'Lucky<b>Lounge</b>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#081310' }
+};
+S.site = null;
+const site = () => SITES[S.site || 'a'];
+const BRAND = () => site().name;
+const logoInner = () => `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/>${site().mark}</svg><span>${site().word}</span>`;
+
+function applySite(k) {
+  S.site = k;
+  document.documentElement.dataset.site = k;
+  document.title = SITES[k].name;
+  document.querySelectorAll('header .logo, .foot .logo').forEach(el => { el.innerHTML = logoInner(); el.setAttribute('aria-label', SITES[k].name + ' home'); });
+  const c = document.querySelector('.copy'); if (c) c.innerHTML = `&copy; 2026 ${SITES[k].name}. All rights reserved.`;
+  if (k === 'b') { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = SITES.b.theme; }
+}
+
 /* ---------- demo feed data ---------- */
 
 const FEED_USERS = ['mike77', 'luckyrae', 'jdog_44', 'tina.b', 'reelking', 'sam_k', 'goldie9', 'nate_x', 'bigfish', 'kayla22', 'dex808', 'mona_v'];
@@ -228,7 +248,7 @@ function viewHome() {
     </section>
 
     ${guest ? `<section class="steps3 four">
-      <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your Loaded777 login.</p></div>
+      <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your ${BRAND()} login.</p></div>
       <div><span>2</span><b>Deposit to your wallet</b><p>Send crypto. Your wallet shows it once confirmed.</p></div>
       <div><span>3</span><b>Unlock a game, load credits</b><p>Each game gets its own login. Move money from your wallet into it.</p></div>
       <div><span>4</span><b>Play, then redeem</b><p>Redeem credits back to your wallet, then withdraw.</p></div>
@@ -342,7 +362,7 @@ function balPanel(id) {
     </form>` : noGames);
   if (id === 'redeem') return head('Redeem', 'Bring credits from a game back to your wallet.') + walletLine + (unlocked.length ?
     `<div class="opt-list">${unlocked.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${acct(p.id).credits < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${usd(acct(p.id).credits)} credits</small>${I.chev}</button>`).join('')}</div>` : noGames);
-  if (id === 'p2p') return head('P2P', 'Send money from your wallet to another Loaded777 player.') + walletLine +
+  if (id === 'p2p') return head('P2P', `Send money from your wallet to another ${BRAND()} player.`) + walletLine +
     `<form class="form-row narrow" data-form="p2p">
       <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. mike77" required>
       <label class="lbl">Amount ($)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
@@ -394,7 +414,7 @@ function viewAccount() {
     <p class="lede">${esc(u.email)} &middot; member since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</p>
     <div class="acct">
       <div class="card">
-        <h2>Loaded777 login</h2>
+        <h2>${BRAND()} login</h2>
         <p class="card-sub">For this site: your wallet, deposits and withdrawals.</p>
         ${credRow('Username', u.username, u.username)}
         ${credRow('Password', u.password, u.password, true)}
@@ -641,15 +661,16 @@ function needLogin(title) {
 
 /* ---------- menu + chat ---------- */
 
-const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="#3a1022"/></svg><span>Loaded<b>777</b></span>`;
+const LOGO = () => logoInner();
 
 function menuHtml() {
   const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
-  return `<div class="drawer-h"><a class="logo" href="#/">${LOGO}</a><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
+  return `<div class="drawer-h"><a class="logo" href="#/">${LOGO()}</a><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
     ${S.user ? `<div class="drawer-user"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'P').toUpperCase())}</span><div><b>${esc(S.user.first)}</b><small>Wallet ${usd(S.user.wallet)}</small></div></div>` : ''}
     <nav class="drawer-nav">${links.map(([h, t]) => `<a href="${h}">${t}${I.chev}</a>`).join('')}
       <a href="#" data-act="foot-doc" data-doc="How it works">How it works${I.chev}</a>
-      <a href="#" data-act="chat">Help &amp; chat${I.chev}</a></nav>
+      <a href="#" data-act="chat">Help &amp; chat${I.chev}</a>
+      <a href="#" data-act="choose-site">Switch site${I.chev}</a></nav>
     <div class="theme-pick" data-theme-pick>${themePick()}</div>
     <div class="drawer-foot">${S.user
       ? `<button class="btn btn-ghost btn-block" data-act="logout">Sign out</button>`
@@ -657,7 +678,7 @@ function menuHtml() {
 }
 
 function chatHtml() {
-  return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">L</span><b>Loaded777 support</b></div>
+  return `<div class="chat-h"><button class="icon-btn" data-act="chat-close" aria-label="Close chat">${I.x}</button><span class="chat-av">L</span><b>${BRAND()} support</b></div>
     <div class="chat-body" id="chatBody">
       ${S.chat.map(m => `<div class="msg ${m.me ? 'me' : ''}">${esc(m.t)}</div>`).join('')}
       ${S.chat.length === 1 ? `<form class="chat-reason" data-form="reason"><label>Contact reason</label>
@@ -667,9 +688,9 @@ function chatHtml() {
     <form class="chat-in" data-form="chat"><input class="field" name="m" placeholder="Type a message" autocomplete="off" required><button class="btn btn-accent btn-sm" type="submit">Send</button></form>`;
 }
 
-const DOCS = {
+const DOCS = () => ({
   'How it works': `<ol class="doc-steps">
-      <li><b>Create your Loaded777 account.</b> Email plus a 6-digit code. This login is for the site: your wallet, deposits and withdrawals.</li>
+      <li><b>Create your ${BRAND()} account.</b> Email plus a 6-digit code. This login is for the site: your wallet, deposits and withdrawals.</li>
       <li><b>Deposit to your wallet.</b> Pick a crypto, send at least $${MIN_DEPOSIT} to the address we show you. It appears once the network confirms it.</li>
       <li><b>Unlock a game account.</b> Each game (Milky Way, Fire Kirin and the rest) has its own app and its own login. We create it for you and show the username and password.</li>
       <li><b>Load credits.</b> Move money from your wallet into that game. Credits stay in the game you loaded them into.</li>
@@ -677,14 +698,14 @@ const DOCS = {
       <li><b>Redeem, then withdraw.</b> Redeem credits from the game back to your wallet, then withdraw from your wallet to your crypto address.</li>
     </ol>`,
   FAQ: `<div class="faq">
-      <details open><summary>Is my Loaded777 login the same as my game logins?</summary><p>No. Loaded777 is for your wallet. Each game has its own username and password, shown under My account.</p></details>
+      <details open><summary>Is my ${BRAND()} login the same as my game logins?</summary><p>No. ${BRAND()} is for your wallet. Each game has its own username and password, shown under My account.</p></details>
       <details><summary>Why are my credits split between games?</summary><p>Each game runs its own balance. Redeem from one game to your wallet, then load another.</p></details>
       <details><summary>How long do withdrawals take?</summary><p>You can see each one under Activity, In progress, until it is sent.</p></details>
       <details><summary>What is the Daily 1st bonus?</summary><p>Games tagged Daily 1st add bonus credits to your first load of the day in that game.</p></details>
       <details><summary>I already play one of these games. Can I use my account?</summary><p>Yes. Choose "I have an Account" when you unlock the game and enter your existing login.</p></details>
       <details><summary>Can I limit my spending?</summary><p>Yes. Set a daily deposit limit, take a break, or self-exclude under My account.</p></details>
     </div>`
-};
+});
 
 /* ---------- theme ---------- */
 
@@ -699,6 +720,135 @@ function setTheme(k) {
   document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
 }
 
+/* ---------- Lucky Lounge (site b) ---------- */
+
+const B_SLIDES = [
+  { g: 'milkyway--shooting-star', t: 'Shooting Star', s: 'Rubies, cherries and a Grand jackpot. New on Milky Way.' },
+  { g: 'firekirin--jade-fortune', t: 'Jade Fortune', s: 'The jade dragon pays up to 2,000x on Fire Kirin.' },
+  { g: 'milkyway--ocean-king', t: 'Ocean King', s: 'Hunt the great white for the boss bonus.' }
+];
+S.bslide = 0;
+
+const navIco = {
+  home: I.home,
+  games: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>',
+  rewards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M2 9h20M12 9v12M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6-1 6-1.5S14 5 12 9Z"/></svg>',
+  balance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M15 10h6v5h-6a2.5 2.5 0 0 1 0-5Z"/></svg>',
+  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="m6 15 4-4 3 3 5-6" stroke-linecap="round"/></svg>',
+  account: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4Z"/></svg>',
+  swap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>'
+};
+
+function sideHtml(name) {
+  const items = [['home', '#/', 'Lobby'], ['games', '#/games', 'My Games'], ['rewards', '#/rewards', 'Rewards'], ['balance', '#/balance', 'Wallet'], ['activity', '#/activity', 'Activity'], ['account', '#/account', 'Account']];
+  return `<a class="logo" href="#/">${logoInner()}</a>
+    <nav class="side-nav">${items.map(([k, h, t]) => `<a href="${h}" class="${name === k ? 'on' : ''}">${navIco[k]}<span>${t}</span>${k === 'rewards' && canCheckin() ? '<i class="side-dot"></i>' : ''}</a>`).join('')}
+      <a href="#" data-act="chat">${navIco.chat}<span>Help &amp; chat</span></a>
+      <a href="#" data-act="choose-site">${navIco.swap}<span>Switch site</span></a></nav>
+    <div class="side-foot">${S.user
+      ? `<a class="side-user" href="#/account"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'L').toUpperCase())}</span><span><b>${esc(S.user.first)}</b><small>${usd(S.user.wallet)} wallet</small></span></a>`
+      : `<button class="btn btn-accent btn-block" data-act="signup">Join now</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
+}
+
+function platCardB(p) {
+  const a = acct(p.id);
+  return `<div class="b-plat">
+    <a class="b-plat-top" href="#/platform/${p.id}">${coin(p, 'lg')}<b>${p.name}</b>${tags(p)}<small>${p.games} games</small></a>
+    ${a
+      ? `<div class="b-plat-cr"><span>Credits</span><b>${usd(a.credits)}</b></div>
+         <div class="b-plat-acts"><button class="btn btn-ghost btn-sm" data-act="load" data-plat="${p.id}">Load</button><button class="btn btn-accent btn-sm" data-act="play" data-plat="${p.id}">Play</button><button class="icon-btn" data-act="gcreds" data-plat="${p.id}" aria-label="Login">${I.key}</button></div>`
+      : `<div class="b-plat-acts"><button class="btn btn-accent btn-sm" data-act="unlock" data-plat="${p.id}">Unlock</button><button class="icon-btn" data-act="download" data-plat="${p.id}" aria-label="Download">${I.dl}</button></div>`}
+  </div>`;
+}
+
+function walletBoxB() {
+  if (!S.user) return `<aside class="b-wallet join">
+      <small>NEW HERE?</small><h2>Join ${BRAND()}</h2>
+      <p>One wallet for Milky Way, Fire Kirin, Orion Stars and more.</p>
+      <form class="form-row" data-form="quick"><input class="field" type="email" name="email" placeholder="Email address" required autocomplete="email"><button class="btn btn-accent btn-block" type="submit">Create account</button></form>
+      <p class="hl-note">Have an account? <a href="#" data-act="login">Log in</a></p>
+    </aside>`;
+  const st = checkinState();
+  return `<aside class="b-wallet">
+      <small>MY WALLET</small><b class="b-bal">${usd(S.user.wallet)}</b>
+      <span class="b-sub">${usd(creditsTotal())} in ${unlockedCount()} game${unlockedCount() === 1 ? '' : 's'}</span>
+      <div class="b-wal-acts"><a class="btn btn-accent" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-ghost" href="#/balance" data-bal-go="withdraw">Withdraw</a></div>
+      <div class="b-ck"><div><b>Daily check-in</b><small>${st.streakNow ? `${st.streakNow}-day streak` : 'Start a streak'}</small></div>
+        ${st.done ? '<span class="b-ck-done">' + I.check + 'Done</span>' : `<button class="btn btn-accent btn-sm" data-act="checkin">+${st.reward} pts</button>`}</div>
+      <a class="b-pts" href="#/rewards"><span>Points</span><b>${S.user.points.toLocaleString('en-US')}</b>${I.chev}</a>
+    </aside>`;
+}
+
+function viewHomeB() {
+  const mine = PLATFORMS.filter(p => acct(p.id));
+  return `<div class="page b-home">
+    <div class="b-top">
+      <section class="b-hero">
+        ${B_SLIDES.map((x, i) => { const g = game(x.g), p = plat(g.p); return `<div class="b-slide ${i === S.bslide ? 'on' : ''}">
+          <div class="b-slide-bg" style="background-image:url(${g.img})"></div>
+          <div class="b-slide-txt"><span class="b-kicker">${coin(p, 'xs')}${p.name}</span><h1>${x.t}</h1><p>${x.s}</p>
+            <button class="btn btn-accent btn-lg" data-game="${g.id}">Play now</button></div>
+          <img class="b-slide-art" src="${g.img}" alt="">
+        </div>`; }).join('')}
+        <div class="b-dots">${B_SLIDES.map((_, i) => `<button class="${i === S.bslide ? 'on' : ''}" data-bslide="${i}" aria-label="Slide ${i + 1}"></button>`).join('')}</div>
+      </section>
+      ${walletBoxB()}
+    </div>
+    ${mine.length ? `<section class="b-sec"><div class="b-sec-h"><h2>My Games</h2><a href="#/games">Manage ${I.chev}</a></div><div class="b-plats">${mine.map(platCardB).join('')}</div></section>` : ''}
+    <section class="b-sec"><div class="b-sec-h"><h2>${mine.length ? 'More platforms' : 'Platforms'}</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.filter(p => !acct(p.id)).map(platCardB).join('')}</div></section>
+    <section class="b-sec"><div class="b-sec-h"><h2>Popular games</h2></div><div class="grid">${GAMES.slice(0, 8).map(tile).join('')}</div></section>
+    <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
+      <div class="b-wins">${BIG.map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
+  </div>`;
+}
+
+function viewGamesB() {
+  const mine = PLATFORMS.filter(p => acct(p.id)), rest = PLATFORMS.filter(p => !acct(p.id));
+  return `<div class="page">
+    ${crumb(['My Games'])}
+    <p class="lede">${mine.length ? `${mine.length} game account${mine.length === 1 ? '' : 's'} ready. Load credits and play.` : 'Unlock a game to get its own login. It only takes a tap.'}</p>
+    ${mine.length ? `<div class="b-sec-h"><h2>Unlocked</h2></div><div class="b-plats">${mine.map(platCardB).join('')}</div>` : ''}
+    ${rest.length ? `<div class="b-sec-h"><h2>Available</h2></div><div class="b-plats">${rest.map(platCardB).join('')}</div>` : ''}
+  </div>`;
+}
+
+function startBSlides() {
+  clearInterval(S.bTimer);
+  if (S.site !== 'b' || !document.querySelector('.b-hero')) return;
+  S.bTimer = setInterval(() => setBSlide((S.bslide + 1) % B_SLIDES.length), 6000);
+}
+function setBSlide(i) {
+  S.bslide = i;
+  document.querySelectorAll('.b-slide').forEach((el, k) => el.classList.toggle('on', k === i));
+  document.querySelectorAll('.b-dots button').forEach((el, k) => el.classList.toggle('on', k === i));
+}
+
+/* ---------- site chooser ---------- */
+
+function showChooser() {
+  const ch = document.getElementById('chooser');
+  ch.innerHTML = `<div class="ch-box">
+      <h2>Choose your site</h2><p>Same games, same wallet. Pick the look you like.</p>
+      <div class="ch-opts">
+        <button class="ch-opt a" data-site-pick="a">
+          <div class="ch-prev"><i class="p-top"></i><i class="p-hero"></i><i class="p-rows"></i><i class="p-rows"></i><i class="p-bar"></i></div>
+          <b>Loaded777</b><span>Pink &amp; navy &middot; bottom menu &middot; list layout</span></button>
+        <button class="ch-opt b" data-site-pick="b">
+          <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
+          <b>Lucky Lounge</b><span>Gold &amp; emerald &middot; side menu &middot; card layout</span></button>
+      </div>
+    </div>`;
+  ch.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+function pickSite(k) {
+  applySite(k);
+  document.getElementById('chooser').hidden = true;
+  document.body.style.overflow = '';
+  render();
+}
+
 /* ---------- router ---------- */
 
 function route() {
@@ -709,10 +859,13 @@ function route() {
 
 function render(keepScroll) {
   const { name, r, arg } = route();
-  const views = { home: viewHome, games: r === 'platform' ? () => viewPlatform(arg) : viewGames, balance: viewBalance, activity: viewActivity, account: viewAccount, rewards: viewRewards };
+  const isB = S.site === 'b';
+  const views = { home: isB ? viewHomeB : viewHome, games: r === 'platform' ? () => viewPlatform(arg) : (isB ? viewGamesB : viewGames), balance: viewBalance, activity: viewActivity, account: viewAccount, rewards: viewRewards };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
-  document.body.classList.toggle('has-ticker', name === 'home');
+  document.body.classList.toggle('has-ticker', name === 'home' && !isB);
+  const side = $('#side'); if (side) side.innerHTML = isB ? sideHtml(name) : '';
+  startBSlides();
   document.querySelectorAll('.tabbar [data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
   if (!keepScroll) window.scrollTo(0, 0);
   document.querySelectorAll('[data-theme-pick]').forEach(el => { el.innerHTML = themePick(); });
@@ -744,7 +897,7 @@ const pending = {};
 function signupStep(step) {
   const bar = n => `<div class="dots-steps">${[1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</div>`;
   if (step === 1) {
-    openModal(`${bar(1)}<h2>Create your account</h2><p>This is your Loaded777 login for your wallet. Game accounts come later, one per game.</p>
+    openModal(`${bar(1)}<h2>Create your account</h2><p>This is your ${BRAND()} login for your wallet. Game accounts come later, one per game.</p>
       <form class="form-row" data-form="email">
         <input class="field" name="first" placeholder="First name" autocomplete="given-name" required value="${esc(pending.first || '')}">
         <input class="field" type="email" name="email" placeholder="Email address" autocomplete="email" required value="${esc(pending.email || '')}">
@@ -761,7 +914,7 @@ function signupStep(step) {
   } else {
     const u = S.user;
     openModal(`${bar(3)}<div class="done-mark">${I.check}</div><h2>You're in, ${esc(u.first)}</h2>
-      <p>Here is your Loaded777 login. Next, deposit to your wallet and unlock your first game.</p>
+      <p>Here is your ${BRAND()} login. Next, deposit to your wallet and unlock your first game.</p>
       ${credRow('Username', u.username, u.username)}
       ${credRow('Password', u.password, u.password, true)}
       <div class="warn">We also emailed these to ${esc(u.email)}. You can change both under My account.</div>
@@ -861,7 +1014,7 @@ function loadModal(pid) {
 
 function redeemModal(pid) {
   const p = plat(pid), a = acct(pid);
-  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your Loaded777 wallet. You can then withdraw or load another game.</p>
+  openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your ${BRAND()} wallet. You can then withdraw or load another game.</p>
     <div class="wallet-line">${p.name} credits <b>${usd(a.credits)}</b></div>
     <form class="form-row" data-form="redeem"><input type="hidden" name="plat" value="${pid}">
       <input class="field" name="amt" type="number" min="1" step="0.01" max="${a.credits}" value="${a.credits.toFixed(2)}" required>
@@ -907,7 +1060,7 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-bal-go],[data-close-after],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-bal-go],[data-close-after],.drawer-nav a');
   if (!t) return;
   if (t.dataset.balGo) S.bal = t.dataset.balGo;
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -917,6 +1070,8 @@ document.addEventListener('click', e => {
   if (t.dataset.menu !== undefined) { e.preventDefault(); setChat(false); return setMenu(!document.body.classList.contains('menu-open')); }
   if (t.dataset.closeMenu !== undefined) return setMenu(false);
   if (t.dataset.close !== undefined) return closeModal();
+  if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
+  if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }
   if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES.find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
   if (t.dataset.amt) { t.closest('form').amt.value = t.dataset.amt; return; }
   if (t.dataset.game) { const g = game(t.dataset.game); return playModal(g.p, g.id); }
@@ -948,7 +1103,7 @@ document.addEventListener('click', e => {
   if (a === 'resend') toast(`New code sent to ${pending.email}`);
   if (a === 'login') {
     setMenu(false);
-    openModal(`<h2>Log in</h2><p>Use your Loaded777 username and password.</p>
+    openModal(`<h2>Log in</h2><p>Use your ${BRAND()} username and password.</p>
       <form class="form-row" data-form="login">
         <input class="field" name="u" placeholder="Username or email" autocomplete="username" required>
         <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
@@ -1004,15 +1159,16 @@ document.addEventListener('click', e => {
   if (a === 'avatar') { S.user.avatar = t.dataset.c; refresh(); syncQuests(); render(true); }
   if (a === 'share') {
     const link = t.dataset.link;
-    if (navigator.share) navigator.share({ title: 'Loaded777', text: 'Join me on Loaded777', url: link }).catch(() => {});
+    if (navigator.share) navigator.share({ title: BRAND(), text: `Join me on ${BRAND()}`, url: link }).catch(() => {});
     else { if (navigator.clipboard) navigator.clipboard.writeText(link).catch(() => {}); toast('Invite link copied'); }
   }
   if (a === 'bell') toast('No new notifications');
+  if (a === 'choose-site') { setMenu(false); showChooser(); return; }
   if (a === 'chat') { closeModal(); setMenu(false); setChat(true); }
   if (a === 'chat-close') setChat(false);
   if (a === 'foot-doc') {
     setMenu(false);
-    const body = DOCS[t.dataset.doc];
+    const body = DOCS()[t.dataset.doc];
     openModal(`<h2>${esc(t.dataset.doc)}</h2>${body || '<p>This page is coming soon. For help now, use live chat.</p>'}<button class="btn ${body ? 'btn-ghost' : 'btn-accent'} btn-block" data-act="chat" style="margin-top:16px">Open live chat</button>`);
   }
   if (a === 'deposit-now') {
@@ -1184,4 +1340,6 @@ document.addEventListener('keydown', e => {
 });
 
 window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); render(); });
+applySite('a');
 render();
+showChooser();

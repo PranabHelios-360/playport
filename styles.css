@@ -1951,3 +1951,5 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .pk { min-width: 0; }
 .pk-free { flex-wrap: wrap; justify-content: center; max-width: 100%; }
 @media (max-width: 620px) { .pk-amt { gap: 6px; } .pk-amt b { font-size: 21px; } .pk-amt .cur-coin.lg { width: 28px; height: 28px; font-size: 10px; } .pk-free { padding: 6px; gap: 6px; } .pk-v b { font-size: 14px; } }
+
+.vs-sample { display: block; margin-bottom: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #8a8a99; }

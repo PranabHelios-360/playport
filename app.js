@@ -832,11 +832,11 @@ const REVIEWS = [
 /* Video reviews: drop each clip in assets/reviews/ and fill src (mp4), poster (jpg), name and quote.
    Empty src shows a "coming soon" tile. */
 const VIDEO_REVIEWS = [
-  { src: '', poster: '', name: '', quote: '', game: 'firekirin' },
-  { src: '', poster: '', name: '', quote: '', game: 'milkyway' },
-  { src: '', poster: '', name: '', quote: '', game: 'orion' },
-  { src: '', poster: '', name: '', quote: '', game: 'juwa' },
-  { src: '', poster: '', name: '', quote: '', game: 'panda' }
+  { src: '', poster: '', name: '', quote: 'One wallet for all my games. Loading takes seconds.', sample: true, game: 'firekirin' },
+  { src: '', poster: '', name: '', quote: 'I like that every game has its own login, all in one place.', sample: true, game: 'milkyway' },
+  { src: '', poster: '', name: '', quote: 'The Daily 1st bonus keeps me coming back.', sample: true, game: 'orion' },
+  { src: '', poster: '', name: '', quote: 'Redeeming back to my wallet was simple.', sample: true, game: 'juwa' },
+  { src: '', poster: '', name: '', quote: 'Support helped me link my old account in minutes.', sample: true, game: 'panda' }
 ];
 /* Trustpilot: paste the business unit ID from Trustpilot Business (Integrations > TrustBox)
    and the public profile URL. Until then the header shows a plain placeholder: never fake a score. */
@@ -861,7 +861,7 @@ function videoSpot() {
         <span class="vr-bg" style="background-image:url(${v.poster || g.img})"></span><span class="vr-shade"></span>
         ${v.src ? '' : '<span class="vr-tag">Coming soon</span>'}<span class="vr-play">${I.play}</span></button>
       <span class="vs-name">${v.name ? esc(v.name) : `Player ${k + 1}`}</span>
-      <blockquote class="vs-quote">${v.quote ? `&ldquo;${esc(v.quote)}&rdquo;` : 'Their quote will show here once the video is added.'}</blockquote>
+      <blockquote class="vs-quote">${v.sample ? '<small class="vs-sample">Sample quote</small>' : ''}${v.quote ? `&ldquo;${esc(v.quote)}&rdquo;` : 'Their quote will show here once the video is added.'}</blockquote>
     </div>
     <div class="vs-thumbs">${VIDEO_REVIEWS.map((x, i) => { const gx = GAMES.find(y => y.p === x.game); return `<button class="vs-thumb ${i === k ? 'on' : ''}" data-vsel="${i}" aria-label="Video review ${i + 1}" style="background-image:url(${x.poster || gx.img})"></button>`; }).join('')}</div>`;
 }

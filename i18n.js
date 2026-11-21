@@ -244,6 +244,10 @@ const ES = {
   'Move money from your wallet into Fire Kirin.': 'Pasa dinero de tu billetera a Fire Kirin.',
   'Open the Fire Kirin web version or app and log in.': 'Abre la versión web o la app de Fire Kirin e inicia sesión.',
   'Player ID': 'ID de jugador', 'Copy Player ID': 'Copiar ID de jugador',
+  'Sample quote': 'Cita de ejemplo', '“One wallet for all my games. Loading takes seconds.”': '“Una billetera para todos mis juegos. Cargar toma segundos.”',
+  '“I like that every game has its own login, all in one place.”': '“Me gusta que cada juego tenga su propio acceso, todo en un solo lugar.”',
+  '“The Daily 1st bonus keeps me coming back.”': '“El bono Daily 1st hace que siempre regrese.”', '“Redeeming back to my wallet was simple.”': '“Canjear de vuelta a mi billetera fue sencillo.”',
+  '“Support helped me link my old account in minutes.”': '“Soporte me ayudó a vincular mi cuenta anterior en minutos.”',
   // coins, avatars, verify bonus
   'Switch coins': 'Cambiar monedas', 'Buy coins': 'Comprar monedas', 'Gold Coins': 'Gold Coins', 'Sweeps Coins': 'Sweeps Coins', 'For fun, no cash value': 'Para divertirse, sin valor en efectivo',
   'Redeemable': 'Canjeable', 'Change avatar': 'Cambiar avatar', 'locked! One step to claim.': '¡bloqueado! Un paso para reclamar.', 'Under review. Almost there.': 'En revisión. Ya casi.',

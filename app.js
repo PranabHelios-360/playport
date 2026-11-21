@@ -42,6 +42,7 @@ function normUser(u) {
   if (!u) return null;
   return {
     wallet: 0, accounts: {}, tx: [], twofa: false, limit: 0, coolUntil: 0, excluded: false,
+    points: 0, lifetime: 0, cashable: 0, checkin: { last: '', streak: 0 }, claimed: [], pts: [], avatar: '', refCode: Math.random().toString(36).slice(2, 8).toUpperCase(), promos: [],
     ...u
   };
 }
@@ -55,7 +56,8 @@ const S = {
   method: 'btc',
   actTab: 'done',
   actChip: 'All',
-  chat: [{ t: 'Hi there. How can we help you today?' }]
+  chat: [{ t: 'Hi there. How can we help you today?' }],
+  rw: 'today'
 };
 
 function save() {
@@ -142,7 +144,7 @@ function blocked() {
 
 function topRight() {
   if (!S.user) return `<button class="btn btn-ghost btn-sm" data-act="login">Log in</button><button class="btn btn-accent btn-sm" data-act="signup">Sign up</button>`;
-  return `<button class="round-btn" data-act="gift" aria-label="Daily bonus">${I.gift}</button>
+  return `<a class="round-btn" href="#/rewards" aria-label="Rewards">${I.gift}${canCheckin() ? '<i class="dot"></i>' : ''}</a>
     <button class="round-btn" data-act="bell" aria-label="Notifications">${I.bell}<i class="dot"></i></button>
     <a class="bal" href="#/balance" data-bal-go="deposit" aria-label="Wallet"><span class="bal-plus">${I.plus}</span><span class="bal-num">${usd(S.user.wallet)}</span></a>`;
 }
@@ -454,6 +456,181 @@ function viewAccount() {
   </div>`;
 }
 
+/* ---------- rewards ---------- */
+
+const CHECKIN = [10, 15, 20, 30, 40, 60, 100];
+const LEVELS = [['Bronze', 500], ['Silver', 1500], ['Gold', 4000], ['Platinum', 10000]];
+const AVATARS = ['#f6a9c3', '#7a4dff', '#1fbf8f', '#f29a2e', '#3b82f6', '#e0334f'];
+const SHOP = [
+  { id: 'c1', name: '$1 cashable', cost: 100, cash: 1 },
+  { id: 'c5', name: '$5 cashable', cost: 450, cash: 5 },
+  { id: 'c10', name: '$10 cashable', cost: 850, cash: 10 },
+  { id: 'c25', name: '$25 cashable', cost: 2000, cash: 25 }
+];
+const PROMO_CODES = { BONUS50: 50, PLAYPORT100: 100 };
+
+const yesterdayKey = () => { const d = new Date(Date.now() - 864e5); return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }); };
+const countTx = (kind, status = 'done') => S.user.tx.filter(t => t.kind === kind && t.status === status).length;
+const QUESTS = [
+  { id: 'deposit1', name: 'Make your first deposit', desc: 'Top up your wallet for the first time.', pts: 200, goal: 1, now: () => countTx('Deposits') },
+  { id: 'game1', name: 'Get your first game', desc: 'Unlock any game account and start playing.', pts: 100, goal: 1, now: () => unlockedCount() },
+  { id: 'streak3', name: 'Play 3 days in a row', desc: 'Keep a 3-day check-in streak going.', pts: 150, goal: 3, now: () => S.user.checkin.streak },
+  { id: 'deposit5', name: 'Deposit 5 times', desc: 'Make 5 successful deposits.', pts: 300, goal: 5, now: () => countTx('Deposits') },
+  { id: 'games3', name: 'Unlock 3 games', desc: 'Have three game accounts ready to play.', pts: 150, goal: 3, now: () => unlockedCount() },
+  { id: 'secure', name: 'Turn on two-step login', desc: 'Protect your wallet with a login code.', pts: 50, goal: 1, now: () => S.user.twofa ? 1 : 0 },
+  { id: 'profile', name: 'Complete your profile', desc: 'Pick a photo so we can serve you better.', pts: 50, goal: 1, now: () => S.user.avatar ? 1 : 0 },
+  { id: 'refer', name: 'Refer a friend', desc: 'Invite a friend who makes their first deposit.', pts: 250, goal: 1, now: () => 0 }
+];
+
+function addPts(label, amt) {
+  S.user.points += amt;
+  if (amt > 0) S.user.lifetime += amt;
+  S.user.pts.unshift({ label, amt, when: now() });
+}
+
+function syncQuests() {
+  if (!S.user) return;
+  const got = [];
+  QUESTS.forEach(q => {
+    if (!S.user.claimed.includes(q.id) && Math.min(q.now(), q.goal) >= q.goal) {
+      S.user.claimed.push(q.id);
+      addPts(q.name, q.pts);
+      got.push(`+${q.pts} pts: ${q.name}`);
+    }
+  });
+  if (got.length) { store.set('pp_user', S.user); store.set('pp_account', S.user); setTimeout(() => toast(got.join(' · ')), 300); }
+}
+
+function levelInfo() {
+  const lt = S.user.lifetime;
+  let cur = null, next = LEVELS[0];
+  LEVELS.forEach((l, i) => { if (lt >= l[1]) { cur = l; next = LEVELS[i + 1] || null; } });
+  return { cur, next, lt };
+}
+
+function checkinState() {
+  const c = S.user.checkin, today = todayKey();
+  const done = c.last === today;
+  const cont = c.last === yesterdayKey();
+  const streakNow = done ? c.streak : cont ? c.streak : 0;
+  const nextStreak = done ? c.streak : (cont ? c.streak + 1 : 1);
+  const pos = (nextStreak - 1) % 7;
+  return { done, streakNow, nextStreak, pos, reward: CHECKIN[pos] };
+}
+
+const canCheckin = () => S.user && !checkinState().done;
+
+function rwToday() {
+  const st = checkinState();
+  const days = CHECKIN.map((v, i) => {
+    const collected = i < st.pos || (st.done && i === st.pos);
+    const isToday = i === st.pos;
+    return `<div class="ck-day ${isToday ? 'today' : ''} ${collected ? 'got' : ''}"><small>${isToday ? 'TODAY' : `DAY ${i + 1}`}</small><b>${collected ? I.check : v}</b></div>`;
+  }).join('');
+  return `<section class="ck">
+      <div class="ck-h"><h3>DAILY CHECK-IN</h3><span class="streak">${st.streakNow ? `<i>&#128293;</i>${st.streakNow}-day streak` : 'Start a streak today'}</span></div>
+      <div class="ck-days">${days}</div>
+      <div class="ck-cta">${st.done
+        ? `<button class="btn btn-ghost btn-lg" disabled>Collected. Come back tomorrow</button>`
+        : `<button class="btn btn-accent btn-lg" data-act="checkin">Collect +${st.reward} pts</button>`}</div>
+    </section>
+    <section class="panel-card">
+      <h3 class="rw-h">QUESTS</h3>
+      <div class="quests">${QUESTS.map(q => {
+        const n = Math.min(q.now(), q.goal), done = S.user.claimed.includes(q.id);
+        return `<div class="quest">
+          <div class="q-top"><div><b>${q.name}</b><p>${q.desc}</p></div><span class="q-pts">+${q.pts} pts</span></div>
+          <div class="q-bar"><div class="bar-track"><i style="width:${done ? 100 : (n / q.goal) * 100}%" class="${done ? 'done' : ''}"></i></div>
+            ${done ? `<span class="claimed">${I.check}Claimed</span>` : `<span class="q-n">${n} / ${q.goal}</span>`}</div>
+        </div>`;
+      }).join('')}</div>
+    </section>`;
+}
+
+function rwPromos() {
+  return `<section class="promo-box">
+      <h3 class="rw-h">GOT A PROMO CODE?</h3>
+      <p>Codes from emails, posts or your host unlock extra offers.</p>
+      <form class="promo-form" data-form="promo"><input class="field" name="code" placeholder="ENTER A CODE" autocomplete="off" required><button class="btn btn-accent" type="submit">Unlock</button></form>
+      <p class="note">Demo codes: BONUS50, PLAYPORT100</p>
+    </section>
+    <section class="panel-card">
+      <h3 class="rw-h">OFFERS FOR YOU</h3>
+      <div class="offers">
+        <div class="offer"><span class="offer-ico">${I.bolt}</span><div><b>Daily 1st load bonus</b><p class="o-amt">Up to +15% credits &middot; first load each day</p><p>Milky Way, Fire Kirin and Juwa give +10%, Orion Stars +15%.</p></div><a class="btn btn-outline btn-sm" href="#/games">Load a game</a></div>
+        <div class="offer"><span class="offer-ico">${I.plus}</span><div><b>Points on every load</b><p class="o-amt">1 pt for every $1 you load</p><p>Spend them in the Shop for cashable money.</p></div><button class="btn btn-outline btn-sm" data-rw="shop">Open shop</button></div>
+        <div class="offer"><span class="offer-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="3"/><circle cx="17" cy="10" r="2.4"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2.1 0 3.6 1.2 4 3.5"/></svg></span><div><b>Refer a friend</b><p class="o-amt">250 pts &middot; when a friend you invited deposits</p><p>You earn points when your friend makes a first deposit.</p></div><button class="btn btn-outline btn-sm" data-rw="you">Get my code</button></div>
+      </div>
+    </section>`;
+}
+
+function rwCompete() {
+  const names = ['luckyrae', 'reelking', 'goldie9', 'bigfish', 'tina.b', 'nate_x', 'kayla22', 'dex808', 'mona_v'];
+  const base = [4820, 4210, 3650, 3100, 2480, 1920, 1400, 980, 610];
+  const me = { n: S.user.username, v: S.user.lifetime, me: true };
+  const rows = names.map((n, i) => ({ n, v: base[i] })).concat(me).sort((a, b) => b.v - a.v);
+  const prize = ['1,000 pts', '500 pts', '250 pts'];
+  return `<section class="panel-card">
+      <div class="rw-row"><h3 class="rw-h">WEEKLY LEADERBOARD</h3><span class="pill">RESETS MONDAY</span></div>
+      <p class="card-sub">Earn points from check-ins, quests and loads. Top 3 win bonus points.</p>
+      <div class="lb">${rows.map((x, i) => `<div class="lb-row ${x.me ? 'me' : ''} ${i < 3 ? 'top' : ''}">
+        <span class="lb-n">#${i + 1}</span><span class="lb-u">${esc(x.n)}${x.me ? ' <em>you</em>' : ''}</span>${i < 3 ? `<span class="lb-prize">${prize[i]}</span>` : '<span></span>'}<b>${x.v.toLocaleString('en-US')} pts</b></div>`).join('')}</div>
+    </section>`;
+}
+
+function rwShop() {
+  return `<section class="panel-card">
+      <h3 class="rw-h">SHOP</h3>
+      <p class="card-sub">Swap points for cashable money, then move it to your wallet.</p>
+      <div class="shop">${SHOP.map(it => `<div class="shop-item"><b>${it.name}</b><span>${it.cost.toLocaleString('en-US')} pts</span>
+        <button class="btn ${S.user.points >= it.cost ? 'btn-accent' : 'btn-ghost'} btn-sm" data-act="buy-item" data-item="${it.id}" ${S.user.points >= it.cost ? '' : 'disabled'}>${S.user.points >= it.cost ? 'Get it' : `Need ${(it.cost - S.user.points).toLocaleString('en-US')} more`}</button></div>`).join('')}</div>
+    </section>`;
+}
+
+function rwYou() {
+  const lv = levelInfo();
+  const link = `https://playport.site/r/${S.user.refCode}`;
+  return `<section class="panel-card">
+      <h3 class="rw-h">INVITE FRIENDS</h3>
+      <p>Earn <b>+250 points</b> when a friend signs up with your code and makes their first deposit.</p>
+      <div class="invite"><div class="field code-box">${S.user.refCode}</div>
+        <button class="btn btn-outline" data-copyval="${link}" data-what="Invite link">${I.copy}Copy link</button>
+        <button class="btn btn-accent" data-act="share" data-link="${link}">Share</button></div>
+    </section>
+    <section class="panel-card">
+      <h3 class="rw-h">YOUR LEVEL</h3>
+      <div class="lv"><b>${lv.cur ? lv.cur[0] : 'No level yet'}</b><span>${lv.next ? `${(lv.next[1] - lv.lt).toLocaleString('en-US')} pts to ${lv.next[0]}` : 'Top level reached'}</span></div>
+      <div class="bar-track lv-bar"><i style="width:${lv.next ? Math.min(100, (lv.lt / lv.next[1]) * 100) : 100}%"></i></div>
+      <div class="lv-steps">${LEVELS.map(l => `<span class="${lv.lt >= l[1] ? 'on' : ''}">${l[0]}<small>${l[1].toLocaleString('en-US')}</small></span>`).join('')}</div>
+    </section>
+    <section class="panel-card">
+      <h3 class="rw-h">PROFILE PHOTO</h3>
+      <p class="card-sub">Pick one to complete your profile (+50 pts).</p>
+      <div class="avatars">${AVATARS.map(c => `<button class="av ${S.user.avatar === c ? 'on' : ''}" style="background:${c}" data-act="avatar" data-c="${c}" aria-label="Pick colour">${esc((S.user.first[0] || 'P').toUpperCase())}</button>`).join('')}</div>
+    </section>
+    <section class="panel-card">
+      <h3 class="rw-h">HISTORY</h3>
+      ${S.user.pts.length ? `<div class="hist">${S.user.pts.map(h => `<div class="hist-row"><div><b>${esc(h.label)}</b><small>${h.when}</small></div><div class="hist-amt"><b class="${h.amt >= 0 ? 'pos' : 'neg'}">${h.amt >= 0 ? '+' : ''}${h.amt.toLocaleString('en-US')} pts</b><span class="credited">${h.amt >= 0 ? 'Credited' : 'Spent'}</span></div></div>`).join('')}</div>` : '<p class="card-sub">No points yet. Collect your daily check-in to start.</p>'}
+    </section>`;
+}
+
+function viewRewards() {
+  if (!S.user) return needLogin('Rewards');
+  syncQuests();
+  const lv = levelInfo();
+  const tabs = [['today', 'Today'], ['promos', 'Promos'], ['compete', 'Compete'], ['shop', 'Shop'], ['you', 'You']];
+  const body = { today: rwToday, promos: rwPromos, compete: rwCompete, shop: rwShop, you: rwYou }[S.rw]();
+  return `<div class="page rewards">
+    ${crumb(['Rewards'])}
+    <section class="pts-card">
+      <div class="pts-top"><div><small>YOUR POINTS</small><b class="pts-num">${S.user.points.toLocaleString('en-US')}</b></div><span class="pts-lv">${lv.cur ? `${lv.cur[0]} level` : 'No level yet'}</span></div>
+      <div class="pts-bot"><span>Cashable <b>${usd(S.user.cashable)}</b></span>${S.user.cashable > 0 ? `<button class="btn btn-accent btn-sm" data-act="cash-move">Move to wallet</button>` : ''}</div>
+    </section>
+    <nav class="rw-tabs">${tabs.map(([k, t]) => `<button class="${S.rw === k ? 'on' : ''}" data-rw="${k}">${t}${k === 'today' && canCheckin() && S.rw !== 'today' ? '<i class="rw-dot"></i>' : ''}</button>`).join('')}</nav>
+    ${body}
+  </div>`;
+}
+
 function needLogin(title) {
   return `<div class="page">${crumb([title])}
     <div class="card gate"><h2>Log in to see this page</h2><p class="card-sub">Don't have an account yet? Sign up with your email. It takes about a minute.</p>
@@ -466,9 +643,9 @@ function needLogin(title) {
 const LOGO = `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" fill="var(--accent)"/><path d="M11 23V9h6.2c3.1 0 5 1.8 5 4.5s-1.9 4.6-5 4.6H14.6V23Z" fill="#3a1022"/></svg><span>Play<b>Port</b></span>`;
 
 function menuHtml() {
-  const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
+  const links = [['#/', 'Home'], ['#/games', 'Games'], ['#/rewards', 'Rewards'], ['#/balance', 'Balance'], ['#/activity', 'Activity'], ['#/account', 'My account']];
   return `<div class="drawer-h"><a class="logo" href="#/">${LOGO}</a><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
-    ${S.user ? `<div class="drawer-user"><span class="avatar">${esc((S.user.first[0] || 'P').toUpperCase())}</span><div><b>${esc(S.user.first)}</b><small>Wallet ${usd(S.user.wallet)}</small></div></div>` : ''}
+    ${S.user ? `<div class="drawer-user"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'P').toUpperCase())}</span><div><b>${esc(S.user.first)}</b><small>Wallet ${usd(S.user.wallet)}</small></div></div>` : ''}
     <nav class="drawer-nav">${links.map(([h, t]) => `<a href="${h}">${t}${I.chev}</a>`).join('')}
       <a href="#" data-act="foot-doc" data-doc="How it works">How it works${I.chev}</a>
       <a href="#" data-act="chat">Help &amp; chat${I.chev}</a></nav>
@@ -511,22 +688,24 @@ const DOCS = {
 
 function route() {
   const [r, arg] = location.hash.replace(/^#\/?/, '').split('/');
-  const name = { '': 'home', games: 'games', platform: 'games', balance: 'balance', activity: 'activity', account: 'account' }[r] || 'home';
+  const name = { '': 'home', games: 'games', platform: 'games', balance: 'balance', activity: 'activity', account: 'account', rewards: 'rewards' }[r] || 'home';
   return { name, r, arg };
 }
 
 function render(keepScroll) {
   const { name, r, arg } = route();
-  const views = { home: viewHome, games: r === 'platform' ? () => viewPlatform(arg) : viewGames, balance: viewBalance, activity: viewActivity, account: viewAccount };
+  const views = { home: viewHome, games: r === 'platform' ? () => viewPlatform(arg) : viewGames, balance: viewBalance, activity: viewActivity, account: viewAccount, rewards: viewRewards };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
   document.body.classList.toggle('has-ticker', name === 'home');
   document.querySelectorAll('.tabbar [data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === name));
   if (!keepScroll) window.scrollTo(0, 0);
+  if (S.user && name !== 'rewards') syncQuests();
 }
 
 function goHome() { if (location.hash.length > 2) location.hash = '#/'; else render(); }
 function refresh() { save(); render(true); }
+
 
 /* ---------- modal ---------- */
 
@@ -712,7 +891,7 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-bal-go],[data-close-after],.drawer-nav a');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-bal-go],[data-close-after],.drawer-nav a');
   if (!t) return;
   if (t.dataset.balGo) S.bal = t.dataset.balGo;
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -734,6 +913,7 @@ document.addEventListener('click', e => {
   if (t.dataset.bal) { S.bal = t.dataset.bal; return render(true); }
   if (t.dataset.method) { S.method = t.dataset.method; $('#balPanel').innerHTML = balPanel(S.bal); return; }
   if (t.dataset.tab) { S.actTab = t.dataset.tab; return render(true); }
+  if (t.dataset.rw) { S.rw = t.dataset.rw; if (location.hash !== '#/rewards') location.hash = '#/rewards'; else render(true); return; }
   if (t.dataset.chip) { S.actChip = t.dataset.chip; return render(true); }
   if (t.dataset.copyval) {
     if (navigator.clipboard) navigator.clipboard.writeText(t.dataset.copyval).catch(() => {});
@@ -784,7 +964,32 @@ document.addEventListener('click', e => {
   if (a === 'store') toast(`${t.dataset.store} download link goes here in the live site`);
   if (a === 'load') loadModal(pid);
   if (a === 'redeem') redeemModal(pid);
-  if (a === 'gift') toast('Daily bonus: check back tomorrow');
+  if (a === 'checkin') {
+    const st = checkinState();
+    if (st.done) return;
+    S.user.checkin = { last: todayKey(), streak: st.nextStreak };
+    addPts(`Daily check-in (day ${st.pos + 1})`, st.reward);
+    refresh(); syncQuests(); toast(`+${st.reward} pts collected`);
+  }
+  if (a === 'buy-item') {
+    const it = SHOP.find(x => x.id === t.dataset.item);
+    if (S.user.points < it.cost) return;
+    addPts(`Shop: ${it.name}`, -it.cost);
+    S.user.cashable += it.cash;
+    refresh(); toast(`${usd(it.cash)} added to cashable`);
+  }
+  if (a === 'cash-move') {
+    const c = S.user.cashable;
+    S.user.wallet += c; S.user.cashable = 0;
+    addTx({ kind: 'Bonus', label: 'Rewards cash to wallet', amt: c, status: 'done' });
+    refresh(); toast(`${usd(c)} moved to your wallet`);
+  }
+  if (a === 'avatar') { S.user.avatar = t.dataset.c; refresh(); syncQuests(); render(true); }
+  if (a === 'share') {
+    const link = t.dataset.link;
+    if (navigator.share) navigator.share({ title: 'PlayPort', text: 'Join me on PlayPort', url: link }).catch(() => {});
+    else { if (navigator.clipboard) navigator.clipboard.writeText(link).catch(() => {}); toast('Invite link copied'); }
+  }
   if (a === 'bell') toast('No new notifications');
   if (a === 'chat') { closeModal(); setMenu(false); setChat(true); }
   if (a === 'chat-close') setChat(false);
@@ -887,6 +1092,7 @@ document.addEventListener('submit', e => {
     S.user.accounts[d.plat].credits += amt;
     S.loadPlat = d.plat;
     addTx({ kind: 'Loads', label: 'Loaded credits', p: d.plat, amt: -amt, status: 'done' });
+    if (Math.floor(amt) > 0) addPts(`Loaded ${plat(d.plat).name}`, Math.floor(amt));
     const lp = plat(d.plat);
     if (lp.daily && !dailyUsed(d.plat)) {
       const bonus = Math.round(amt * lp.daily) / 100;
@@ -923,6 +1129,14 @@ document.addEventListener('submit', e => {
       addTx({ kind: 'Vouchers', label: 'Voucher WELCOME5', amt: 5, status: 'done' });
       refresh(); toast('$5.00 added to your wallet');
     } else { f.reset(); toast('That voucher code is not valid'); }
+  }
+  if (k === 'promo') {
+    const code = d.code.trim().toUpperCase();
+    if (!PROMO_CODES[code]) { toast('That code is not valid'); return; }
+    if (S.user.promos.includes(code)) { toast('You already used that code'); return; }
+    S.user.promos.push(code);
+    addPts(`Promo code ${code}`, PROMO_CODES[code]);
+    refresh(); toast(`+${PROMO_CODES[code]} pts unlocked`);
   }
   if (k === 'limit') { S.user.limit = Number(d.limit); refresh(); toast(S.user.limit ? `Daily deposit limit set to $${S.user.limit}` : 'Daily deposit limit removed'); }
   if (k === 'reason' || k === 'chat') {

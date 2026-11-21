@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --accent: #ff3d9a; --accent-hi: #ff6fb5; --on-accent: #ffffff; --ruby: #e2343f; --ruby-hi: #ff5a63;
   --green: #22c06d; --gold: #f2b62f;
   --r: 16px; --gut: 64px; --top-h: 84px; --tab-h: 92px;
@@ -1863,3 +1863,91 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .m-prof-id small { grid-column: 1 / -1; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); }
 .m-prof-id code { font: 700 13.5px var(--mono); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .m-prof-id svg { width: 15px; height: 15px; color: var(--accent-text); }
+
+/* ===== SC / GC coins ===== */
+.cur-coin { width: 26px; height: 26px; flex: none; border-radius: 50%; display: inline-grid; place-items: center; font: 900 9.5px/1 var(--mono); letter-spacing: -.02em; }
+.cur-coin.gc { color: #6b4300; background: radial-gradient(circle at 35% 30%, #ffe58a, #f4b81f 60%, #c98a0c); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .18), 0 0 0 2px rgba(255, 210, 90, .3); }
+.cur-coin.sc { color: #fff; background: radial-gradient(circle at 35% 30%, #5ee39a, #189c5c 65%, #0d6b3e); box-shadow: inset 0 -2px 0 rgba(0, 0, 0, .2), 0 0 0 2px rgba(80, 220, 140, .28); }
+.cur-coin.sm { width: 20px; height: 20px; font-size: 7.5px; }
+.cur-coin.lg { width: 34px; height: 34px; font-size: 12px; }
+
+/* header */
+.cur-wrap { position: relative; display: flex; align-items: center; gap: 6px; }
+.cur-pill { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 10px 0 6px; border-radius: 999px; background: var(--sunk); border: 1px solid var(--line-2); }
+.cur-num { font: 800 15px var(--mono); color: var(--text); }
+.cur-pill > svg { width: 16px; height: 16px; color: var(--mute); }
+.cur-add { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); }
+.cur-add svg { width: 18px; height: 18px; }
+.cur-menu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 40; width: 270px; padding: 6px; border-radius: 16px; background: var(--card); border: 1px solid var(--line-2); box-shadow: 0 16px 40px rgba(0, 0, 0, .35); }
+.cur-menu[hidden] { display: none; }
+.cur-menu button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px; border-radius: 12px; text-align: left; }
+.cur-menu button.on, .cur-menu button:hover { background: var(--card-2); }
+.cur-menu button > span:not(.cur-coin) { flex: 1; min-width: 0; }
+.cur-menu b { display: block; font-size: 14.5px; }
+.cur-menu small { display: block; color: var(--mute); font-size: 12px; }
+.cur-menu em { font: 800 14px var(--mono); font-style: normal; }
+.top-av { width: 42px; height: 42px; border-radius: 50%; padding: 0; overflow: hidden; border: 2px solid var(--accent-text); flex: none; }
+.top-av .avatar { width: 100%; height: 100%; font-size: 16px; }
+
+/* avatars */
+.avatar.av-img { overflow: hidden; padding: 0; background: none; }
+.avatar.av-img svg { width: 100%; height: 100%; display: block; }
+.av-btn { padding: 0; border-radius: 50%; flex: none; }
+.rw-av { display: flex; align-items: center; gap: 16px; }
+.modal-box.av-box { max-width: 480px; }
+.av-title { text-align: center; margin: 0 40px 14px !important; }
+.av-prev { width: 84px; height: 84px; margin: 0 auto; border-radius: 18px; overflow: hidden; border: 3px solid var(--gold); }
+.av-prev svg { width: 100%; height: 100%; display: block; }
+.av-cap { display: block; text-align: center; margin: 8px 0 14px; font-weight: 800; letter-spacing: .12em; color: var(--mute); font-size: 12px; }
+.av-h { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 0 10px; }
+.av-h small { color: var(--mute); }
+.av-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; padding: 2px; }
+.av-pick { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; padding: 0; border: 2px solid transparent; }
+.av-pick svg { width: 100%; height: 100%; display: block; }
+.av-pick.on { border-color: var(--gold); }
+.av-pick.on::after { content: '\2713'; position: absolute; right: 4px; bottom: 4px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 900; background: var(--gold); color: #3d2600; }
+.av-foot { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.av-foot .btn { height: 50px; border-radius: 999px; }
+
+/* claim strip */
+#claim.claim { display: flex; align-items: center; gap: 6px; padding: 6px var(--gut); background: linear-gradient(90deg, #f6b21b, #f39a12); color: #3d2600; }
+.claim-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; text-align: left; color: inherit; }
+.claim-gift { width: 26px; height: 26px; display: grid; place-items: center; flex: none; }
+.claim-gift svg { width: 22px; height: 22px; }
+.cur-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px 3px 3px; border-radius: 999px; background: rgba(0, 0, 0, .14); font-weight: 900; font-size: 13px; flex: none; }
+.claim-txt { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.claim-x { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(0, 0, 0, .15); color: inherit; flex: none; }
+.claim-x svg { width: 15px; height: 15px; }
+
+/* verify popup */
+.modal-box.vp-box { max-width: 440px; text-align: center; padding-top: 10px; }
+.vp-art svg { width: 220px; height: 170px; display: block; margin: 0 auto -6px; }
+.vp-title { font-size: 25px !important; }
+.vp-sub { margin: 4px auto 18px !important; max-width: 360px; }
+.vp-go { min-width: 200px; border-radius: 999px; }
+
+/* load sheet coin tabs */
+.ld-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; border-radius: 14px; background: var(--sunk); margin-bottom: 8px; }
+.ld-tabs button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border-radius: 10px; font-weight: 700; color: var(--mute); }
+.ld-tabs button.on { background: var(--raise); color: var(--text); }
+
+/* dashboard coin card */
+.db-coin.sc { background: radial-gradient(circle at 35% 30%, #5ee39a, #189c5c 65%, #0d6b3e); color: #fff; font-size: 10px; }
+.db-coin.w { font-size: 10px; }
+.dash-bal strong.db-gold { color: #ffd34d; text-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+
+@media (max-width: 520px) {
+  .top-bell { display: none; }
+  .cur-pill { height: 38px; gap: 6px; padding: 0 8px 0 5px; }
+  .cur-num { font-size: 13.5px; }
+  .cur-add { width: 30px; height: 30px; }
+  .top-av { width: 38px; height: 38px; }
+  .cur-menu { right: -44px; }
+  .claim-txt { font-size: 12.5px; }
+  .cur-chip { font-size: 12px; }
+  .av-grid { gap: 6px; }
+}
+
+.pk { min-width: 0; }
+.pk-free { flex-wrap: wrap; justify-content: center; max-width: 100%; }
+@media (max-width: 620px) { .pk-amt { gap: 6px; } .pk-amt b { font-size: 21px; } .pk-amt .cur-coin.lg { width: 28px; height: 28px; font-size: 10px; } .pk-free { padding: 6px; gap: 6px; } .pk-v b { font-size: 14px; } }

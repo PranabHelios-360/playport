@@ -1,4 +1,4 @@
-const PLATFORMS = [
+﻿const PLATFORMS = [
   { id: 'milkyway', name: 'Milky Way', c1: '#1d2370', c2: '#7a4dff', logo: 'assets/logos/mw-icon.jpg', daily: 10, blurb: 'Space-themed slots, keno and fish games, with the Milky Way jackpot wheel.' },
   { id: 'firekirin', name: 'Fire Kirin', c1: '#0b4d26', c2: '#c99a14', logo: 'assets/logos/fk-icon.jpg', daily: 10, blurb: 'Fish tables and lucky slots. Home of Jade Fortune and Space Jet.' },
   { id: 'orion', name: 'Orion Stars', c1: '#7a2510', c2: '#f29a2e', daily: 15, blurb: 'The biggest catalogue: fish, slots and keno.' },
@@ -41,7 +41,7 @@ const rid = () => Math.random().toString(36).slice(2, 9);
 function normUser(u) {
   if (!u) return null;
   return {
-    wallet: 0, accounts: {}, tx: [], twofa: false, limit: 0, coolUntil: 0, excluded: false,
+    wallet: 0, gc: 0, accounts: {}, tx: [], twofa: false, limit: 0, coolUntil: 0, excluded: false,
     points: 0, lifetime: 0, cashable: 0, phone: '', kyc: 'none', music: true, volume: 40, lang: 'English', checkin: { last: '', streak: 0 }, claimed: [], pts: [], avatar: '', refCode: Math.random().toString(36).slice(2, 8).toUpperCase(), promos: [],
     ...u
   };
@@ -110,7 +110,7 @@ function demoUser(name, password) {
   const acc = (pid, c) => ({ username: `${base.replace(/[^a-z0-9]/gi, '').slice(0, 8).toLowerCase()}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: c });
   return normUser({
     first: base, email: name.includes('@') ? name : `${name}@example.com`, username: name, password, since: new Date().toISOString().slice(0, 10),
-    wallet: 120,
+    wallet: 120, gc: 25000,
     accounts: { firekirin: acc('firekirin', 42.5), milkyway: acc('milkyway', 18) },
     tx: [
       { id: rid(), kind: 'Deposits', label: 'Deposit (Bitcoin)', amt: 100, when: '11/19/2026 06:30 PM', status: 'done' },
@@ -176,12 +176,6 @@ function blocked() {
   return '';
 }
 
-function topRight() {
-  if (!S.user) return `<button class="btn btn-ghost btn-sm" data-act="login">Log in</button><button class="btn btn-accent btn-sm" data-act="signup">Sign up</button>`;
-  return `<a class="round-btn" href="#/rewards" aria-label="Rewards">${I.gift}${canCheckin() ? '<i class="dot"></i>' : ''}</a>
-    <button class="round-btn" data-act="bell" aria-label="Notifications">${I.bell}<i class="dot"></i></button>
-    <a class="bal" href="#/balance" data-bal-go="deposit" aria-label="Wallet"><span class="bal-plus">${I.plus}</span><span class="bal-num">${usd(S.user.wallet)}</span></a>`;
-}
 
 function credRow(label, value, copyVal, secret) {
   const shown = !secret || S.showPw;
@@ -204,7 +198,7 @@ function tile(g) {
 function platRow(p) {
   const a = acct(p.id);
   return `<div class="row-card clean">
-    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}</b><small>${a ? `${usd(a.credits)} credits` : `${p.games} games`}</small></span></a>
+    <a class="row-main" href="#/platform/${p.id}">${coin(p)}<span><b>${p.name}</b><small>${a ? `${scv(a.credits)} credits` : `${p.games} games`}</small></span></a>
     ${a ? `<button class="btn btn-outline btn-row" data-act="gcreds" data-plat="${p.id}">${I.eyeO}View</button>`
         : `<button class="btn btn-outline btn-row" data-act="unlock" data-plat="${p.id}">${I.lockO}Unlock</button>`}
   </div>`;
@@ -304,7 +298,7 @@ function viewPlatform(id) {
     <div class="plat-top">
       ${coin(p, 'lg')}
       <div class="plat-top-txt"><h1>${p.name}</h1>${tags(p)}<p>${p.blurb}</p>
-        <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${usd(a.credits)} credits` : `You need a ${p.name} account to play.`}</p></div>
+        <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${scv(a.credits)} credits` : `You need a ${p.name} account to play.`}</p></div>
       <div class="plat-top-acts">${a
         ? `<button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>`
         : `<button class="btn btn-accent" data-act="unlock" data-plat="${p.id}">Unlock Account</button><button class="btn btn-outline" data-act="download" data-plat="${p.id}">${I.dl}Get the app</button>`}</div>
@@ -349,24 +343,24 @@ const cryptoIco = c => `<span class="cry" style="background:${c.bg}">${c.sym}${c
 function balPanel(id) {
   const it = BAL_ITEMS.find(b => b.id === id);
   const head = (t, s) => `<div class="panel-h"><span class="mini-ico" style="background:${it.color}">${it.icon}</span><div><h2>${t}</h2><p>${s}</p></div></div>`;
-  const walletLine = `<div class="wallet-line">Wallet balance <b>${usd(S.user.wallet)}</b></div>`;
+  const walletLine = `<div class="wallet-line">Wallet balance <b>${scv(S.user.wallet)}</b></div>`;
   const cryptoList = () => `<div class="opt-list">${CRYPTO.map(c => `<button class="opt cry-opt ${S.method === c.id ? 'on' : ''}" data-method="${c.id}">${cryptoIco(c)}<b>${c.name}</b><small>(${c.code})</small>${S.method === c.id ? `<span class="tick-ok">${I.check}</span>` : ''}</button>`).join('')}</div>`;
   const unlocked = PLATFORMS.filter(p => acct(p.id));
   const noGames = `<div class="card soft"><b>No game accounts yet</b><p class="card-sub">Unlock a game first. Each game gets its own login.</p><a class="btn btn-accent" href="#/games">Unlock a game</a></div>`;
   const stop = blocked();
-  if (id === 'deposit') return head(S.pkg ? `Buy the ${usd(S.pkg.amt)} package` : 'Deposit', S.pkg ? `Choose the crypto you want to pay with. You get ${usd(S.pkg.amt)} + ${usd(S.pkg.bonus)} free bonus.` : `Choose the crypto you want to deposit. Minimum $${MIN_DEPOSIT}.`) + walletLine + (stop ? `<div class="warn">${stop}</div>` : cryptoList() +
+  if (id === 'deposit') return head(S.pkg ? `Buy ${gcv(S.pkg.amt * GC_PER_USD)}` : 'Deposit', S.pkg ? `Choose the crypto you want to pay with. You get ${gcv(S.pkg.amt * GC_PER_USD)} + ${scv(S.pkg.bonus)} free.` : `Choose the crypto you want to pay with. Every $1 gets you 100 GC plus 1 free SC. Minimum $${MIN_DEPOSIT}.`) + walletLine + (stop ? `<div class="warn">${stop}</div>` : cryptoList() +
     `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="deposit-now" ${S.method ? '' : 'disabled'}>${S.method ? `Deposit with ${CRYPTO.find(c => c.id === S.method).name}` : 'Deposit Now'}</button></div>`);
-  if (id === 'withdraw') return head('Withdraw', `Send money from your wallet to your crypto address. Minimum $${MIN_WITHDRAW}.`) + walletLine +
+  if (id === 'withdraw') return head('Withdraw', `Redeem Sweeps Coins to your crypto address. 1 SC = $1. Minimum ${MIN_WITHDRAW} SC.`) + walletLine +
     `<p class="hint">Credits inside a game must be redeemed to your wallet first.</p>` + cryptoList() +
     `<div class="sticky-cta"><button class="btn btn-accent btn-lg" data-act="withdraw-now" ${S.method ? '' : 'disabled'}>Withdraw Now</button></div>`;
   if (id === 'transfer') return head('Load a game', 'Move money from your wallet into a game account as credits.') + walletLine + (stop ? `<div class="warn">${stop}</div>` : unlocked.length ?
     `<form class="form-row narrow" data-form="load">
-      <label class="lbl">Game</label><select class="field" name="plat">${unlocked.map(p => `<option value="${p.id}" ${S.loadPlat === p.id ? 'selected' : ''}>${p.name} (${usd(acct(p.id).credits)} credits)</option>`).join('')}</select>
+      <label class="lbl">Game</label><select class="field" name="plat">${unlocked.map(p => `<option value="${p.id}" ${S.loadPlat === p.id ? 'selected' : ''}>${p.name} (${scv(acct(p.id).credits)} credits)</option>`).join('')}</select>
       <label class="lbl">Amount ($)</label><input class="field" name="amt" type="number" min="1" step="0.01" placeholder="0.00" required>
       <button class="btn btn-accent" type="submit">Load credits</button>
     </form>` : noGames);
   if (id === 'redeem') return head('Redeem', 'Bring credits from a game back to your wallet.') + walletLine + (unlocked.length ?
-    `<div class="opt-list">${unlocked.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${acct(p.id).credits < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${usd(acct(p.id).credits)} credits</small>${I.chev}</button>`).join('')}</div>` : noGames);
+    `<div class="opt-list">${unlocked.map(p => `<button class="opt" data-act="redeem" data-plat="${p.id}" ${acct(p.id).credits < 1 ? 'disabled' : ''}>${coin(p, 'sm')}<b>${p.name}</b><small>${scv(acct(p.id).credits)} credits</small>${I.chev}</button>`).join('')}</div>` : noGames);
   if (id === 'p2p') return head('P2P', `Send money from your wallet to another ${BRAND()} player.`) + walletLine +
     `<form class="form-row narrow" data-form="p2p">
       <label class="lbl">Player username</label><input class="field" name="to" placeholder="e.g. mike77" required>
@@ -382,7 +376,7 @@ function viewBalance() {
   return `<div class="page narrow-page">
     ${crumb(['Balance'])}
     <p class="lede">Manage your funds, transfers and rewards</p>
-    <section class="total-card"><div><small>Total Balance</small><b>${usd(S.user.wallet)}</b><span>${usd(creditsTotal())} in game credits</span></div><span class="total-art">${I.wallet}</span></section>
+    <section class="total-card"><div><small>Sweeps Coins</small><b>${scv(S.user.wallet)}</b><span>${gcv(S.user.gc)} &middot; ${scv(creditsTotal())} in games</span></div><span class="total-art">${I.wallet}</span></section>
     <div class="act-grid">${BAL_ITEMS.map(b => `<button class="act-card" data-balsheet="${b.id}" style="--ic:${b.color}">
       <span class="mini-ico" style="background:${b.color}">${b.icon}</span><span class="act-txt"><b>${b.label}</b><small>${b.sub}</small></span>${I.chev}</button>`).join('')}</div>
   </div>`;
@@ -405,7 +399,7 @@ function viewActivity() {
     <div class="filters">${chips.map(c => `<button class="chip ${S.actChip === c ? 'on' : ''}" data-chip="${c}">${c}</button>`).join('')}</div>
     ${rows.length ? `<div class="rows tx">${rows.map(t => { const p = t.p && plat(t.p); return `<div class="row-card slim">
         <div class="row-main">${p ? coin(p, 'sm') : `<span class="tx-ico">${t.amt >= 0 ? I.plus : I.arrowL}</span>`}<span><b>${t.label}</b><small>${p ? p.name + ' &middot; ' : ''}${t.when}</small></span></div>
-        <div class="row-acts"><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${usd(Math.abs(t.amt))}</b>${t.status === 'pending' ? '<span class="pend">Processing</span>' : ''}</div>
+        <div class="row-acts"><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${(t.cur === 'gc' ? gcv : t.kind === 'Deposits' ? usd : scv)(Math.abs(t.amt))}</b>${t.status === 'pending' ? '<span class="pend">Processing</span>' : ''}</div>
       </div>`; }).join('')}</div>`
       : '<p class="empty big">No transactions found for the selected filter</p>'}
   </div>`;
@@ -418,12 +412,12 @@ function viewAccount() {
   return `<div class="page narrow-page">
     ${crumb(['Profile'])}
     <section class="prof-card">
-      <span class="avatar big" ${u.avatar ? `style="background:${u.avatar}"` : ''}>${esc((u.first[0] || 'P').toUpperCase())}</span>
+      <button class="av-btn" data-act="avatar-pick" aria-label="Change avatar">${avatarHtml(u, 'big')}</button>
       <div class="prof-txt"><b>${esc(u.first)}</b><button class="pid" data-copyval="${esc(u.username)}" data-what="Player ID"><span>Player ID: ${esc(u.username)}</span>${I.copy}</button>
         <small>${esc(u.email)} &middot; since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</small></div>
     </section>
     <section class="money-card">
-      <div class="mc-cols"><div><small>Wallet</small><b>${usd(u.wallet)}</b></div><div><small>In games</small><b>${usd(creditsTotal())}</b></div><div><small>Points</small><b>${u.points.toLocaleString('en-US')}</b></div></div>
+      <div class="mc-cols"><div><small>Sweeps Coins</small><b>${fmt(u.wallet)}</b></div><div><small>Gold Coins</small><b>${Math.round(u.gc).toLocaleString('en-US')}</b></div><div><small>Points</small><b>${u.points.toLocaleString('en-US')}</b></div></div>
       <div class="mc-acts"><a class="round-act" href="#/balance" data-bal-go="deposit"><span class="ra-ico dep">${I.plus}</span>Deposit</a><a class="round-act" href="#/balance" data-bal-go="withdraw"><span class="ra-ico wd">${I.dl}</span>Withdraw</a></div>
     </section>
     <div class="set-list">
@@ -471,29 +465,27 @@ function dashboardHtml(inPanel) {
   const row = (ico, title, sub, attrs, right) => `<button class="d-row" ${attrs}><span class="d-ico">${ico}</span><span class="d-txt"><b>${title}</b><small>${sub}</small></span>${right === undefined ? I.chev : right}</button>`;
   const recent = u.tx.slice(0, 4);
   return head + `
-    <div class="dash-id"><span class="avatar" ${u.avatar ? `style="background:${u.avatar}"` : ''}>${esc((u.first[0] || 'L').toUpperCase())}</span>
+    <div class="dash-id"><button class="av-btn" data-act="avatar-pick" aria-label="Change avatar">${avatarHtml(u)}</button>
       <div><b>${esc(u.first)}</b><button class="pid" data-copyval="${esc(u.username)}" data-what="Player ID"><span>ID: ${esc(u.username)}</span>${I.copy}</button></div>
-      ${inPanel ? `<nav class="dash-quick"><a href="#/">${I.home}</a><a href="#/games">${navIco.games}</a><a href="#/rewards">${navIco.rewards}</a></nav>` : ''}</div>
+      ${inPanel ? `<nav class="dash-quick"><a href="#/rewards" aria-label="Rewards">${navIco.rewards}</a></nav>` : ''}</div>
     <section class="dash-bal">
-      <div class="db-half"><div class="db-h"><span class="db-coin w">W</span><b>Wallet</b></div><strong>${usd(u.wallet)}</strong><span class="db-pill">Withdrawable</span></div>
-      <div class="db-half"><div class="db-h"><span class="db-coin g">G</span><b>Game credits</b></div><strong class="db-green">${usd(creditsTotal())}</strong>
+      <div class="db-half"><div class="db-h"><span class="db-coin sc">SC</span><b>Sweeps Coins</b></div><strong>${fmt(u.wallet)}</strong><span class="db-pill">Redeemable</span></div>
+      <div class="db-half"><div class="db-h"><span class="db-coin w">GC</span><b>Gold Coins</b></div><strong class="db-gold">${Math.round(u.gc).toLocaleString('en-US')}</strong>
         <div class="db-sub"><span><small>In games</small><em><i class="dot-b"></i>${n}</em></span><span><small>Points</small><em><i class="dot-g"></i>${u.points.toLocaleString('en-US')}</em></span></div></div>
     </section>
-    <div class="dash-acts"><a class="d-round" href="#/balance" data-bal-go="deposit"><span class="dr-ico dep">${I.plus}</span>Deposit</a><a class="d-round" href="#" data-act="shop"><span class="dr-ico shop">${I2.coins}</span>Shop</a><a class="d-round" href="#/balance" data-bal-go="withdraw"><span class="dr-ico wd">${D_ICO.up}</span>Withdraw</a></div>
+    <div class="dash-acts"><a class="d-round" href="#/balance" data-bal-go="deposit"><span class="dr-ico dep">${I.plus}</span>Deposit</a><a class="d-round" href="#/balance" data-bal-go="withdraw"><span class="dr-ico wd">${D_ICO.up}</span>Withdraw</a></div>
     <div class="d-list">
       ${row(D_ICO.phone, 'Bind/Change Phone', u.phone ? esc(u.phone) : 'Not Bound', 'data-dsheet="phone"')}
       ${row(I.lock, 'Change Password', 'Security settings', 'data-sheet="pw"')}
-      ${row(D_ICO.id, 'Identity Verification', u.kyc === 'pending' ? 'Under review' : 'Not Verified', 'data-dsheet="kyc"')}
+      ${row(D_ICO.id, 'Identity Verification', u.kyc === 'verified' ? 'Verified' : u.kyc === 'pending' ? 'Under review' : 'Not Verified', 'data-dsheet="kyc"')}
       ${row(I.user, 'Change Username', esc(u.username), 'data-sheet="user"')}
       ${row(I.shield, 'Two-step Login', u.twofa ? 'On' : 'Off', 'data-act="twofa"', `<span class="switch ${u.twofa ? 'on' : ''}"><i></i></span>`)}
       ${row(I.key, 'Game Accounts', `${n} of ${PLATFORMS.length} unlocked`, 'data-sheet="games"')}
     </div>
     <div class="d-list">
       ${row(I.gift.replace('<svg', '<svg class="gift-ico"'), 'Invite & Earn', 'Share your link, earn rewards when friends deposit', 'data-rw="you"')}
-      <details class="d-exp"><summary class="d-row"><span class="d-ico">${D_ICO.doc}</span><span class="d-txt"><b>Transactions</b><small>Order History</small></span>${I.down}</summary>
-        <div class="d-exp-body">${recent.length ? recent.map(t => `<div class="d-tx"><span>${t.label}<small>${t.when}</small></span><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${usd(Math.abs(t.amt))}</b></div>`).join('') : '<p class="card-sub">No transactions yet.</p>'}<a class="d-more" href="#/activity">View all ${I.chev}</a></div></details>
-      <details class="d-exp"><summary class="d-row"><span class="d-ico">${I.help}</span><span class="d-txt"><b>Help Center</b><small>FAQ and live chat</small></span>${I.down}</summary>
-        <div class="d-exp-body"><button class="d-link" data-act="foot-doc" data-doc="How it works">How it works</button><button class="d-link" data-act="foot-doc" data-doc="FAQ">FAQ</button><button class="d-link" data-act="chat">Live chat</button></div></details>
+      <details class="d-exp"><summary class="d-row"><span class="d-ico">${I.help}</span><span class="d-txt"><b>Help Center</b><small>How it works and FAQ</small></span>${I.down}</summary>
+        <div class="d-exp-body"><button class="d-link" data-act="foot-doc" data-doc="How it works">How it works</button><button class="d-link" data-act="foot-doc" data-doc="FAQ">FAQ</button></div></details>
     </div>
     <div class="d-list">
       <div class="d-row static"><span class="d-ico">${D_ICO.moon}</span><span class="d-txt"><b>Theme</b><small>${(THEMES_NOW().find(t => t[0] === curTheme()) || THEMES_NOW()[0])[1]}</small></span><span class="theme-pick" data-theme-pick>${themePick()}</span></div>
@@ -519,8 +511,8 @@ function openDashSheet(k) {
   if (k === 'phone') return openModal(`<h2>${u.phone ? 'Change phone' : 'Bind phone'}</h2><p>We text a code to confirm it. Used for login alerts and recovery.</p>
     <form class="form-row" data-form="phone"><input class="field" name="phone" type="tel" inputmode="tel" placeholder="+1 555 000 1234" value="${esc(u.phone || '')}" required>
     <button class="btn btn-accent btn-block" type="submit">Send code</button></form><p class="note">Demo: the number is saved straight away.</p>`);
-  if (k === 'kyc') return openModal(`<h2>Identity Verification</h2><p>${u.kyc === 'pending' ? 'Your documents are under review. We will email you when it is done.' : 'Verify once to unlock withdrawals and higher limits. Have a photo ID ready.'}</p>
-    ${u.kyc === 'pending' ? '' : '<div class="kyc-steps"><span>1. Photo of your ID (front and back)</span><span>2. A quick selfie</span><span>3. Proof of address</span></div><button class="btn btn-accent btn-block" data-act="kyc-start">Start verification</button>'}`);
+  if (k === 'kyc') return openModal(`<h2>Identity Verification</h2><p>${u.kyc === 'verified' ? 'You are verified. Thanks!' : u.kyc === 'pending' ? 'Your documents are under review. We will email you when it is done.' : 'Verify once to unlock withdrawals and higher limits. Have a photo ID ready.'}</p>
+    ${u.kyc !== 'none' ? '' : '<div class="kyc-steps"><span>1. Photo of your ID (front and back)</span><span>2. A quick selfie</span><span>3. Proof of address</span></div><button class="btn btn-accent btn-block" data-act="kyc-start">Start verification</button>'}`);
 }
 
 function openSheet(k) {
@@ -583,7 +575,7 @@ function syncQuests() {
       got.push(`+${q.pts} pts: ${q.name}`);
     }
   });
-  if (got.length) { store.set('pp_user', S.user); store.set('pp_account', S.user); setTimeout(() => toast(got.join(' · ')), 300); }
+  if (got.length) { store.set('pp_user', S.user); store.set('pp_account', S.user); setTimeout(() => toast(got.join(' Â· ')), 300); }
 }
 
 function levelInfo() {
@@ -690,8 +682,8 @@ function rwYou() {
     </section>
     <section class="panel-card">
       <h3 class="rw-h">PROFILE PHOTO</h3>
-      <p class="card-sub">Pick one to complete your profile (+50 pts).</p>
-      <div class="avatars">${AVATARS.map(c => `<button class="av ${S.user.avatar === c ? 'on' : ''}" style="background:${c}" data-act="avatar" data-c="${c}" aria-label="Pick colour">${esc((S.user.first[0] || 'P').toUpperCase())}</button>`).join('')}</div>
+      <p class="card-sub">Choose an avatar to complete your profile (+50 pts).</p>
+      <div class="rw-av">${avatarHtml(S.user, 'big')}<button class="btn btn-accent" data-act="avatar-pick">Choose avatar</button></div>
     </section>
     <section class="panel-card">
       <h3 class="rw-h">HISTORY</h3>
@@ -709,7 +701,7 @@ function viewRewards() {
     ${crumb(['Rewards'])}
     <section class="pts-card">
       <div class="pts-top"><div><small>YOUR POINTS</small><b class="pts-num">${S.user.points.toLocaleString('en-US')}</b></div><span class="pts-lv">${lv.cur ? `${lv.cur[0]} level` : 'No level yet'}</span></div>
-      <div class="pts-bot"><span>Cashable <b>${usd(S.user.cashable)}</b></span>${S.user.cashable > 0 ? `<button class="btn btn-accent btn-sm" data-act="cash-move">Move to wallet</button>` : ''}</div>
+      <div class="pts-bot"><span>Cashable <b>${scv(S.user.cashable)}</b></span>${S.user.cashable > 0 ? `<button class="btn btn-accent btn-sm" data-act="cash-move">Move to wallet</button>` : ''}</div>
     </section>
     <nav class="rw-tabs">${tabs.map(([k, t]) => `<button class="${S.rw === k ? 'on' : ''}" data-rw="${k}">${t}${k === 'today' && canCheckin() && S.rw !== 'today' ? '<i class="rw-dot"></i>' : ''}</button>`).join('')}</nav>
     ${body}
@@ -730,25 +722,19 @@ const LOGO = () => logoInner();
 function menuHtml() {
   const row = (ico, label, attrs) => `<a class="m-row" ${attrs}>${ico}<span>${label}</span>${I.chev}</a>`;
   return `<div class="drawer-h"><h2>Menu</h2><button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></div>
-    ${S.user ? `<div class="m-prof"><a class="m-prof-link" href="#/account"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'P').toUpperCase())}</span><span class="m-prof-txt"><b>Profile</b><small>${esc(S.user.first)}</small></span></a><button class="m-prof-id" data-copyval="${esc(S.user.username)}" data-what="Player ID" aria-label="Copy Player ID"><small>Player ID</small><code>${esc(S.user.username)}</code>${I.copy}</button></div>` : ''}
+    ${S.user ? `<div class="m-prof"><a class="m-prof-link" href="#/account">${avatarHtml(S.user)}<span class="m-prof-txt"><b>Profile</b><small>${esc(S.user.first)}</small></span></a><button class="m-prof-id" data-copyval="${esc(S.user.username)}" data-what="Player ID" aria-label="Copy Player ID"><small>Player ID</small><code>${esc(S.user.username)}</code>${I.copy}</button></div>` : ''}
     <nav class="m-list">
-      ${row(I.home, 'Home', 'href="#/"')}
-      ${row(navIco.games, 'Games', 'href="#/games"')}
       ${row(navIco.rewards, 'Rewards', 'href="#/rewards"')}
-      ${row(navIco.balance, 'Balance', 'href="#/balance"')}
-      ${S.user ? row(I2.coins, 'Shop', 'href="#" data-act="shop"') : ''}
-      ${S.user ? '' : row(I.user, 'Profile', 'href="#/account"')}
-      ${row(I.bellO, 'Notifications', 'href="#" data-act="bell"')}
       ${row(I.tg, 'Join our Telegram', 'href="#" data-act="telegram"')}
       ${row(I.dl, 'Download App', 'href="#" data-act="get-app"')}
-      ${row(I.help, 'Help &amp; chat', 'href="#" data-act="chat"')}
+      ${row(I.help, 'How it works', 'href="#" data-act="foot-doc" data-doc="How it works"')}
       ${row(navIco.swap, 'Switch site', 'href="#" data-act="choose-site"')}
     </nav>
     <div class="theme-pick m-theme" data-theme-pick>${themePick()}</div>
     <div class="m-theme m-lang" data-lang-pick>${langPick()}</div>
     <div class="drawer-foot">${S.user
       ? `<button class="m-row logout" data-act="logout"><span>Logout</span>${I.out}</button>`
-      : `<button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
+      : ''}</div>`;
 }
 
 function chatHtml() {
@@ -1000,14 +986,14 @@ function sideHtml(name) {
       <a href="#" data-act="chat">${navIco.chat}<span>Help &amp; chat</span></a>
       <a href="#" data-act="choose-site">${navIco.swap}<span>Switch site</span></a></nav>
     <div class="side-foot">${S.user
-      ? `<a class="side-user" href="#/account"><span class="avatar" ${S.user.avatar ? `style="background:${S.user.avatar}"` : ''}>${esc((S.user.first[0] || 'L').toUpperCase())}</span><span><b>${esc(S.user.first)}</b><small>${usd(S.user.wallet)} wallet</small></span></a>`
+      ? `<a class="side-user" href="#/account">${avatarHtml(S.user)}<span><b>${esc(S.user.first)}</b><small>${scv(S.user.wallet)} wallet</small></span></a>`
       : `<button class="btn btn-accent btn-block" data-act="signup">Join now</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
 }
 
 function platCardB(p) {
   const a = acct(p.id);
   return `<div class="b-plat">
-    <a class="b-plat-top" href="#/platform/${p.id}">${coin(p, 'lg')}<b>${p.name}</b><small>${a ? `${usd(a.credits)} credits` : `${p.games} games`}</small></a>
+    <a class="b-plat-top" href="#/platform/${p.id}">${coin(p, 'lg')}<b>${p.name}</b><small>${a ? `${scv(a.credits)} credits` : `${p.games} games`}</small></a>
     ${a ? `<button class="btn btn-outline btn-sm btn-block" data-act="gcreds" data-plat="${p.id}">${I.eyeO}View</button>`
         : `<button class="btn btn-accent btn-sm btn-block" data-act="unlock" data-plat="${p.id}">${I.lockO}Unlock</button>`}
   </div>`;
@@ -1022,8 +1008,8 @@ function walletBoxB() {
     </aside>`;
   const st = checkinState();
   return `<aside class="b-wallet">
-      <small>MY WALLET</small><b class="b-bal">${usd(S.user.wallet)}</b>
-      <span class="b-sub">${usd(creditsTotal())} in ${unlockedCount()} game${unlockedCount() === 1 ? '' : 's'}</span>
+      <small>MY WALLET</small><b class="b-bal">${scv(S.user.wallet)}</b>
+      <span class="b-sub">${scv(creditsTotal())} in ${unlockedCount()} game${unlockedCount() === 1 ? '' : 's'}</span>
       <div class="b-wal-acts"><a class="btn btn-accent" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-ghost" href="#/balance" data-bal-go="withdraw">Withdraw</a></div>
       <div class="b-ck"><div><b>Daily check-in</b><small>${st.streakNow ? `${st.streakNow}-day streak` : 'Start a streak'}</small></div>
         ${st.done ? '<span class="b-ck-done">' + I.check + 'Done</span>' : `<button class="btn btn-accent btn-sm" data-act="checkin">+${st.reward} pts</button>`}</div>
@@ -1117,6 +1103,8 @@ function render(keepScroll) {
   const views = { home: isB ? viewHomeB : viewHome, games: r === 'platform' ? () => viewPlatform(arg) : (isB ? viewGamesB : viewGames), balance: viewBalance, activity: viewActivity, account: isB ? viewAccountB : viewAccount, rewards: viewRewards };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
+  claimStrip();
+  if (name === 'home' && S.user && S.user.kyc === 'none' && !S.vpShown) { S.vpShown = true; let tries = 0; const tryPop = () => { if (!S.user || S.user.kyc !== 'none') return; if ($('#modal').hidden && $('#chooser').hidden) verifyPop(); else if (++tries < 20) setTimeout(tryPop, 1500); }; setTimeout(tryPop, 1500); }
   document.body.classList.toggle('has-ticker', name === 'home' && !isB);
   const side = $('#side'); if (side) side.innerHTML = isB ? sideHtml(name) : '';
   startBSlides();
@@ -1216,11 +1204,128 @@ function downloadModal(pid) {
 
 
 
+
+/* ---------- Sweeps Coins (SC, redeemable, the old wallet) + Gold Coins (GC, for fun) ---------- */
+
+const GC_PER_USD = 100;
+const VERIFY_GC = 30000, VERIFY_SC = 3;
+const scv = n => `${fmt(n)} SC`;
+const gcv = n => `${Math.round(n).toLocaleString('en-US')} GC`;
+const curTag = (k, cls = '') => `<span class="cur-coin ${k} ${cls}">${k.toUpperCase()}</span>`;
+let CUR = store.get('pp_cur', 'sc');
+const curBal = k => k === 'gc' ? S.user.gc : S.user.wallet;
+const curNum = (k, n) => k === 'gc' ? Math.round(n).toLocaleString('en-US') : fmt(n);
+
+function topRight() {
+  if (!S.user) return `<button class="btn btn-ghost btn-sm" data-act="login">Log in</button><button class="btn btn-accent btn-sm" data-act="signup">Sign up</button>`;
+  const u = S.user;
+  return `<div class="cur-wrap">
+      <button class="cur-pill" data-act="cur-menu" aria-label="Switch coins">${curTag(CUR)}<span class="cur-num">${curNum(CUR, curBal(CUR))}</span>${I.down}</button>
+      <button class="cur-add" data-act="shop" aria-label="Buy coins">${I.plus}</button>
+      <div class="cur-menu" id="curMenu" hidden>${['gc', 'sc'].map(k => `<button class="${CUR === k ? 'on' : ''}" data-cur="${k}">${curTag(k)}<span><b>${k === 'gc' ? 'Gold Coins' : 'Sweeps Coins'}</b><small>${k === 'gc' ? 'For fun, no cash value' : 'Redeemable'}</small></span><em>${curNum(k, curBal(k))}</em></button>`).join('')}</div>
+    </div>
+    <button class="round-btn top-bell" data-act="bell" aria-label="Notifications">${I.bell}<i class="dot"></i></button>
+    <button class="top-av" data-act="avatar-pick" aria-label="Change avatar">${avatarHtml(u)}</button>`;
+}
+
+function claimStrip() {
+  let el = document.getElementById('claim');
+  if (!el) { el = document.createElement('div'); el.id = 'claim'; const top = document.querySelector('.top'); top.parentNode.insertBefore(el, top); }
+  const show = S.user && S.user.kyc !== 'verified' && !S.claimHidden;
+  el.className = show ? 'claim' : '';
+  el.innerHTML = show ? `<button class="claim-main" data-act="verify-pop">
+      <span class="claim-gift">${I2.gift}</span><span class="cur-chip gc">${curTag('gc', 'sm')}+30K</span><span class="cur-chip sc">${curTag('sc', 'sm')}+${VERIFY_SC}</span>
+      <span class="claim-txt">${S.user.kyc === 'pending' ? 'Under review. Almost there.' : 'locked! One step to claim.'}</span></button>
+    <button class="claim-x" data-act="claim-x" aria-label="Close">${I.x}</button>` : '';
+}
+
+const GIFT_ART = `<svg viewBox="0 0 220 170" aria-hidden="true">
+  <defs><linearGradient id="gbx" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd76a"/><stop offset="1" stop-color="#d48a12"/></linearGradient>
+  <linearGradient id="grb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9b3df0"/><stop offset="1" stop-color="#6a1fc4"/></linearGradient>
+  <radialGradient id="gglow" cx=".5" cy=".55" r=".5"><stop offset="0" stop-color="#ffd76a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient></defs>
+  <ellipse cx="110" cy="92" rx="105" ry="78" fill="url(#gglow)"/>
+  <g fill="#ffd34d" stroke="#b5760a" stroke-width="2"><circle cx="40" cy="58" r="13"/><circle cx="182" cy="50" r="11"/><circle cx="196" cy="104" r="9"/><circle cx="26" cy="112" r="9"/></g>
+  <g fill="#fff3c4" opacity=".9"><circle cx="40" cy="58" r="5"/><circle cx="182" cy="50" r="4"/></g>
+  <path d="M58 76h104v78a8 8 0 0 1-8 8H66a8 8 0 0 1-8-8Z" fill="url(#gbx)" stroke="#9c5f05" stroke-width="2.5"/>
+  <rect x="50" y="60" width="120" height="24" rx="6" fill="url(#gbx)" stroke="#9c5f05" stroke-width="2.5"/>
+  <rect x="99" y="60" width="22" height="102" fill="url(#grb)"/>
+  <path d="M110 60c-14-22-38-26-40-12-2 12 22 14 40 12Zm0 0c14-22 38-26 40-12 2 12-22 14-40 12Z" fill="url(#grb)" stroke="#4d128f" stroke-width="2"/>
+  <g font-family="Arial Black,Arial" font-weight="900" text-anchor="middle"><circle cx="78" cy="118" r="16" fill="#ffd34d" stroke="#b5760a" stroke-width="2.5"/><text x="78" y="123" font-size="12" fill="#7a4a00">GC</text>
+  <circle cx="142" cy="118" r="16" fill="#26c27a" stroke="#0f7a48" stroke-width="2.5"/><text x="142" y="123" font-size="12" fill="#fff">SC</text></g>
+</svg>`;
+function verifyPop() {
+  if (!S.user) return;
+  const pending = S.user.kyc === 'pending';
+  openModal(`<div class="vp-art">${GIFT_ART}</div>
+    <h2 class="vp-title">Get ${gcv(VERIFY_GC)} + ${scv(VERIFY_SC)} for verifying!</h2>
+    <p class="vp-sub">${pending ? 'Your documents are under review. The coins land in your account as soon as it is approved.' : 'Verify your identity and we will add the bonus to your account. It only takes 2 minutes.'}</p>
+    ${pending ? '<button class="btn btn-ghost btn-block" data-close>OK</button>' : '<button class="btn btn-accent btn-lg vp-go" data-dsheet="kyc">Verify now</button>'}`);
+  $('#modalBox').classList.add('vp-box');
+}
+
+/* avatars: 25 drawn portraits, picked in the avatar sheet */
+const AV_SKIN = ['#f5d0b5', '#e8b48f', '#c98d63', '#a8693f', '#7a4a2a', '#f2c7a5'];
+const AV_HAIR = ['#2b1a12', '#5a3418', '#a8642a', '#e3c16a', '#d9d9d9', '#1c1c2a', '#8a2b2b'];
+const AV_BG = [['#6a2bd9', '#2a0f5c'], ['#e0428f', '#5c0f38'], ['#1f9fbf', '#0c3b52'], ['#f2a41f', '#6b3a05'], ['#2fbf71', '#0d4a2b'], ['#d9433f', '#5a1210'], ['#4d6bff', '#151f66']];
+const AV_FIT = ['#1d1d2b', '#7a1fd1', '#c2185b', '#0f6b8a', '#b8860b', '#e9e9f2', '#2e7d32', '#3a3a4a'];
+const AV_SPEC = [
+  [0, 0, 0, 0, 0, 'tie'], [1, 1, 1, 1, 1, 'ear'], [0, 2, 2, 0, 2, 'glass'], [3, 4, 4, 0, 3, 'beard'], [1, 5, 2, 1, 4, 'ear'],
+  [2, 3, 3, 1, 5, ''], [0, 1, 1, 0, 6, 'tie'], [5, 4, 4, 1, 7, 'ear'], [0, 0, 5, 0, 0, ''], [5, 2, 5, 2, 1, 'scarf'],
+  [5, 3, 5, 2, 5, 'scarf'], [1, 1, 0, 1, 2, 'ear'], [0, 2, 0, 0, 3, 'tie'], [1, 0, 0, 1, 4, 'ear'], [4, 5, 5, 4, 6, 'glass'],
+  [0, 1, 0, 3, 0, 'beard'], [2, 0, 3, 1, 1, 'ear'], [1, 2, 6, 1, 2, ''], [3, 3, 1, 3, 3, 'beard'], [0, 4, 2, 0, 4, 'glass'],
+  [2, 5, 6, 2, 5, 'crown'], [1, 6, 0, 1, 6, 'ear'], [4, 0, 1, 0, 0, 'tie'], [3, 1, 6, 4, 1, 'ear'], [0, 3, 3, 0, 2, 'crown']
+];
+/* spec: [hairStyle 0 short,1 long,2 bun,3 bald,4 curly,5 cloth], skin, hair, ?, bg, accessory */
+function avatarSvg(i) {
+  const [hs, sk, hc, , bg, acc] = AV_SPEC[i % AV_SPEC.length];
+  const skin = AV_SKIN[sk], hair = AV_HAIR[hc], [b1, b2] = AV_BG[bg % AV_BG.length], fit = AV_FIT[i % AV_FIT.length];
+  const id = `av${i}`;
+  const back = hs === 1 ? `<path d="M17 31c0-12 6-19 15-19s15 7 15 19v20H17Z" fill="${hair}"/>` : hs === 5 ? `<path d="M15 33c0-13 7-20 17-20s17 7 17 20l3 31H12Z" fill="#f4f4f6"/>` : '';
+  const top = hs === 0 ? `<path d="M20.5 29c0-10 5-15 11.5-15S43.5 19 43.5 29c-2-5-6-7.5-11.5-7.5S22.5 24 20.5 29Z" fill="${hair}"/>`
+    : hs === 1 ? `<path d="M20.5 30c0-10 5-15.5 11.5-15.5S43.5 20 43.5 30c-3-6-7-8-11.5-8-3 0-6 1-8 3Z" fill="${hair}"/>`
+    : hs === 2 ? `<circle cx="32" cy="12.5" r="5.5" fill="${hair}"/><path d="M20.5 29c0-10 5-15 11.5-15S43.5 19 43.5 29c-2-5-6-7.5-11.5-7.5S22.5 24 20.5 29Z" fill="${hair}"/>`
+    : hs === 4 ? `<g fill="${hair}"><circle cx="22" cy="24" r="5"/><circle cx="27" cy="18" r="5.5"/><circle cx="33" cy="16.5" r="5.5"/><circle cx="39" cy="18.5" r="5.5"/><circle cx="43" cy="24" r="5"/></g>`
+    : hs === 5 ? `<path d="M19 27c1-9 6-13.5 13-13.5S44 18 45 27c-4-3-8-4-13-4s-9 1-13 4Z" fill="#fff"/><path d="M19 25.5h26" stroke="#1d1d2b" stroke-width="2.4"/>` : '';
+  const beard = acc === 'beard' ? `<path d="M21.5 32c1 8.5 5 12.5 10.5 12.5S41.5 40.5 42.5 32c-2.5 3-6 4-10.5 4s-8-1-10.5-4Z" fill="${hair}"/>` : '';
+  const extra = acc === 'glass' ? `<g fill="none" stroke="#1d1d2b" stroke-width="1.6"><circle cx="27.5" cy="30" r="3.6"/><circle cx="36.5" cy="30" r="3.6"/><path d="M31 30h2"/></g>`
+    : acc === 'ear' ? `<g fill="#ffd34d"><circle cx="20.8" cy="35" r="1.6"/><circle cx="43.2" cy="35" r="1.6"/></g>`
+    : acc === 'tie' ? `<path d="M28 49l4 3 4-3-1.5 5h-5Z" fill="#d4af37"/>`
+    : acc === 'crown' ? `<path d="M23 16l3-6 3 4 3-6 3 6 3-4 3 6Z" fill="#ffd34d" stroke="#b5760a" stroke-width=".8"/>` : '';
+  return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${b1}"/><stop offset="1" stop-color="${b2}"/></linearGradient></defs>
+    <rect width="64" height="64" fill="url(#${id})"/>${back}
+    <path d="M9 64c2-11 11-16.5 23-16.5S53 53 55 64Z" fill="${fit}"/>${fit === '#e9e9f2' ? '' : '<path d="M27 47.5l5 6 5-6" fill="none" stroke="#fff" stroke-width="2" opacity=".85"/>'}
+    <rect x="27.5" y="38" width="9" height="10" rx="3" fill="${skin}"/>
+    <ellipse cx="32" cy="30.5" rx="11" ry="12.5" fill="${skin}"/>
+    ${beard}${top}
+    <g fill="#241812"><ellipse cx="27.5" cy="30" rx="1.5" ry="1.8"/><ellipse cx="36.5" cy="30" rx="1.5" ry="1.8"/></g>
+    <path d="M28.5 36.5c2 1.8 5 1.8 7 0" fill="none" stroke="#7a3b2a" stroke-width="1.5" stroke-linecap="round"/>${extra}</svg>`;
+}
+function avatarHtml(u, cls = '') {
+  const m = /^av:(\d+)$/.exec(u.avatar || '');
+  if (m) return `<span class="avatar av-img ${cls}">${avatarSvg(+m[1])}</span>`;
+  return `<span class="avatar ${cls}" ${u.avatar ? `style="background:${u.avatar}"` : ''}>${esc((u.first[0] || 'P').toUpperCase())}</span>`;
+}
+function avatarModal() {
+  if (!requireLogin()) return;
+  setMenu(false);
+  const m = /^av:(\d+)$/.exec(S.user.avatar || '');
+  S.avSel = m ? +m[1] : 0;
+  openModal(`<h2 class="av-title">Choose Avatar</h2>
+    <div class="av-prev" id="avPrev">${avatarSvg(S.avSel)}</div><small class="av-cap">PREVIEW</small>
+    <label class="lbl" for="avName">Name</label><input class="field" id="avName" maxlength="20" placeholder="Enter name" value="${esc(S.user.first)}">
+    <div class="av-h"><b>Select an avatar</b><small>${AV_SPEC.length} available</small></div>
+    <div class="av-grid">${AV_SPEC.map((_, i) => `<button class="av-pick ${i === S.avSel ? 'on' : ''}" data-avsel="${i}" aria-label="Avatar ${i + 1}">${avatarSvg(i)}</button>`).join('')}</div>
+    <div class="av-foot"><button class="btn btn-ghost" data-close>Cancel</button><button class="btn btn-accent" data-act="av-confirm">Confirm</button></div>`);
+  $('#modalBox').classList.add('av-box');
+}
+
 /* ---------- load to game (deposit to game balance) ---------- */
 
-const LOAD_CHIPS = [10, 25, 50, 100, 500];
-const LOAD_TIERS = [[500, 25], [250, 10], [100, 4], [50, 1.5], [25, 0.5]];
-const loadTier = amt => { const t = LOAD_TIERS.find(x => amt >= x[0]); return t ? t[1] : 0; };
+const tierFn = tiers => amt => { const t = tiers.find(x => amt >= x[0]); return t ? t[1] : 0; };
+const LD = {
+  sc: { chips: [10, 25, 50, 100, 500], step: 5, tier: tierFn([[500, 25], [250, 10], [100, 4], [50, 1.5], [25, 0.5]]) },
+  gc: { chips: [1000, 2000, 5000, 10000, 50000], step: 500, tier: tierFn([[10000, 150], [5000, 100], [2000, 50]]) }
+};
 const I2 = {
   chev2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 6 6 6-6M6 12l6 6 6-6"/></svg>',
   reset: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1M3.5 4v4.5H8"/></svg>',
@@ -1239,58 +1344,74 @@ function loadModal(pid) {
   const stop = blocked();
   if (stop) return openModal(`<h2>Loading is paused</h2><p>${stop}</p>`);
   if (!acct(pid)) return unlockModal(pid);
-  S.ld = { pid, amt: Math.min(10, Math.floor(S.user.wallet)) };
+  const cur = CUR;
+  S.ld = { pid, cur, amt: 0 };
+  S.ld.amt = Math.min(LD[cur].chips[0], Math.floor(curBal(cur)));
   openModal(`<div id="ldBox" class="ld">${ldHtml()}</div>`);
   $('#modalBox').classList.add('ld-box');
 }
 function ldHtml() {
-  const { pid, amt } = S.ld, p = plat(pid), a = acct(pid);
-  const daily = p.daily && !dailyUsed(pid) ? Math.round(amt * p.daily) / 100 : 0;
-  const bonus = loadTier(amt) + daily;
-  const after = a.credits + amt + bonus;
+  const { pid, amt, cur } = S.ld, p = plat(pid), a = acct(pid), cfg = LD[cur], bal = curBal(cur);
+  const have = cur === 'gc' ? (a.gc || 0) : a.credits;
+  const daily = cur === 'sc' && p.daily && !dailyUsed(pid) ? Math.round(amt * p.daily) / 100 : 0;
+  const bonus = cfg.tier(amt) + daily;
+  const after = have + amt + bonus;
   return `<h2 class="ld-title">Load ${p.name}</h2>
+    <div class="ld-tabs">${['sc', 'gc'].map(k => `<button class="${cur === k ? 'on' : ''}" data-act="ld-cur" data-v="${k}">${curTag(k, 'sm')}${k === 'gc' ? 'Gold Coins' : 'Sweeps Coins'}</button>`).join('')}</div>
     <div class="ld-bal">
-      <span class="ld-lab">${coin(p, 'xs')}<b>Game credits</b></span>
-      <span class="ld-flow"><em>${fmt(a.credits)}</em>${I2.arrowR}<strong>${fmt(after)}</strong></span>
+      <span class="ld-lab">${curTag(cur)}<b>${cur === 'gc' ? 'GC' : 'SC'} in ${p.name}</b></span>
+      <span class="ld-flow"><em>${curNum(cur, have)}</em>${I2.arrowR}<strong>${curNum(cur, after)}</strong></span>
     </div>
-    <div class="ld-wallet"><span>${dollarCoin()}Wallet</span><b>${usd(S.user.wallet)}</b><a href="#" class="ld-top" data-act="shop" aria-label="Add money">${I.plus}</a></div>
-    <p class="ld-info">${I.help}Pick an amount from your wallet to load into ${p.name}.</p>
+    <div class="ld-wallet"><span>${curTag(cur, 'sm')}Your balance</span><b>${curNum(cur, bal)}</b><a href="#" class="ld-top" data-act="shop" aria-label="Buy coins">${I.plus}</a></div>
+    <p class="ld-info">${I.help}Pick an amount to load into your ${p.name} game balance.</p>
     <div class="ld-down">${I2.chev2}</div>
     <div class="ld-game">${coin(p, 'md')}<b>${p.name}</b><button class="btn btn-outline btn-sm" data-act="play" data-plat="${pid}">${I.play}Start Game</button></div>
     <div class="ld-amt">
       <div class="ld-amt-h"><span>${I2.coins}<b>Select amount</b></span><button class="ld-reset" data-act="ld-reset" ${amt ? '' : 'disabled'}>${I2.reset}Reset</button></div>
       <div class="ld-step">
-        <button class="ld-pm" data-act="ld-minus" aria-label="Less" ${amt < 5 ? 'disabled' : ''}>${I2.minus}</button>
-        <div class="ld-val">${dollarCoin()}<span>${fmt(amt)}</span></div>
-        <button class="ld-pm" data-act="ld-plus" aria-label="More" ${amt + 5 > S.user.wallet ? 'disabled' : ''}>${I.plus}</button>
+        <button class="ld-pm" data-act="ld-minus" aria-label="Less" ${amt < cfg.step ? 'disabled' : ''}>${I2.minus}</button>
+        <div class="ld-val">${curTag(cur)}<span>${curNum(cur, amt)}</span></div>
+        <button class="ld-pm" data-act="ld-plus" aria-label="More" ${amt + cfg.step > bal ? 'disabled' : ''}>${I.plus}</button>
       </div>
-      <div class="ld-chips">${LOAD_CHIPS.map(v => { const b = loadTier(v); return `<button class="ld-chip" data-act="ld-add" data-v="${v}" ${amt + v > S.user.wallet ? 'disabled' : ''}>+${v}.00${b ? `<i>+${fmt(b)}</i>` : ''}</button>`; }).join('')}
-        <button class="ld-chip" data-act="ld-all" ${S.user.wallet < 1 ? 'disabled' : ''}>All</button></div>
-      ${bonus ? `<p class="ld-bonus">${I.bolt}You get <b>${usd(bonus)}</b> bonus credits${daily ? ` (includes +${p.daily}% Daily 1st)` : ''}.</p>` : `<p class="ld-bonus mute">Load $25 or more for bonus credits.</p>`}
+      <div class="ld-chips">${cfg.chips.map(v => { const b = cfg.tier(v); return `<button class="ld-chip" data-act="ld-add" data-v="${v}" ${amt + v > bal ? 'disabled' : ''}>+${curNum(cur, v)}${b ? `<i>+${curNum(cur, b)}</i>` : ''}</button>`; }).join('')}
+        <button class="ld-chip" data-act="ld-all" ${bal < 1 ? 'disabled' : ''}>All</button></div>
+      ${bonus ? `<p class="ld-bonus">${I.bolt}You get <b>${curNum(cur, bonus)} ${cur.toUpperCase()}</b> bonus${daily ? ` (includes +${p.daily}% Daily 1st)` : ''}.</p>` : `<p class="ld-bonus mute">Load ${curNum(cur, cfg.chips[1])} ${cur.toUpperCase()} or more for a bonus.</p>`}
     </div>
     <div class="ld-foot"><button class="btn btn-ghost ld-cancel" data-close>Cancel</button>
       <button class="btn btn-accent ld-go" data-act="ld-go" ${amt < 1 ? 'disabled' : ''}>Load to game ${I2.arrowR}</button></div>
-    ${S.user.wallet < 1 ? `<p class="note">Your wallet is empty. <a href="#" data-act="shop">Add money</a></p>` : ''}`;
+    ${bal < 1 ? `<p class="note">You have no ${cur === 'gc' ? 'Gold Coins' : 'Sweeps Coins'} yet. <a href="#" data-act="shop">Buy coins</a></p>` : ''}`;
 }
-function ldSet(v) { S.ld.amt = Math.max(0, Math.min(Math.floor(S.user.wallet * 100) / 100, Math.round(v * 100) / 100)); $('#ldBox').innerHTML = ldHtml(); }
+function ldSet(v) {
+  const bal = curBal(S.ld.cur);
+  S.ld.amt = Math.max(0, Math.min(S.ld.cur === 'gc' ? Math.floor(bal) : Math.floor(bal * 100) / 100, S.ld.cur === 'gc' ? Math.round(v) : Math.round(v * 100) / 100));
+  $('#ldBox').innerHTML = ldHtml();
+}
 function ldGo() {
-  const { pid, amt } = S.ld, p = plat(pid), a = S.user.accounts[pid];
+  const { pid, amt, cur } = S.ld, p = plat(pid), a = S.user.accounts[pid], cfg = LD[cur];
   const stop = blocked();
   if (stop) { toast(stop); return; }
-  if (amt < 1 || amt > S.user.wallet) { toast(`Not enough in your wallet (${usd(S.user.wallet)})`); return; }
+  if (amt < 1 || amt > curBal(cur)) { toast('Not enough coins for that'); return; }
+  const tier = cfg.tier(amt);
+  if (cur === 'gc') {
+    S.user.gc -= amt; a.gc = (a.gc || 0) + amt + tier; S.loadPlat = pid;
+    addTx({ kind: 'Loads', label: 'Loaded Gold Coins', p: pid, amt: -amt, cur: 'gc', status: 'done' });
+    if (tier) addTx({ kind: 'Bonus', label: 'GC load bonus', p: pid, amt: tier, cur: 'gc', status: 'done' });
+    closeModal(); refresh();
+    toast(`${gcv(amt)} loaded into ${p.name}${tier ? ` + ${gcv(tier)} bonus` : ''}`);
+    return;
+  }
   S.user.wallet -= amt; a.credits += amt; S.loadPlat = pid;
   addTx({ kind: 'Loads', label: 'Loaded credits', p: pid, amt: -amt, status: 'done' });
   if (Math.floor(amt) > 0) addPts(`Loaded ${p.name}`, Math.floor(amt));
   let extra = 0;
-  const tier = loadTier(amt);
-  if (tier) { a.credits += tier; extra += tier; addTx({ kind: 'Bonus', label: `Load bonus ($${amt.toFixed(0)}+)`, p: pid, amt: tier, status: 'done' }); }
+  if (tier) { a.credits += tier; extra += tier; addTx({ kind: 'Bonus', label: `Load bonus (${amt.toFixed(0)}+ SC)`, p: pid, amt: tier, status: 'done' }); }
   if (p.daily && !dailyUsed(pid)) {
     const d = Math.round(amt * p.daily) / 100;
     a.credits += d; extra += d;
     addTx({ kind: 'Bonus', label: `Daily 1st bonus (+${p.daily}%)`, p: pid, amt: d, status: 'done' });
   }
   closeModal(); refresh();
-  toast(`${usd(amt)} loaded into ${p.name}${extra ? ` + ${usd(extra)} bonus` : ''}`);
+  toast(`${scv(amt)} loaded into ${p.name}${extra ? ` + ${scv(extra)} bonus` : ''}`);
 }
 
 /* ---------- game login card ---------- */
@@ -1311,7 +1432,7 @@ function credsCard(pid, opts = {}) {
       ${credLine('Password', a.password, true)}
       ${a.linked ? '' : `<button class="gc-reset" data-act="reset-pw" data-plat="${pid}">${I2.reset}Reset password</button>`}
       <button class="btn btn-accent gc-play" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Play ${g ? esc(g.name) : p.name} ${I2.ext}</button>
-      <div class="gc-meta"><span>Credits <b>${usd(a.credits)}</b></span>
+      <div class="gc-meta"><span><b>${scv(a.credits)}</b> &middot; <b>${gcv(a.gc || 0)}</b></span>
         <a href="#" data-act="load" data-plat="${pid}">Load</a>
         <a href="#" data-act="redeem" data-plat="${pid}" ${a.credits < 1 ? 'aria-disabled="true" class="off"' : ''}>Redeem</a>
         <a href="#" data-act="download" data-plat="${pid}">Get app</a></div>
@@ -1332,7 +1453,7 @@ function playModal(pid, gameId) {
 /* ---------- shop (wallet packages) ---------- */
 
 const SHOP_PKGS = [5, 10, 20, 30, 50, 80, 100, 200, 500];
-const PKG_BONUS = 0.10, FIRST_EXTRA = 0.20;
+const FIRST_EXTRA = 0.20;
 const firstDone = () => S.user && S.user.tx.some(t => t.kind === 'Deposits');
 
 function shopModal(tab) {
@@ -1344,26 +1465,26 @@ function shopModal(tab) {
 function shopHtml() {
   const first = S.shopTab === 'first', used = firstDone();
   const card = v => {
-    const base = Math.round(v * PKG_BONUS * 100) / 100, ex = Math.round(v * FIRST_EXTRA * 100) / 100;
+    const base = v, ex = Math.round(v * FIRST_EXTRA * 100) / 100;
     return `<div class="pk ${first ? 'pk-first' : ''} ${v === 500 ? 'pk-best' : ''}">
-      ${v === 500 ? '<span class="pk-deal">BEST DEAL</span>' : ''}${first ? `<span class="pk-tag">+${FIRST_EXTRA * 100}% bonus</span>` : ''}
-      <div class="pk-amt">${dollarCoin('lg')}<b>${v.toLocaleString('en-US')}</b></div>
-      <small class="pk-lab">wallet balance</small>
-      <div class="pk-free"><span class="pk-f">FREE</span>${dollarCoin('sm bonus')}<span class="pk-v"><b>+${fmt(first ? base + ex : base)}</b>${first ? `<em>(${fmt(base)}+${fmt(ex)})</em>` : ''}</span></div>
+      ${v === 500 ? '<span class="pk-deal">BEST DEAL</span>' : ''}${first ? `<span class="pk-tag">+${FIRST_EXTRA * 100}% SC</span>` : ''}
+      <div class="pk-amt">${curTag('gc', 'lg')}<b>${(v * GC_PER_USD).toLocaleString('en-US')}</b></div>
+      <small class="pk-lab">Gold Coins</small>
+      <div class="pk-free"><span class="pk-f">FREE</span>${curTag('sc')}<span class="pk-v"><b>+${fmt(first ? base + ex : base)}</b>${first ? `<em>(${fmt(base)}+${fmt(ex)})</em>` : ''}</span></div>
       <button class="pk-buy" data-act="pkg" data-v="${v}" ${first && used ? 'disabled' : ''}>$${v}.00</button>
     </div>`;
   };
   return `<h2 class="shop-title">Shop</h2>
     <div class="shop-tabs"><button class="${first ? '' : 'on'}" data-act="shop-tab" data-tab2="packs">${I2.coins}Packages</button><button class="${first ? 'on' : ''}" data-act="shop-tab" data-tab2="first">${I2.crown}First Deposit</button></div>
     ${first
-      ? `<p class="shop-note first">${I2.flame}${used ? 'You have already made your first deposit. This offer is one-time only.' : `First deposit only: <b>+${FIRST_EXTRA * 100}% extra</b> bonus credits. One time.`}</p>`
-      : `<p class="shop-note">${I2.gift}Buy a package, get FREE bonus credits on top.</p>`}
+      ? `<p class="shop-note first">${I2.flame}${used ? 'You have already made your first deposit. This offer is one-time only.' : `First deposit exclusive: up to <b>+${FIRST_EXTRA * 100}%</b> extra SC. One time only.`}</p>`
+      : `<p class="shop-note">${I2.gift}Purchase GC and get FREE SC as a bonus!</p>`}
     <div class="pk-grid">${SHOP_PKGS.map(card).join('')}</div>
-    <p class="note">Paid in crypto. Bonus credits land in your wallet with the deposit.</p>`;
+    <p class="note">Paid in crypto. Gold Coins are for fun and have no cash value. Sweeps Coins can be redeemed, 1 SC = $1.</p>`;
 }
 function buyPackage(v) {
   const first = S.shopTab === 'first' && !firstDone();
-  const bonus = Math.round(v * (PKG_BONUS + (first ? FIRST_EXTRA : 0)) * 100) / 100;
+  const bonus = Math.round(v * (1 + (first ? FIRST_EXTRA : 0)) * 100) / 100;
   S.pkg = { amt: v, bonus, first };
   S.method = null;
   openBalSheet('deposit');
@@ -1376,7 +1497,7 @@ function depositAddress(amt) {
   const addr = c.pre + Array.from({ length: 30 }, () => 'abcdefghjkmnpqrstuvwxyz023456789'[Math.floor(Math.random() * 32)]).join('');
   const pk = S.pkg && S.pkg.amt === amt ? S.pkg : null;
   openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Send ${usd(amt)} in ${c.code}</h2><p>Send to this address. Only send ${c.code} on the ${c.name} network.</p>
-    ${pk ? `<div class="bonus-note">${I.bolt}Includes ${usd(pk.bonus)} free bonus with the ${usd(amt)} package.</div>` : ''}
+    <div class="bonus-note">${I.bolt}You get ${gcv(amt * GC_PER_USD)} + ${scv(pk ? pk.bonus : amt)} free.</div>
     <div class="addr"><div class="qr" aria-hidden="true">${Array.from({ length: 49 }, (_, i) => `<i class="${(i * 7 + addr.charCodeAt(i % addr.length)) % 3 ? '' : 'on'}"></i>`).join('')}</div>
       <div class="cred"><label>Deposit address (demo)</label><div class="cred-row"><code>${addr}</code><button class="icon-btn" data-copyval="${addr}" data-what="Address">${I.copy}</button></div></div></div>
     <div class="warn">This address is for this deposit only. Your wallet updates after the network confirms it.</div>
@@ -1411,7 +1532,7 @@ function launch(pid, gameId) {
   const p = plat(pid), a = acct(pid), g = gameId ? game(gameId) : GAMES.find(x => x.p === pid);
   openModal(`<div class="launch-stage"><div class="launch-blur" style="background-image:url(${g.img})"></div>
       <div class="launch-mid"><div id="lcoin">${coinHtml(110)}</div><h3>${p.name}</h3><p id="lmsg">Opening ${p.name}&hellip;</p><div class="bar"><i id="lbar"></i></div></div></div>
-    <div class="launch-foot">${coin(p, 'xs')}<span>${p.name}</span><span>as <code>${esc(a.username)}</code></span><span>${usd(a.credits)} credits</span>
+    <div class="launch-foot">${coin(p, 'xs')}<span>${p.name}</span><span>as <code>${esc(a.username)}</code></span><span>${scv(a.credits)} credits</span>
       <button class="btn btn-ghost btn-sm" data-close>Back</button></div>`, true);
   let pct = 0;
   S.launchTimer = setInterval(() => {
@@ -1427,7 +1548,7 @@ function launch(pid, gameId) {
 function redeemModal(pid) {
   const p = plat(pid), a = acct(pid);
   openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Redeem from ${p.name}</h2><p>Credits go back to your ${BRAND()} wallet. You can then withdraw or load another game.</p>
-    <div class="wallet-line">${p.name} credits <b>${usd(a.credits)}</b></div>
+    <div class="wallet-line">${p.name} credits <b>${scv(a.credits)}</b></div>
     <form class="form-row" data-form="redeem"><input type="hidden" name="plat" value="${pid}">
       <input class="field" name="amt" type="number" min="1" step="0.01" max="${a.credits}" value="${a.credits.toFixed(2)}" required>
       <button class="btn btn-accent btn-block" type="submit">Redeem to wallet</button>
@@ -1472,7 +1593,8 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a,.m-prof-link');
+  const cm = document.getElementById('curMenu'); if (cm && !cm.hidden && !e.target.closest('.cur-wrap')) cm.hidden = true;
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-cur],[data-avsel],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a,.m-prof-link');
   if (!t) return;
   if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; S.pkg = null; S.method = null; }
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -1485,6 +1607,8 @@ document.addEventListener('click', e => {
   if (t.dataset.post) { postModal(t.dataset.post); return; }
   if (t.dataset.video) { videoModal(t.dataset.video); return; }
   if (t.dataset.vreview) { videoReviewModal(+t.dataset.vreview); return; }
+  if (t.dataset.cur) { CUR = t.dataset.cur; store.set('pp_cur', CUR); $('#topRight').innerHTML = topRight(); I18N.walk($('#topRight')); return; }
+  if (t.dataset.avsel) { S.avSel = +t.dataset.avsel; $('#avPrev').innerHTML = avatarSvg(S.avSel); document.querySelectorAll('.av-pick').forEach(b => b.classList.toggle('on', +b.dataset.avsel === S.avSel)); return; }
   if (t.dataset.vsel) { S.vsel = +t.dataset.vsel; $('#vsBox').innerHTML = videoSpot(); return; }
   if (t.dataset.prnav) { prStep(+t.dataset.prnav); return; }
   if (t.dataset.prmore !== undefined) { const c = t.closest('.pr-card'); c.classList.toggle('open'); t.textContent = c.classList.contains('open') ? 'See less' : 'See more'; return; }
@@ -1567,6 +1691,12 @@ document.addEventListener('click', e => {
   if (a === 'ld-all') ldSet(S.user.wallet);
   if (a === 'ld-go') ldGo();
   if (a === 'shop') { setMenu(false); shopModal(); }
+  if (a === 'cur-menu') { const m = $('#curMenu'); if (m) m.hidden = !m.hidden; return; }
+  if (a === 'ld-cur') { S.ld.cur = t.dataset.v; S.ld.amt = Math.min(LD[S.ld.cur].chips[0], Math.floor(curBal(S.ld.cur))); $('#ldBox').innerHTML = ldHtml(); return; }
+  if (a === 'avatar-pick') avatarModal();
+  if (a === 'av-confirm') { const n = ($('#avName').value || '').trim(); S.user.avatar = 'av:' + S.avSel; if (n) S.user.first = n.slice(0, 20); closeModal(); refresh(); syncQuests(); if (document.body.classList.contains('menu-open')) setMenu(true); toast('Avatar updated'); }
+  if (a === 'verify-pop') verifyPop();
+  if (a === 'claim-x') { S.claimHidden = true; claimStrip(); }
   if (a === 'all-reviews') allReviewsModal();
   if (a === 'shop-tab') { S.shopTab = t.dataset.tab2; $('#shopBox').innerHTML = shopHtml(); }
   if (a === 'pkg') buyPackage(Number(t.dataset.v));
@@ -1584,13 +1714,13 @@ document.addEventListener('click', e => {
     if (S.user.points < it.cost) return;
     addPts(`Shop: ${it.name}`, -it.cost);
     S.user.cashable += it.cash;
-    refresh(); toast(`${usd(it.cash)} added to cashable`);
+    refresh(); toast(`${scv(it.cash)} added to cashable`);
   }
   if (a === 'cash-move') {
     const c = S.user.cashable;
     S.user.wallet += c; S.user.cashable = 0;
     addTx({ kind: 'Bonus', label: 'Rewards cash to wallet', amt: c, status: 'done' });
-    refresh(); toast(`${usd(c)} moved to your wallet`);
+    refresh(); toast(`${scv(c)} moved to your wallet`);
   }
   if (a === 'avatar') { S.user.avatar = t.dataset.c; refresh(); syncQuests(); render(true); }
   if (a === 'share') {
@@ -1625,12 +1755,12 @@ document.addEventListener('click', e => {
     const id = rid();
     S.user.tx.unshift({ id, kind: 'Deposits', label: `Deposit (${c.name})`, amt, when: now(), status: 'pending' });
     const pk = S.pkg && S.pkg.amt === amt ? S.pkg : null; S.pkg = null;
-    settleLater(id, () => { S.user.wallet += amt; if (pk) { S.user.wallet += pk.bonus; addTx({ kind: 'Bonus', label: `${pk.first ? 'First deposit' : 'Package'} bonus`, amt: pk.bonus, status: 'done' }); } toast(`Deposit confirmed: ${usd(amt + (pk ? pk.bonus : 0))} added to your wallet`); });
+    settleLater(id, () => { const gc = amt * GC_PER_USD; S.user.gc += gc; S.user.wallet += amt; addTx({ kind: 'Bonus', label: 'Gold Coins purchased', amt: gc, cur: 'gc', status: 'done' }); addTx({ kind: 'Bonus', label: 'Free Sweeps Coins', amt, status: 'done' }); let extra = 0; if (pk && pk.first) { extra = Math.round(amt * FIRST_EXTRA * 100) / 100; S.user.wallet += extra; addTx({ kind: 'Bonus', label: 'First deposit bonus', amt: extra, status: 'done' }); } toast(`Purchase confirmed: ${gcv(gc)} + ${scv(amt + extra)} free`); });
     closeModal(); refresh(); toast('Waiting for network confirmation (demo: about 4 seconds)');
   }
   if (a === 'withdraw-now') {
     const c = CRYPTO.find(x => x.id === S.method);
-    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Withdraw to ${c.name}</h2><p>From your wallet (${usd(S.user.wallet)}). Minimum $${MIN_WITHDRAW}.</p>
+    openModal(`<div class="modal-coin">${cryptoIco(c)}</div><h2>Withdraw to ${c.name}</h2><p>From your wallet (${scv(S.user.wallet)}). Minimum $${MIN_WITHDRAW}.</p>
       <form class="form-row" data-form="withdraw">
         <input class="field" name="amt" type="number" min="${MIN_WITHDRAW}" step="0.01" max="${S.user.wallet}" placeholder="Amount ($)" required>
         <input class="field" name="addr" placeholder="Your ${c.code} address" required>
@@ -1641,7 +1771,10 @@ document.addEventListener('click', e => {
   if (a === 'twofa') { S.user.twofa = !S.user.twofa; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Two-step login ${S.user.twofa ? 'on' : 'off'}`); }
   if (a === 'music') { S.user.music = !S.user.music; refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast(`Background music ${S.user.music ? 'on' : 'off'}`); }
   if (a === 'lang') { setLang(LANG === 'en' ? 'es' : 'en'); render(true); if (document.body.classList.contains('menu-open')) setMenu(true); }
-  if (a === 'kyc-start') { S.user.kyc = 'pending'; closeModal(); refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast('Documents submitted for review (demo)'); }
+  if (a === 'kyc-start') {
+    S.user.kyc = 'pending'; closeModal(); refresh(); if (document.body.classList.contains('menu-open')) setMenu(true); toast('Documents submitted for review (demo: approved in about 4 seconds)');
+    setTimeout(() => { if (!S.user || S.user.kyc !== 'pending') return; S.user.kyc = 'verified'; S.user.gc += VERIFY_GC; S.user.wallet += VERIFY_SC; addTx({ kind: 'Bonus', label: 'Verification bonus', amt: VERIFY_GC, cur: 'gc', status: 'done' }); addTx({ kind: 'Bonus', label: 'Verification bonus', amt: VERIFY_SC, status: 'done' }); refresh(); toast(`Verified! ${gcv(VERIFY_GC)} + ${scv(VERIFY_SC)} added`); }, 4000);
+  }
   if (a === 'cool') { S.user.coolUntil = Date.now() + Number(t.dataset.h) * 3600e3; closeModal(); refresh(); toast('Break started. Deposits and loading are paused.'); }
   if (a === 'exclude') openModal(`<h2>Self-exclude?</h2><p>This closes deposits and loading on your account. You can still redeem and withdraw what you have. To reopen, you will need to contact support.</p><button class="btn btn-outline btn-block danger" data-act="exclude-go">Yes, self-exclude me</button>`);
   if (a === 'exclude-go') { S.user.excluded = true; closeModal(); refresh(); toast('Self-exclusion is on'); }
@@ -1693,12 +1826,12 @@ document.addEventListener('submit', e => {
     const c = CRYPTO.find(x => x.id === S.method);
     S.user.wallet -= amt;
     addTx({ kind: 'Withdrawals', label: `Withdrawal (${c.name})`, amt: -amt, status: 'pending' });
-    closeModal(); refresh(); toast(`Withdrawal of ${usd(amt)} requested. Track it under Activity.`);
+    closeModal(); refresh(); toast(`Withdrawal of ${scv(amt)} requested. Track it under Activity.`);
   }
   if (k === 'load') {
     const stop = blocked();
     if (stop) { toast(stop); return; }
-    if (amt > S.user.wallet) { toast(`Not enough in your wallet (${usd(S.user.wallet)})`); return; }
+    if (amt > S.user.wallet) { toast(`Not enough in your wallet (${scv(S.user.wallet)})`); return; }
     S.user.wallet -= amt;
     S.user.accounts[d.plat].credits += amt;
     S.loadPlat = d.plat;
@@ -1709,8 +1842,8 @@ document.addEventListener('submit', e => {
       const bonus = Math.round(amt * lp.daily) / 100;
       S.user.accounts[d.plat].credits += bonus;
       addTx({ kind: 'Bonus', label: `Daily 1st bonus (+${lp.daily}%)`, p: d.plat, amt: bonus, status: 'done' });
-      closeModal(); refresh(); toast(`${usd(amt)} loaded into ${lp.name} + ${usd(bonus)} daily first-load bonus`);
-    } else { closeModal(); refresh(); toast(`${usd(amt)} loaded into ${lp.name}`); }
+      closeModal(); refresh(); toast(`${scv(amt)} loaded into ${lp.name} + ${scv(bonus)} daily first-load bonus`);
+    } else { closeModal(); refresh(); toast(`${scv(amt)} loaded into ${lp.name}`); }
   }
   if (k === 'link') {
     S.user.accounts[d.plat] = { username: d.u.trim(), password: d.p, credits: 0, linked: true };
@@ -1725,14 +1858,14 @@ document.addEventListener('submit', e => {
     a.credits -= amt;
     const id = rid();
     S.user.tx.unshift({ id, kind: 'Redeems', label: 'Redeemed credits', p: d.plat, amt, when: now(), status: 'pending' });
-    settleLater(id, () => { S.user.wallet += amt; toast(`${usd(amt)} from ${plat(d.plat).name} is in your wallet`); });
+    settleLater(id, () => { S.user.wallet += amt; toast(`${scv(amt)} from ${plat(d.plat).name} is in your wallet`); });
     closeModal(); refresh(); toast('Redeem requested. It lands in your wallet shortly (demo: 4 seconds).');
   }
   if (k === 'p2p') {
     if (amt > S.user.wallet) { toast('More than your wallet balance'); return; }
     S.user.wallet -= amt;
     addTx({ kind: 'P2P', label: `Sent to ${d.to}`, amt: -amt, status: 'done' });
-    f.reset(); closeModal(); refresh(); toast(`Sent ${usd(amt)} to ${d.to}`);
+    f.reset(); closeModal(); refresh(); toast(`Sent ${scv(amt)} to ${d.to}`);
   }
   if (k === 'phone') { S.user.phone = d.phone.trim(); closeModal(); refresh(); toast('Phone number saved'); }
   if (k === 'voucher') {

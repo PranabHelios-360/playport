@@ -1769,3 +1769,13 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 }
 
 .b-top.solo { grid-template-columns: 1fr; }
+
+/* ===== platform page steps (replaces the game grid) ===== */
+.plat-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.plat-steps > div { padding: 20px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+.plat-steps span { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; background: var(--accent); color: var(--on-accent); margin-bottom: 12px; }
+.plat-steps span svg { width: 18px; height: 18px; }
+.plat-steps .done span { background: var(--green); color: #fff; }
+.plat-steps b { display: block; font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+.plat-steps p { margin: 0; color: var(--mute); font-size: 14.5px; line-height: 1.5; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .plat-steps { grid-template-columns: 1fr; gap: 10px; } .plat-steps > div { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; padding: 14px; } .plat-steps span { margin: 0; grid-row: span 2; } }

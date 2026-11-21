@@ -299,22 +299,21 @@ function viewPlatform(id) {
   const p = plat(id);
   if (!p) return viewGames();
   const a = acct(p.id);
-  const list = GAMES.filter(g => g.p === p.id);
   return `<div class="page">
     ${crumb(['Games', '#/games'], [p.name])}
     <div class="plat-top">
       ${coin(p, 'lg')}
       <div class="plat-top-txt"><h1>${p.name}</h1>${tags(p)}<p>${p.blurb}</p>
-        <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${usd(a.credits)} credits` : `You need a ${p.name} account to play these games.`}</p></div>
+        <p class="signed">${a ? `Your ${p.name} login: <code>${esc(a.username)}</code> &middot; ${usd(a.credits)} credits` : `You need a ${p.name} account to play.`}</p></div>
       <div class="plat-top-acts">${a
         ? `<button class="btn btn-outline" data-act="load" data-plat="${p.id}">Load credits</button><button class="btn btn-accent" data-act="play" data-plat="${p.id}">Play</button>`
         : `<button class="btn btn-accent" data-act="unlock" data-plat="${p.id}">Unlock Account</button><button class="btn btn-outline" data-act="download" data-plat="${p.id}">${I.dl}Get the app</button>`}</div>
     </div>
-    <div class="filters">
-      ${['All', 'Fish', 'Slots', 'Keno'].map(c => `<button class="chip ${S.cat === c ? 'on' : ''}" data-cat="${c}">${c}</button>`).join('')}
-      <label class="search">${I.search}<input type="search" placeholder="Search games" value="${esc(S.q)}" data-search aria-label="Search games"></label>
-    </div>
-    <div class="grid" id="gameGrid" data-plat="${p.id}">${gameGrid(list)}</div>
+    <section class="plat-steps">
+      <div class="${a ? 'done' : ''}"><span>${a ? I.check : '1'}</span><b>${a ? 'Account ready' : 'Unlock your account'}</b><p>${a ? `Logged in as ${esc(a.username)}.` : `We create your ${p.name} login, or link the one you have.`}</p></div>
+      <div><span>2</span><b>Load credits</b><p>Move money from your wallet into ${p.name}.${p.daily ? ` First load each day gets +${p.daily}%.` : ''}</p></div>
+      <div><span>3</span><b>Play</b><p>Open the ${p.name} web version or app and log in.</p></div>
+    </section>
   </div>`;
 }
 
@@ -1478,6 +1477,7 @@ document.addEventListener('click', e => {
   if (t.dataset.cat) {
     S.cat = t.dataset.cat;
     const grid = $('#gameGrid');
+    if (!grid) return;
     grid.innerHTML = gameGrid(GAMES.filter(g => g.p === grid.dataset.plat));
     document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('on', b.dataset.cat === S.cat));
     return;
@@ -1742,6 +1742,7 @@ document.addEventListener('input', e => {
   if (e.target.matches('[data-search]')) {
     S.q = e.target.value;
     const grid = $('#gameGrid');
+    if (!grid) return;
     grid.innerHTML = gameGrid(GAMES.filter(g => g.p === grid.dataset.plat));
   }
   if (e.target.closest('.code-in')) {

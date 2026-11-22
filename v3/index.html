@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Recharge777 | Your games. One wallet.</title>
+<link rel="manifest" href="recharge.webmanifest">
+<meta name="description" content="Recharge777 brings your game accounts, credit management, and wallet activity together in one recharge platform.">
+<meta name="theme-color" content="#170a22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Recharge777">
+<link rel="icon" type="image/svg+xml" href="assets/logos/recharge-mark.svg">
+<link rel="apple-touch-icon" href="assets/logos/r777-touch.png">
+<script>
+  let initialPalette = new URLSearchParams(location.search).get('palette');
+  if (!['navy', 'white', 'pine'].includes(initialPalette)) {
+    try { initialPalette = localStorage.getItem('p3_theme'); } catch {}
+  }
+  document.documentElement.dataset.theme = ['white', 'pine'].includes(initialPalette) ? initialPalette : 'navy';
+</script>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="styles.css?v=brand-v9">
+<link rel="stylesheet" href="spotlight.css?v=collection-3">
+<link rel="stylesheet" href="product.css?v=footer-layout-1">
+<link rel="stylesheet" href="community.css?v=2">
+<link rel="stylesheet" href="member.css?v=wallet-art-1">
+<link rel="preload" as="script" href="splash.js?v=flow1"><link rel="stylesheet" href="splash.css?v=cinema1">
+<link rel="stylesheet" href="guest-menu.css?v=cinema1">
+<link rel="stylesheet" href="highlights.css?v=1">
+<link rel="stylesheet" href="palettes.css?v=1">
+<link rel="stylesheet" href="deposit.css?v=1">
+<link rel="stylesheet" href="home-worlds.css?v=plum-activity">
+<link rel="stylesheet" href="wallet-gold.css?v=1">
+<link rel="stylesheet" href="platform-browser.css?v=1">
+<link rel="stylesheet" href="kiosk.css?v=1">
+<link rel="stylesheet" href="standings.css?v=plum-activity">
+<link rel="stylesheet" href="chat.css?v=1">
+<link rel="stylesheet" href="shop.css?v=gold-packages">
+<link rel="stylesheet" href="profile.css?v=1">
+<link rel="stylesheet" href="history.css?v=1">
+<link rel="stylesheet" href="guardian-registration.css?v=1">
+<link rel="stylesheet" href="game-detail.css?v=1">
+<link rel="stylesheet" href="wallet-rewards-update.css?v=1">
+<link rel="stylesheet" href="motion.css?v=gallery2">
+</head>
+<body>
+
+<header class="top">
+  <button class="member-menu-trigger" type="button" data-menu aria-label="Menu" aria-controls="drawer">☰</button>
+  <a class="logo" href="#/" aria-label="Recharge777 home"><span class="logo-svg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true"><defs><linearGradient id="rgold" x1="8" y1="4" x2="54" y2="61" gradientUnits="userSpaceOnUse"><stop stop-color="#ffe4f5"/><stop offset=".28" stop-color="#bb1677"/><stop offset=".5" stop-color="#ff9bd6"/><stop offset=".75" stop-color="#9f185f"/><stop offset="1" stop-color="#ffc4e8"/></linearGradient><radialGradient id="rcore"><stop stop-color="#34204c"/><stop offset="1" stop-color="#101b38"/></radialGradient></defs><circle cx="32" cy="32" r="30" fill="url(#rgold)"/><circle cx="32" cy="32" r="27" fill="url(#rcore)" stroke="#ffb4df" stroke-width=".7"/><circle cx="32" cy="32" r="24.5" stroke="#d72d90" stroke-width=".6"/><path d="M36 9L15 35h15l-4 20 23-30H34l2-16Z" fill="url(#rgold)" stroke="#ffe6f6" stroke-width=".8" stroke-linejoin="round"/><path d="M12 17A26 26 0 0 1 42 8" stroke="#fff0fa" stroke-width="1.2" stroke-linecap="round" opacity=".7"/></svg></span><span>Recharge<b>777</b></span></a>
+    <div class="top-right" id="topRight"></div>
+</header>
+
+<aside class="side" id="side" aria-label="Site menu"></aside>
+<main id="app"></main>
+
+<template id="marketing-footer-template">
+<footer class="foot">
+  <div class="foot-top">
+    <div class="foot-brand">
+      <a class="logo" href="#/" aria-label="Recharge777 home"></a>
+      <p>Your games, connected. Explore platforms, manage credits, and keep your wallet in one place.</p>
+      <div class="foot-badges"><span>21+</span><a href="#" data-act="foot-doc" data-doc="Responsible play">Play responsibly</a><select class="menu-language" aria-label="Language" onchange="window.setLanguage(this.value)"><option value="en">English</option><option value="es">Español</option></select></div>
+    </div>
+    <div class="foot-col">
+      <h4>Platforms</h4>
+      <a href="#/platform/milkyway">Milky Way</a><a href="#/platform/firekirin">Fire Kirin</a><a href="#/platform/orion">Orion Stars</a>
+      <a href="#/platform/panda">Panda Master</a><a href="#/platform/juwa">Juwa</a><a href="#/platform/vegas">Vegas Sweeps</a>
+    </div>
+    <div class="foot-col">
+      <h4>Account</h4>
+      <a href="#/store">Coin shop</a>
+      <a href="#/account">My account</a><a href="#/rewards">Rewards</a><a href="#/balance">Balance</a><a href="#/activity">Activity</a><a href="#" data-act="signup">Sign up</a>
+    </div>
+    <div class="foot-col">
+      <h4>Help</h4>
+      <a href="#" data-act="chat">Live chat</a><a href="#" data-act="foot-doc" data-doc="How it works">How it works</a><a href="#" data-act="foot-doc" data-doc="FAQ">FAQ</a><a href="#" data-act="foot-doc" data-doc="Contact us">Contact us</a><a href="#" data-act="choose-site">Switch site</a>
+    </div>
+    <div class="foot-col">
+      <h4>Legal</h4>
+      <a href="#" data-act="foot-doc" data-doc="Terms of service">Terms of service</a><a href="#" data-act="foot-doc" data-doc="Privacy policy">Privacy policy</a><a href="#" data-act="foot-doc" data-doc="Sweepstakes rules">Sweepstakes rules</a><a href="#" data-act="foot-doc" data-doc="Responsible play">Responsible play</a>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <p>No purchase necessary. Void where prohibited by law. 21+ only. Sweeps Coins have no cash value outside the platforms they are issued on. Game names and logos belong to their owners.</p>
+    <div class="theme-pick" data-theme-pick></div>
+    <p class="copy">&copy; <span id="year">2026</span> Recharge777. All rights reserved.</p>
+  </div>
+</footer>
+</template>
+
+<nav class="tabbar" aria-label="Main">
+  <a href="#/" class="member-home-link" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m2 11 10-8 10 8M5 10v11h14V10M10 21v-7h4v7"/></svg>Home</a>
+  <a href="#" data-menu aria-controls="drawer" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Menu</a>
+  <a href="#/games" data-nav="games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M7 7h10a5 5 0 0 1 4.8 6.4l-1 3.4a2.4 2.4 0 0 1-4.3.6L15 15H9l-1.5 2.4a2.4 2.4 0 0 1-4.3-.6l-1-3.4A5 5 0 0 1 7 7Z"/><path d="M8 10v3M6.5 11.5h3" stroke-linecap="round"/><circle cx="16" cy="11" r=".8" fill="currentColor"/><circle cx="17.5" cy="12.5" r=".8" fill="currentColor"/></svg>Games</a>
+  <a href="#/balance" data-nav="balance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M15 10h6v5h-6a2.5 2.5 0 0 1 0-5Z"/></svg>Balance</a>
+  <a href="#/activity" data-nav="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><path d="m6 15 4-4 3 3 5-6" stroke-linecap="round"/></svg>Activity</a>
+  <a href="#" data-act="chat" data-nav="chat" aria-controls="chat" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4Z"/><path d="M9 10.5h.01M12 10.5h.01M15 10.5h.01" stroke-linecap="round" stroke-width="2.4"/></svg>Chat</a>
+</nav>
+
+<div class="scrim" data-close-menu></div>
+<aside class="drawer" id="drawer" aria-label="Menu"></aside>
+<section class="chat" id="chat" tabindex="-1" inert aria-label="Support chat"></section>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-back" data-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true" id="modalBox"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="chooser" id="chooser" hidden></div>
+<div class="loader" id="loader">
+  <section class="power-scene" aria-label="Loading Recharge777" data-theme="fortune">
+    <div class="power-core">
+      <div class="power-brand"><img src="assets/splash/emblem.webp" alt=""><strong>Recharge<span>777</span></strong></div>
+      <div class="power-stage" aria-hidden="true">
+        <div class="power-layer slots"><div class="power-machine">
+          <img src="assets/splash/slots.webp" alt="">
+          <i class="reel one"><b></b></i><i class="reel two"><b></b></i><i class="reel three"><b></b></i>
+        </div></div>
+        <div class="power-layer dragon"><div class="power-dragon"><img src="assets/splash/dragon.webp" alt=""><i class="dragon-eye"></i><i class="dragon-mist"></i>
+          <svg class="dragon-charge" viewBox="0 0 180 60"><path d="M1 52l42-20-9 13 44-29-10 14 44-20-5 8 70-16"/></svg>
+        </div></div>
+        <div class="power-layer fortune"><div class="power-fortune"><img src="assets/splash/fortune.webp" alt=""><span class="orbit-plane"><i class="orbit-dust"></i></span></div></div>
+      </div>
+      <p class="power-message" role="status" aria-atomic="true"></p>
+      <div class="power-meter" role="progressbar" aria-label="Loading"><i></i></div>
+      <button class="power-retry" type="button" hidden>Retry</button>
+    </div>
+    <div class="power-credit"><small>Powered by</small><b>Skill Gaming Solutions</b></div>
+  </section>
+</div>
+<script src="splash.js?v=flow1" onerror="document.querySelector('.power-message').textContent='Recharge777 couldn’t start.';const retry=document.querySelector('.power-retry');retry.hidden=false;retry.onclick=()=>location.reload()"></script>
+
+<script data-boot defer src="motion.js?v=gallery2"></script>
+<script data-boot defer src="content.js?v=community-1"></script>
+<script data-boot defer src="community.js?v=2"></script>
+<script data-boot defer src="shop.js?v=gold-packages"></script>
+<script data-boot defer src="highlights.js?v=gallery2"></script>
+<script data-boot defer src="deposit.js?v=1"></script>
+<script data-boot defer src="platform-browser.js?v=gallery2"></script>
+<script data-boot defer src="kiosk.js?v=1"></script>
+<script data-boot defer src="app.js?v=gallery2"></script>
+<script data-boot defer src="languages.js?v=wallet-rewards-1"></script>
+</body>
+</html>

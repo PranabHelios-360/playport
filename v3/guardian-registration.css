@@ -1,0 +1,81 @@
+body:has(.guardian-registration) {
+  --join-bg:#16091b;--join-panel:#240d29;--join-ink:#fff6fc;--join-muted:#dfcde1;
+  --join-line:#8e4694;--join-link:#f4a3ea;--join-input:#35163d;
+}
+:root[data-theme=white] body:has(.guardian-registration) {
+  --join-bg:#fbf6fa;--join-panel:#fff9ff;--join-ink:#351f35;--join-muted:#655368;
+  --join-line:#b18bb1;--join-link:#882677;--join-input:#f5edf6;
+}
+:root[data-theme=pine] body:has(.guardian-registration) {
+  --join-bg:#10251e;--join-panel:#192f27;--join-ink:#fff9e9;--join-muted:#ceddd2;
+  --join-line:#627e69;--join-link:#eed189;--join-input:#233d31;
+}
+body:has(.guardian-registration) #app {background:var(--join-bg)}
+:root[data-site][data-theme] .guardian-registration {
+  display:block;width:min(100%,880px);margin:0 auto 24px;padding:0 clamp(7px,1.9vw,16px) clamp(10px,2vw,21px);
+  border:1px solid var(--join-line);border-radius:clamp(18px,3vw,30px);color:var(--join-ink);
+  background:linear-gradient(145deg,var(--join-panel),var(--join-bg) 78%);box-shadow:none;
+}
+.guardian-intro {
+  position:relative;isolation:isolate;display:grid;align-items:center;min-height:clamp(142px,26vw,248px);
+  padding:clamp(15px,2.7vw,30px) clamp(10px,4vw,48px);overflow:hidden;
+}
+.guardian-intro img {position:absolute;right:-1%;bottom:0;width:61%;height:100%;object-fit:cover;object-position:62% center;z-index:-1;mask-image:linear-gradient(to right,transparent,#000 23%,#000 94%,transparent)}
+.guardian-intro>div {max-width:51%}
+.guardian-intro h1 {margin:0;color:var(--join-ink);font:italic 850 clamp(1.75rem,5.9vw,3.65rem)/.98 Figtree,sans-serif;letter-spacing:-.045em;text-transform:capitalize}
+.guardian-intro h1 em {display:block;color:#ffd061}
+:root[data-theme=white] .guardian-intro em {color:#915811}
+.guardian-intro p {margin:9px 0 0;color:var(--join-ink);font:500 clamp(.78rem,1.9vw,1.12rem)/1.32 Figtree,sans-serif}
+:root[data-site][data-theme] .guardian-registration .register-panel {
+  display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(9px,1.15vw,15px);width:100%;margin:0;padding:clamp(13px,3.2vw,34px) clamp(12px,4vw,48px);
+  background:linear-gradient(150deg,var(--join-panel),var(--join-bg));border:1px solid var(--join-line);border-radius:clamp(14px,2.6vw,25px);
+  color:var(--join-ink);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--join-link) 25%,transparent);
+}
+.guardian-registration .join-field {gap:5px}
+.guardian-registration .join-field label {font:720 clamp(.89rem,1.8vw,1.08rem)/1.2 Figtree,sans-serif}
+:root[data-site] .guardian-registration .join-input {color:var(--join-ink);background:linear-gradient(115deg,var(--join-input),var(--join-panel));border:1px solid var(--join-line);border-radius:14px}
+:root[data-site] .guardian-registration .join-input input::placeholder {color:var(--join-muted)}
+.guardian-registration .join-input>svg {color:var(--join-link)}
+.guardian-registration .join-consents {grid-template-columns:1fr;gap:2px}
+.guardian-registration .register-consent {color:var(--join-ink);min-height:27px}
+:root[data-site] .guardian-registration :is(.register-consent button,.auth-switch a) {color:var(--join-link)}
+:root[data-site][data-theme] .guardian-registration .register-submit {
+  width:100%;min-height:46px;border:1px solid #ffebac;border-radius:28px;color:#291600;
+  background:linear-gradient(180deg,#ffde69,#ffbb23 76%,#ffc64a);box-shadow:inset 0 1px 2px #fff3a6,0 2px 10px #e99b202b;font:800 1.1rem Figtree,sans-serif;
+}
+:root[data-site] .guardian-registration .register-submit svg {display:block;width:20px;height:20px}
+:root[data-site] .guardian-registration :is(.register-note,.auth-switch) {color:var(--join-muted);text-align:center}
+.guardian-divider {display:flex;align-items:center;justify-content:center;gap:10px;color:var(--join-muted);font:700 .73rem Figtree,sans-serif;text-transform:uppercase}
+.guardian-divider::before,.guardian-divider::after {content:"";width:35%;height:1px;background:var(--join-line)}
+:root[data-site] .guardian-registration .continue-guest {display:flex;justify-content:center;align-items:center;gap:9px;width:100%;min-height:44px;margin:0;border:1px solid var(--join-line);border-radius:28px;background:var(--join-input);color:var(--join-ink)}
+body:has(.guardian-registration) .home-tools {width:100%;background:var(--join-bg);border:0}
+body:has(.guardian-registration) .home-tools button {color:var(--join-link)}
+:root[data-theme=navy] body:has(.guardian-registration) .home-tools button {color:#ffd46a}
+body:has(.guardian-registration) .home-tools button+button {position:relative}
+body:has(.guardian-registration) .home-tools button+button::before {content:"";position:absolute;left:-3px;top:28%;bottom:28%;width:1px;background:var(--join-line)}
+body:has(.guardian-registration) .top .member-menu-trigger {display:grid;place-items:center;min-width:31px;min-height:44px;background:none;border:0;padding:0;color:inherit;font:650 22px/1 sans-serif;cursor:pointer}
+body:has(.guardian-registration) .tabbar .member-home-link {display:flex}
+body:has(.guardian-registration) .tabbar [data-menu] {display:none}
+:root[data-theme=navy] body:has(.guardian-registration) :is(.top,.tabbar) {background:#190b20;border-color:#693167}
+:root[data-theme=navy] body:has(.guardian-registration) .top .logo {width:clamp(108px,31vw,198px);height:44px;background:url("assets/landing/guardian-wordmark.webp") left center/contain no-repeat}
+:root[data-theme=navy] body:has(.guardian-registration) .top .logo>span {display:none}
+:root[data-site][data-theme] body:has(.guardian-registration) .guest-register {background:linear-gradient(#a633ac,#732180);border:1px solid #e48dd9;color:white;border-radius:24px}
+body:has(.guardian-registration) .guest-login {border-radius:24px}
+@media(max-width:600px) {
+  .page:has(>.guardian-registration) {padding-inline:8px}
+  body:has(.guardian-registration) .top {gap:4px;padding-inline:7px}
+  body:has(.guardian-registration) .top-right {gap:4px}
+  body:has(.guardian-registration) .top-right button {min-width:0;padding-inline:9px}
+}
+@media(min-width:780px) {
+  .page.guest-auth-page:has(>.guardian-registration) {max-width:920px}
+  .guardian-registration form>* {grid-column:1/-1}
+}
+:root[data-site][data-theme] .landing-register.guardian-registration {
+  background:radial-gradient(ellipse at 12% 0%,color-mix(in srgb,var(--join-line) 19%,var(--join-bg)),transparent 34%),var(--join-bg);
+  border-color:var(--join-line)
+}
+:root[data-site][data-theme] .guardian-registration .continue-guest {
+  background:linear-gradient(110deg,var(--join-input),var(--join-panel));border-color:var(--join-line);color:var(--join-ink)
+}
+:root[data-theme=navy] body:has(.guardian-registration) .top .logo {mix-blend-mode:lighten}

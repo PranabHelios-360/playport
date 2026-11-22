@@ -1,0 +1,124 @@
+:root {--flow-press:180ms;--flow-ease:cubic-bezier(.2,.72,.22,1);--flow-gold:#ffd876;--flow-pink:#ff69de}
+:root[data-site=a] :is(button,a,input,select,textarea):focus-visible {outline:2px solid var(--flow-gold);outline-offset:3px}
+:root[data-site=a] :is(.btn,.tabbar a,.wallet-action,.invite-primary,.charged-view,.home-world-all,.collection-all) {transition:scale var(--flow-press) var(--flow-ease),background-color var(--flow-press),border-color var(--flow-press)}
+:root[data-site=a] :is(.btn,.tabbar a,.wallet-action,.invite-primary,.charged-open,.home-world-all,.collection-all):active {scale:.975}
+:root[data-site=a] .tabbar [aria-current=page] {border-bottom-color:var(--flow-pink)}
+.power-brand {position:relative}
+.power-brand::before {content:"";position:absolute;left:0;top:50%;width:1.13em;height:1.13em;margin-top:-.565em;
+  border-radius:50%;background:conic-gradient(transparent 20%,#f93bd6 37%,#ffdb84 44%,transparent 46% 100%);
+  mask:radial-gradient(farthest-side,transparent 92%,#000 94%);pointer-events:none}
+.power-brand img {animation:none}
+.power-scene::before,.power-scene::after {animation:none}
+.power-continue {position:absolute;top:100%;margin-top:12px;min-height:40px;padding:4px 16px;font:600 .8rem system-ui;color:#ffdfaa;background:transparent;border:0;cursor:pointer}
+.motion-pause {font:700 14px/1 system-ui;color:#ffdb8f;background:#231129;border:1px solid #80576d;border-radius:50%;min-width:35px;min-height:35px;cursor:pointer}
+.motion-pause[hidden],.standings-expand[hidden] {display:none}
+.member-world-hero .home-world-stage {background:radial-gradient(ellipse 55% 7% at 50% 91%,#bb448c77,transparent),radial-gradient(ellipse at center,#562347,#15091c 75%)}
+.home-world-stage .home-world-card {background:linear-gradient(140deg,#411e38,#1c0b20);border:2px solid #d5a85a;box-shadow:inset 0 0 0 2px #52294e}
+.home-world-stage[data-original=true] .home-world-card>span {display:grid}
+.home-world-stage .home-card-face {inset:1% 1% 24%}
+.home-world-stage .home-world-card[data-offset="0"] {box-shadow:0 5px 20px #16051b,inset 0 0 0 1px #ffdc96}
+.collection-stage[data-original=true]::before {inset:62% 5% 5%;border-radius:50%;background:radial-gradient(ellipse,#531056,#22072c 65%,#a43cac 78%,#471147);mask:none}
+.collection-stage[data-original=true] .showcase-coin {background:var(--poster) 49.85% 39.85%/220.86% 263.53% no-repeat}
+.collection-stage[data-original=true] .showcase-coin>* {visibility:visible}
+.flow-led {position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:4}
+.flow-led rect {fill:none;stroke:var(--flow-gold);stroke-width:2;vector-effect:non-scaling-stroke;stroke-dasharray:16 84;opacity:0;stroke-linecap:round}
+.charged-card .flow-spark {pointer-events:none;position:absolute;inset:0;z-index:-1;opacity:0}
+[data-platform=milkyway] .flow-spark {background:radial-gradient(circle at 66% 20%,#fff,transparent 1.3%),radial-gradient(circle at 85% 48%,#ffe3ff,transparent 2%)}
+[data-platform=firekirin] .flow-spark {background:radial-gradient(ellipse 3% 4% at 72% 36%,#ffe4a1,transparent),radial-gradient(ellipse at 80% 81%,#f7682559,transparent 35%)}
+[data-platform=orion] .flow-spark {inset:22% 8% 25% 46%;border-radius:50%;border-top:1px solid #ffdd9b;rotate:-18deg}
+:is([data-platform=panda],[data-platform=juwa]) .flow-spark {background:linear-gradient(110deg,transparent 39%,#ffcd6a50 50%,transparent 59%)}
+[data-platform=vegas] .flow-spark {inset:10% 6% 24% 39%;border-radius:15%;border:2px dotted #ffe89d}
+.results-empty {margin:0;padding:12px 14px;border:1px solid #593554;border-radius:10px;background:#27122b;color:#e6d4e3;font:500 .87rem/1.4 Figtree,sans-serif}
+.results-ticker {display:flex;gap:.5rem;overflow-x:auto;scroll-snap-type:x proximity}
+.results-ticker .results-empty {width:100%}
+.results-ticker a {min-width:min(270px,92%);display:flex;align-items:center;gap:8px;padding:6px 10px;background:#28132e;border:1px solid #684266;border-radius:12px;color:#f7e8ee;scroll-snap-align:start}
+.results-ticker .highlight-badge {width:30px}.results-ticker strong {margin-left:auto;color:#ffda8b}
+.standings-table tr[data-motion-key]:first-child {background:linear-gradient(100deg,#604028,#402332 70%,#472e29);color:#ffe1a4}
+.standings-cover {position:relative;overflow:hidden}
+.bonus-invite .invite-reward-art {clip-path:none;mask-image:radial-gradient(ellipse 69% 68%,#000 61%,transparent 92%);height:auto}
+.standings-cover::before {content:"";position:absolute;right:8%;top:28%;width:11%;height:16%;border-radius:50%;background:radial-gradient(ellipse,#ffe8af7a,transparent 67%);opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:no-preference) {
+  .power-brand::before {animation:flow-turn 3.6s linear infinite}
+  .power-failed .power-brand::before {animation:none}
+  .motion-visible :is([data-slot="0"],[data-offset="0"]) .flow-led rect {animation:flow-edge 950ms ease-out both}
+  .motion-visible :is([data-slot="0"] img,[data-offset="0"] .home-card-face) {animation:flow-pan 8s ease-in-out alternate infinite}
+  .motion-art .charged-scene {animation:flow-pan 9s ease-in-out alternate infinite}
+  [data-platform=milkyway].motion-art .charged-scene {animation:flow-galaxy 10s ease-in-out alternate infinite}
+  .motion-art .flow-spark {animation:flow-glint 3.8s ease-in-out both}
+  [data-platform=orion].motion-art .flow-spark {animation:flow-orbit 5s ease-in-out both}
+  :is([data-platform=panda],[data-platform=juwa]).motion-art .flow-spark {animation:flow-shimmer 3.1s ease-out both}
+  [data-platform=vegas].motion-art .flow-spark {animation:flow-glint 1.25s ease-in-out 2}
+  .standings-cover.motion-visible::before {animation:flow-glint 2s ease-out both}
+  :root[data-site=a] #modal:not([hidden]) .modal-box {animation:flow-sheet 230ms var(--flow-ease) both}
+  :root[data-site=a] :is(.bonus-invite .invite-reward-art,.reward-banner img,.game-success>span,.bonus-confirm .invite-brand) {animation:flow-reveal 650ms var(--flow-ease) both}
+  .game-success,.bonus-invite,.bonus-confirm {position:relative;isolation:isolate;overflow:hidden}
+  :is(.game-success,.bonus-invite,.bonus-confirm)::after {content:"";pointer-events:none;position:absolute;inset:0;background:linear-gradient(112deg,transparent 42%,#ffcb782b 49%,transparent 57%);animation:flow-shimmer 820ms ease-out both}
+  .motion-entry,.winning-card[data-changing]>* {animation:flow-sheet 260ms var(--flow-ease)}
+  .ticker-run:not(.motion-visible) {animation-play-state:paused}
+}
+@keyframes flow-turn {to{transform:rotate(1turn)}}
+@keyframes flow-edge {0%{stroke-dashoffset:100;opacity:0}18%{opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes flow-pan {from{transform:scale(1.015)}to{transform:scale(1.055) translateX(-.8%)}}
+@keyframes flow-galaxy {from{transform:scale(1.055) rotate(-1.2deg)}to{transform:scale(1.09) rotate(1.8deg)}}
+@keyframes flow-glint {0%,100%{opacity:0}46%{opacity:.85}}
+@keyframes flow-shimmer {0%{opacity:0;transform:translateX(-55%)}40%{opacity:.9}100%{opacity:0;transform:translateX(60%)}}
+@keyframes flow-orbit {0%{opacity:0;transform:rotate(-16deg)}50%{opacity:.85}100%{opacity:0;transform:rotate(32deg)}}
+@keyframes flow-sheet {from{opacity:0;translate:0 12px}to{opacity:1;translate:0 0}}
+@keyframes flow-reveal {from{opacity:.25;transform:translateY(9px) scale(.95)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce) {
+  :root[data-site=a] *, :root[data-site=a] *::before,:root[data-site=a] *::after {animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .power-brand::before,.motion-pause {display:none}
+}
+
+/* The verification artwork shares one bitmap across its hinged lid, shield and front. */
+.verification-chest {position:relative;isolation:isolate;aspect-ratio:510/430;width:min(76%,270px,31dvh);margin:0 auto 7px;perspective:480px;mask-image:radial-gradient(ellipse 69% 68%,#000 61%,transparent 97%)}
+.verification-chest>* {position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.verification-chest i {background:url("assets/verification-chest.webp") center/100% 100% no-repeat}
+.chest-front {clip-path:polygon(20% 59%,81.8% 58%,80% 75%,91% 72%,97% 81%,100% 100%,0 100%,0 76%,10% 72%,22% 71%)}
+.chest-lid {transform-origin:50% 59%;clip-path:polygon(15.6% 53%,16% 45%,19% 33%,22% 30%,60% 30%,67% 36%,62% 59%,19% 62%);transform:rotateX(-79deg)}
+.chest-shield {clip-path:polygon(36% 8.5%,46% 4%,52% 1.6%,58% 5%,65% 8%,64% 21%,61% 30%,56% 36%,52% 40%,44% 34%,39% 26%);transform:translateY(26%) scale(.8);opacity:0}
+.chest-aura {opacity:0}
+[data-chest=open] :is(.chest-lid,.chest-shield) {transform:none;opacity:1}
+[data-chest=open] .chest-aura {opacity:1}
+.charged-intro::after {content:"";position:absolute;pointer-events:none;right:3%;bottom:9%;width:40%;height:1px;rotate:-13deg;background:linear-gradient(90deg,transparent,#ff96fa,#ffdb82,transparent);opacity:0}
+.charged-filters button {position:relative;overflow:hidden}
+.charged-filters [aria-pressed=true]::after {content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(108deg,transparent 30%,#fff6cc8a 48%,transparent 66%);opacity:0}
+[data-platform=river-sweeps] .flow-spark {background:radial-gradient(ellipse at 75% 28%,#d7ffff85,transparent 22%)}
+[data-platform=thunder-7] .flow-spark {background:linear-gradient(115deg,transparent 38%,#ffeab592 52%,transparent 62%)}
+.charged-card.motion-art {border-color:#d18dc8}
+.collection-stage::after {content:"";pointer-events:none;position:absolute;z-index:0;left:5%;top:79%;width:90%;aspect-ratio:1;border-radius:50%;background:conic-gradient(transparent 8%,#ff66eb 17%,#ffdf82 22%,transparent 31%,transparent 68%,#bc29d9 76%,transparent 82%);mask:radial-gradient(closest-side,transparent 97%,#000 98.5%);transform:translateY(-50%) rotateX(77deg);opacity:.7}
+.showcase-coin[data-slot="0"]::after {content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:conic-gradient(transparent 65%,#ffabe2 80%,#fff6aa 86%,transparent 92%);mask:radial-gradient(closest-side,transparent 93%,#000 96%,transparent 100%);opacity:0}
+.collection-position i {transition:scale 220ms,background-color 220ms}
+.collection-position .current {scale:1.4}
+.winning-controls:has(.winner-choices) {display:flex;align-items:center;gap:clamp(3px,1.3cqw,12px)}
+.winner-choices {flex:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.winning-controls .winner-choices button {display:grid;place-items:center;gap:2px;width:100%;height:auto;min-width:0;padding:5px 2px;border:1px solid var(--edge);border-radius:9px;background:var(--panel);color:var(--ink);font:600 clamp(.66rem,2.5cqw,.95rem)/1.1 Figtree,sans-serif}
+.winner-choices [aria-pressed=true] {border-color:var(--gold)!important}
+.winner-choices .highlight-badge {width:clamp(19px,5cqw,36px)}
+.winner-choices button span:last-child {color:var(--amount)}
+[data-winner-position] {display:block;text-align:center;font-size:.78rem;color:var(--secondary)}
+.winner-footer {display:flex;align-items:center;justify-content:center;gap:8px}
+.member-standings .standings-content>section {border:1px solid var(--edge);border-radius:15px;margin-bottom:8px;padding:clamp(9px,2.2cqw,20px);background:linear-gradient(155deg,var(--panel),var(--base) 70%)}
+.member-standings .standings-content>section::before {display:none}
+:root[data-theme=pine] .member-standings {--base:#071c16;--panel:#113527;--panel-hi:#264935;--edge:#32664c;--secondary:#c8dfd1;--gold:#ffd579;--amount:#9aea93;--trophy:url("assets/landing/trophy-pine.webp")}
+:root[data-theme=pine] .member-standings :is(.winning-card,.standings-pill) {background:linear-gradient(120deg,#1c4930,#0b2319)}
+@media(prefers-reduced-motion:no-preference) {
+  .chest-lid {transition:transform 610ms cubic-bezier(.19,.7,.25,1)}
+  .chest-shield {transition:transform 520ms 125ms ease-out,opacity 330ms 120ms}
+  .chest-aura {transition:opacity 340ms 260ms}
+  [data-chest=closing] .chest-lid {transition:transform 320ms ease-in}
+  [data-chest=closing] .chest-shield {transition:opacity 125ms,transform 225ms ease-in}
+  [data-chest=closing] .chest-aura {transition:opacity 130ms}
+  .charged-intro.motion-visible::before {animation:directory-dragon 9s ease-in-out alternate infinite;transform-origin:67% 42%}
+  .charged-intro.motion-visible::after {animation:directory-trail 4.2s ease-out both}
+  .charged-filters [aria-pressed=true]::after,.motion-art:is([data-platform=river-sweeps],[data-platform=thunder-7]) .flow-spark {animation:flow-shimmer 850ms ease-out both}
+  .charged-heart[aria-pressed=true]:focus span {animation:directory-heart 265ms ease-out}
+  .collection-stage.motion-visible::after {animation:medallion-orbit 7s linear infinite}
+  .collection-stage.motion-visible [data-slot="0"]::after {animation:medallion-glint 1.5s ease-out both}
+  .collection-stage.motion-visible + #spotName .showcase-caption {animation:flow-sheet 320ms var(--flow-ease)}
+}
+@keyframes directory-heart {50%{transform:scale(1.17)}}
+@keyframes directory-dragon {from{transform:scale(1.015)}to{transform:scale(1.065) translate(-.7%,.5%)}}
+@keyframes directory-trail {0%,75%,100%{opacity:0}25%{opacity:.8;translate:-8% 0}65%{translate:6% 0}}
+@keyframes medallion-orbit {to{transform:translateY(-50%) rotateX(77deg) rotate(1turn)}}
+@keyframes medallion-glint {0%{transform:rotate(-90deg);opacity:0}25%{opacity:.95}100%{opacity:0;transform:rotate(170deg)}}

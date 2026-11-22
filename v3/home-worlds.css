@@ -1,0 +1,68 @@
+/* The three interactive cards share the lighting, borders and reflections of the approved artwork. */
+:root[data-site] body:has(.member-worlds) #app {background:#100819}
+.page.member-worlds {max-width:1000px;padding:0 0 30px;color:#fff7ef;background:#100819}
+.member-world-hero {text-align:center;background:radial-gradient(ellipse at 50% 43%,#380b36,transparent 74%),#11081b;padding:clamp(22px,4vw,42px) 0 18px;border-bottom:1px solid #502547}
+.member-world-hero header p {display:flex;align-items:center;justify-content:center;gap:.8em;margin:0;color:#f4cd63;font:750 clamp(.68rem,1.7vw,.88rem)/1.25 Figtree,sans-serif;letter-spacing:.25em;text-transform:uppercase}
+.member-world-hero header p::before,.member-world-hero header p::after {content:"";width:24px;height:1px;background:#b68d4f}
+.member-world-hero h2 {margin:9px 8px 6px;font:760 clamp(1.7rem,5.6vw,3.25rem)/1.05 Figtree,sans-serif;letter-spacing:-.044em;color:#fff5e5}
+.home-world-stage {position:relative;isolation:isolate;width:min(100%,680px);aspect-ratio:856/583;margin:auto;background:url("assets/landing/home-worlds.webp") center 23.31%/100% 314.92% no-repeat;touch-action:pan-y}
+.home-world-stage::before {content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#1c0a22,transparent 4%,transparent 96%,#1c0a22)}
+.home-world-card {display:block;position:absolute;background:none;padding:0;border:0;border-radius:9%;overflow:hidden;cursor:pointer;color:white}
+.home-world-card[data-offset="0"] {left:29.8%;top:7.6%;width:40.5%;height:86%;z-index:2}
+.home-world-card[data-offset="-1"] {left:5.4%;top:20.3%;width:24%;height:68%;transform:skewY(-4deg)}
+.home-world-card[data-offset="1"] {right:5.4%;top:20.3%;width:24%;height:68%;transform:skewY(4deg)}
+.home-world-stage[data-original=true] .home-world-card>span {display:none}
+.home-card-face {position:absolute;inset:4.5% 5.2% 25%;background-repeat:no-repeat;background-image:url("assets/landing/home-worlds.webp");border-radius:7% 7% 0 0}
+[data-world=milkyway] .home-card-face {background-size:490% 695%;background-position:9.7% 28%}
+[data-world=firekirin] .home-card-face {background-size:280% 550%;background-position:50% 24.3%}
+[data-world=golden-treasure] .home-card-face {background-size:505% 695%;background-position:91% 28%}
+.home-card-name {display:grid;place-content:center;position:absolute;inset:74% 5.2% 6%;padding:0 4%;color:#ffe9ac;background:linear-gradient(135deg,#230c24,#150817 70%,#361029);font:bold clamp(10px,3.4vw,26px)/.95 Georgia,serif;text-transform:uppercase;text-shadow:0 2px 3px #56200a}
+.home-world-card[data-offset="0"] .home-card-name {font-size:clamp(14px,4.8vw,36px)}
+.home-world-controls,.home-world-position {display:flex;align-items:center;justify-content:center;gap:12px}
+.home-world-controls {margin:1px 0 8px}
+.home-world-controls button {display:grid;place-items:center;width:44px;height:44px;padding:6px;border:0;background:none;color:#ffe089;cursor:pointer}
+.home-world-controls button svg {width:32px;height:32px;border:1px solid #d79741;border-radius:50%;padding:6px;background:#260c2d}
+.home-world-controls button:first-child svg {transform:rotate(180deg)}
+.home-world-position i {display:block;width:18px;height:4px;border-radius:8px;background:#8b5886}
+.home-world-position .current {width:31px;background:linear-gradient(90deg,#f3a632,#fff3a0,#ef9c34)}
+.home-world-status {width:1px;height:1px;position:absolute;overflow:hidden;clip-path:inset(50%)}
+.home-world-all {display:inline-flex;align-items:center;justify-content:center;gap:.55em;width:min(68%,320px);min-height:46px;border-radius:40px;border:1px solid #ffdd7d;color:#330c24;background:linear-gradient(170deg,#fff0a4,#ffcd68 40%,#eda83f 78%,#ffc760);box-shadow:inset 0 1px 3px #fff2c8,0 3px 14px #e29b321f;font:800 clamp(1rem,2.5vw,1.28rem)/1.2 Figtree,sans-serif;text-transform:capitalize;text-decoration:none}
+.member-worlds .platform-directory,.member-worlds .home-highlights {margin-inline:clamp(12px,3vw,35px)}
+.member-worlds .platform-directory {padding-block:21px}
+.member-worlds .directory-controller {color:#ffcf65}
+.member-worlds .directory-heading h2 {color:#fff8f2}
+.member-worlds .directory-heading p,.member-worlds .directory-copy small {color:#e2cddd}
+.member-worlds .directory-count {background:#200d2b;color:#fff0ff;border-color:#7c3b86}
+:root[data-site] .member-worlds .directory-row {background:linear-gradient(115deg,#10091c,#211028);border-color:#85388d;color:#fff7f3}
+:root[data-site] .member-worlds .directory-art {width:57%;opacity:1;filter:none;mask-image:linear-gradient(90deg,transparent,#000 42%)}
+:root[data-site][data-theme] .member-worlds .directory-view {color:#fff4ff;background:#210d30e8;border:1px solid #a84bb3}
+.member-worlds .home-highlights {padding:12px 16px;border:1px solid #563251;border-radius:14px;background:var(--panel);color:var(--text)}
+.home-highlights summary {cursor:pointer;padding:4px;font-weight:700}
+.home-highlights[open] summary {margin-bottom:10px}
+:root[data-site]:not([data-theme=white]) body:has(.member-worlds) :is(.top,.tabbar) {background:#100919;color:#fff5f5;border-color:#522651}
+:root[data-site]:not([data-theme=white]) body:has(.member-worlds) .top .logo b {color:#ffd464}
+:root[data-site]:not([data-theme=white]) body:has(.member-worlds) .tabbar a.on {background:#41123f;color:#ffe4fd;box-shadow:inset 0 2px #ff82dd}
+:root[data-site] body:has(.member-worlds) .top .round-btn {color:#ffc95d;background:transparent}
+:root[data-site] body:has(.member-worlds) .top .bal {background:#180d20;color:#fff5df;border:1px solid #ce9e49}
+:root[data-site] body:has(.member-worlds) .top .bal-plus {background:#ffc960;color:#391e1b}
+:root[data-site] body:has(.member-worlds) .directory-view {background:#2b1036;border-color:#9251ab;color:#fff5ff}
+@media(max-width:640px) {
+  :root[data-site] body:has(.member-worlds) .top {padding-inline:8px;gap:5px}
+  body:has(.member-worlds) .top .member-menu-trigger {min-width:28px}
+  body:has(.member-worlds) .top .round-btn {width:33px;min-width:33px}
+  body:has(.member-worlds) .top .bal {gap:4px;padding:4px 7px}
+  .member-worlds .directory-row {min-height:57px;padding-block:6px}
+  .member-worlds .directory-rows {gap:7px}
+  .member-worlds .directory-heading {margin-bottom:12px}
+}
+@media(max-width:365px) {
+  body:has(.member-worlds) .top .logo {font-size:14px;gap:2px}
+  body:has(.member-worlds) .top .logo-svg {width:21px;height:21px}
+  body:has(.member-worlds) .top-right {gap:1px}
+}
+@media(min-width:900px) {
+  .page.member-worlds {display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:24px;padding:28px 20px}
+  .member-world-hero {border:1px solid #502547;border-radius:20px;overflow:hidden}
+  .member-worlds .platform-directory {margin:0;padding:0}
+  .member-worlds .home-highlights {grid-column:1/-1;margin:0}
+}

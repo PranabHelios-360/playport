@@ -1,0 +1,66 @@
+body:has(.profile-page) {
+  --profile-bg:#16091e;--profile-panel:#321639;--profile-panel-end:#201027;--profile-border:#73387a;
+  --profile-text:#fff4fc;--profile-muted:#dfcddd;--profile-gold:#ffd165;--profile-accent:#f29bec;
+}
+:root[data-theme=white] body:has(.profile-page) {
+  --profile-bg:#faf5fa;--profile-panel:#fff;--profile-panel-end:#f6eef6;--profile-border:#cfb6cd;
+  --profile-text:#301d31;--profile-muted:#624d62;--profile-gold:#895618;--profile-accent:#913381;
+}
+:root[data-theme=pine] body:has(.profile-page) {
+  --profile-bg:#0d1d18;--profile-panel:#213a30;--profile-panel-end:#162820;--profile-border:#536e5c;
+  --profile-text:#fcf7e9;--profile-muted:#cbdad0;--profile-gold:#eace87;--profile-accent:#afe1c2;
+}
+body:has(.profile-page) #app {background:var(--profile-bg)}
+.page.profile-page {width:100%;max-width:960px;margin:auto;padding:0 clamp(12px,3vw,30px) 16px;color:var(--profile-text)}
+.profile-heading {position:relative;isolation:isolate;display:grid;align-content:center;gap:5px;min-height:clamp(80px,13vw,128px)}
+.profile-heading::after {content:"";position:absolute;z-index:-1;inset:1px 0 0 auto;width:37%;background:url("assets/profile/account-header.webp") right center/contain no-repeat;mask-image:linear-gradient(90deg,transparent,#000 26%)}
+:root[data-theme=white] .profile-heading::after {border-radius:0 0 14px 14px;mask-image:radial-gradient(ellipse at 65% 50%,#000 26%,transparent 72%)}
+.profile-heading .crumb {margin:0;color:var(--profile-muted)}
+.profile-heading h1 {margin:0;width:fit-content;color:var(--profile-text);font:italic 800 clamp(1.95rem,5.3vw,3.35rem)/1.08 Figtree,sans-serif;letter-spacing:-.04em;background:linear-gradient(100deg,var(--profile-text) 29%,var(--profile-gold) 43%);background-clip:text;-webkit-text-fill-color:transparent}
+.profile-page .member-card {grid-template-columns:auto minmax(0,1fr);gap:0 15px;padding:clamp(12px,2.2vw,22px);border-radius:18px;background:linear-gradient(112deg,#4d1644,#190b23 34%,#10102c 78%,#202259) padding-box,linear-gradient(110deg,#ff8ee9,#cc57c8 32%,#6c6df6 88%,#83e5ff) border-box}
+.profile-page .edit-avatar {grid-row:span 2}
+.profile-page .member-status {grid-column:2;margin-left:clamp(10px,2vw,20px)}
+.profile-page .member-identity {padding-right:clamp(22px,6vw,70px)}
+.profile-page .member-flash {right:4%;top:18%;height:58%;opacity:.56}
+.profile-page .member-since {margin:8px 4px 12px;color:var(--profile-muted);line-height:1.4}
+.profile-mail {display:inline-block;padding-right:4px;color:var(--profile-text)}
+.profile-page :is(.money-card,.set-list) {background:linear-gradient(120deg,var(--profile-panel),var(--profile-panel-end));border:1px solid var(--profile-border);border-radius:15px;color:var(--profile-text);box-shadow:none;margin-top:12px}
+.profile-page .money-card {padding:clamp(11px,2.2vw,20px);border-color:color-mix(in srgb,var(--profile-accent) 55%,var(--profile-border))}
+.profile-page .mc-cols {gap:0}
+.profile-page .mc-cols>div {min-width:0;padding:0 6%;border-right:1px solid var(--profile-border)}
+.profile-page .mc-cols>div:first-child {padding-left:0}.profile-page .mc-cols>div:last-child {border:0}
+.profile-page .mc-cols small {display:flex;align-items:center;gap:5px;color:var(--profile-muted)}
+.profile-page .mc-cols svg {width:18px;height:18px;color:var(--profile-gold)}.profile-page .mc-cols>div:nth-child(2) svg {color:var(--profile-accent)}
+.profile-page .mc-cols b {font:760 clamp(.95rem,2.3vw,1.4rem)/1.35 Figtree,sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.profile-page .mc-acts {display:flex;gap:8px;margin:10px 0 0}
+.profile-page .round-act {flex:1;display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;padding:5px 10px;border:1px solid #d56ad1;border-radius:15px;background:linear-gradient(#572154,#35143c);color:#ffecff}
+.profile-page .round-act:last-child {border-color:#e4b15b;background:linear-gradient(#553723,#332018);color:#fff3d7}
+.profile-page .ra-ico {width:auto;height:auto;background:none;border:0;color:inherit}
+.profile-page .ra-ico svg {width:19px;height:19px}
+.profile-page .set-row {padding:9px clamp(11px,2.4vw,22px);min-height:48px;gap:12px;color:inherit;border-color:color-mix(in srgb,var(--profile-border) 65%,transparent)}
+.profile-page :is(button,a).set-row:hover {background:color-mix(in srgb,var(--profile-accent) 10%,var(--profile-panel))}
+.profile-page .set-txt b {font:720 clamp(.95rem,2.2vw,1.2rem)/1.2 Figtree,sans-serif}
+.profile-page .set-txt small {color:var(--profile-muted);white-space:normal;overflow:visible;text-overflow:clip;font-size:.8rem;overflow-wrap:anywhere;line-height:1.3}
+.profile-page .set-ico {color:var(--profile-accent)}.profile-page .set-row:nth-child(even) .set-ico,.profile-page .static .set-ico {color:var(--profile-gold)}
+.profile-page .set-row>svg {color:var(--profile-muted)}
+.profile-page .set-row.static {flex-wrap:wrap}
+.profile-page .set-row.static .theme-pick {flex-wrap:wrap;gap:5px}
+.profile-page .set-row.static .theme-pick button {border-radius:12px;min-height:36px}
+.profile-page .set-row.static .theme-pick button[aria-pressed=true] {border-color:var(--profile-accent)}
+.profile-page .set-list:last-child {border-color:#a64c7a}
+.profile-page .set-row[data-act=logout] .set-ico {color:#f26f90}
+@media(max-width:600px){
+  .profile-page .static .theme-pick {flex-basis:100%;display:flex}
+  .profile-page .static .theme-pick button {flex:1;font-size:.7rem;padding:5px;line-height:1.2}
+}
+@media(min-width:700px){
+  .profile-page .money-card {display:grid;grid-template-columns:minmax(0,1.7fr) minmax(215px,1fr);gap:15px;align-items:center}
+  .profile-page .mc-acts {margin:0}
+}
+
+.profile-heading::after {mask-image:radial-gradient(ellipse closest-side at 61% 50%,#000 52%,transparent 145%)}
+:root[data-theme=navy] body:has(.profile-page) :is(.top,.tabbar) {background:linear-gradient(105deg,#1c0d22,#170d20 55%,#201126);border-color:#60315f}
+:root[data-theme=navy] body:has(.profile-page) .top .logo b {color:#ffd46c}
+:root[data-theme=navy] body:has(.profile-page) .tabbar [aria-current=page] {background:linear-gradient(155deg,#70366d,#37183e);color:#ffdc8c;border-radius:12px}
+:root[data-theme=navy] .profile-page .money-card {background:radial-gradient(ellipse at 10% 0%,#54224c,transparent 52%),linear-gradient(110deg,#2d1235,#201027)}
+.profile-page .member-since {overflow-wrap:anywhere}

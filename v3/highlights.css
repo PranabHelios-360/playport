@@ -1,0 +1,76 @@
+/* Signed-in home */
+.top .member-menu-trigger,.tabbar .member-home-link {display:none}
+.member-navigation .member-menu-trigger {display:grid;place-items:center;min-width:40px;min-height:44px;background:none;border:0;color:var(--text);font:650 22px/1 sans-serif;cursor:pointer}
+.member-navigation .tabbar .member-home-link {display:flex}
+.member-navigation .tabbar [data-menu] {display:none}
+.member-highlights {max-width:920px;min-width:0;margin:auto}
+.highlights-hero {position:relative;isolation:isolate;overflow:hidden;text-align:center;padding:clamp(20px,4vw,36px) 10px 17px;border-radius:24px;color:#fff;background:radial-gradient(ellipse at 18% 90%,#61307685,transparent 46%),radial-gradient(ellipse at 88% 15%,#7a247b65,transparent 42%),linear-gradient(160deg,#20103c,#100d23 65%);border:1px solid #714676}
+.highlights-hero::before {content:"";position:absolute;inset:-83% -10% 12%;border-radius:50%;transform:rotate(-16deg);box-shadow:0 2px 2px #e090cd66,0 5px 20px #c13bb36e;z-index:-1}
+.highlights-hero h1 {margin:0;color:#fff0fe;font:italic 800 clamp(1.65rem,5.8vw,3.25rem)/1.06 Outfit,sans-serif;letter-spacing:-.04em}
+.highlights-hero p {margin:7px auto 15px;font:500 clamp(.84rem,2.6vw,1rem)/1.4 Figtree,sans-serif;color:#e8d9ee}
+.highlights-hero h2 {display:inline-block;margin:0;padding:5px 16px;border:1px solid #bd895c;border-radius:30px;font:700 clamp(.85rem,2.5vw,1.13rem) Outfit,sans-serif;color:#ffe3a8;background:#210e2a}
+.podium {display:flex;isolation:isolate;align-items:center;justify-content:center;position:relative;width:min(94%,520px);margin:16px auto 11px;padding:5px 2% 12px}
+.podium::before {content:"";position:absolute;z-index:-1;left:1%;right:1%;bottom:0;height:27%;border-radius:50%;background:radial-gradient(ellipse,#5a2680 20%,#290f40 55%,#eea961 71%,#501b53 76%);box-shadow:0 4px 14px #df7c9c55}
+.podium-medal {isolation:isolate;position:relative;width:32%;aspect-ratio:1;display:grid;place-items:end center;padding-bottom:13%;overflow:hidden;border:3px solid #ffc660;border-radius:50%;background:#140b24;box-shadow:0 0 0 2px #7f4522,0 5px 15px #100a20;opacity:.96}
+.podium-medal:nth-of-type(2) {width:39%;z-index:1;margin-inline:-4%;border-color:#ffdf89;box-shadow:0 0 0 2px #be833a,0 0 17px #ffd07544}
+.podium-crown {position:absolute;z-index:2;width:clamp(22px,7%,39px);top:0;left:50%;transform:translate(-50%,-25%);filter:drop-shadow(0 1px 3px #9c5918)}
+.podium-medal img {position:absolute;inset:0;z-index:-1;width:100%;height:100%;object-fit:cover;mask-image:linear-gradient(black 56%,#0005)}
+.podium-medal b {position:absolute;bottom:13%;text-shadow:0 1px 5px #160621;color:white;font:italic 750 clamp(.73rem,3.3vw,1.35rem) Outfit,sans-serif}
+.highlights-deposit,.invite-primary {display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:45px;border:1px solid #fb8ee4;border-radius:30px;background:linear-gradient(105deg,#bb197e,#aa1d9d 70%,#7a2bab);color:white;font:750 1rem Outfit,sans-serif;box-shadow:inset 0 1px 5px #ffb1e03d;cursor:pointer}
+.highlights-deposit {padding:5px 30px}.highlights-deposit svg,.invite-primary svg {width:20px;height:20px}
+.ranking-info {margin:13px 0;border-radius:13px;border:1px solid var(--line-2);background:var(--panel);padding:0 14px;color:var(--text)}
+.ranking-info summary {padding:12px 0;font-weight:700;font-size:.85rem;cursor:pointer}.ranking-info p {margin:0 0 14px;color:var(--soft);line-height:1.4}
+.winners-section {margin-top:24px}.winners-head {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.winners-head h2 {margin:0;font:750 clamp(1.12rem,3.3vw,1.5rem)/1.14 Outfit,sans-serif}
+.winners-head>span,.winners-head>select {padding:5px 9px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel);color:var(--soft);font:650 .75rem Figtree,sans-serif}
+.payout-carousel {display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:5px;align-items:center}
+.payout-carousel button {width:36px;height:44px;display:grid;place-items:center;color:var(--accent-hi);background:transparent;border:0;cursor:pointer}.payout-carousel button svg {width:20px}
+.payout-card,.activity-strip a {display:flex;align-items:center;gap:8px;padding:11px;background:var(--panel);border:1px solid var(--line-2);border-radius:14px}
+.payout-card {border-color:#a8709e;background:linear-gradient(120deg,#be65541b,#9147b216),var(--panel)}
+.payout-card small,.activity-strip small {display:block;color:var(--soft);font-size:.74rem}
+.payout-card strong,.activity-strip strong,.monthly-winners td:last-child {margin-left:auto;color:var(--gain,#64da9d);font-variant-numeric:tabular-nums;font-weight:750}
+:root[data-theme=white] :is(.payout-card strong,.activity-strip strong,.monthly-winners td:last-child) {color:#166841}
+.monthly-winners {width:100%;border-spacing:0;border-radius:13px;overflow:hidden;border:1px solid var(--line-2);background:var(--panel);font-size:.85rem}
+.monthly-winners :is(th,td) {padding:7px 10px;text-align:left}
+.monthly-winners thead th {font-size:.72rem;color:var(--soft);font-weight:600}
+.monthly-winners th:last-child,.monthly-winners td:last-child {text-align:right}
+.monthly-winners tbody tr:nth-child(odd) {background:color-mix(in srgb,var(--text) 4%,transparent)}
+.monthly-winners tbody tr:first-child {background:#b9813f26}
+.monthly-winners tbody th .coin {display:inline-grid;vertical-align:middle;margin-right:8px}
+.activity-strip {display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x proximity;padding-bottom:8px}
+.activity-strip a {flex:0 0 220px;scroll-snap-align:start;font-size:.83rem}
+.member-highlights :is(button,a,summary,select):focus-visible,.login-invite :is(button,input):focus-visible {outline:3px solid var(--accent-hi);outline-offset:2px}
+/* Post-login cards */
+#modal:has(.login-invite) .modal-back {background:#06041aba;backdrop-filter:blur(3px)}
+body:has(#modal:not([hidden]) .login-invite) #toast {visibility:hidden}
+#modalBox:has(.login-invite) {position:relative;isolation:isolate;overflow-x:hidden;width:min(100%,640px);max-width:640px;max-height:90dvh;padding:0;border:1px solid #cf79d8;border-radius:24px;background:radial-gradient(ellipse at 85% 50%,#62266d66,transparent 61%),linear-gradient(145deg,#18122e,#110a24 61%,#30123c);color:#fff5ff}
+#modalBox:has(.login-invite) .modal-x {z-index:3;color:#fff;background:#251731e0;min-width:40px;min-height:40px;border-radius:50%}
+.login-invite {position:relative;isolation:isolate;overflow:hidden;padding:clamp(22px,5vw,40px);text-align:center}
+.login-invite::before {position:absolute;inset:55% -12% -22%;content:"";z-index:-1;transform:rotate(-13deg);border-radius:50%;box-shadow:0 -1px 1px #ea56c541}
+.invite-brand {display:flex;align-items:center;justify-content:center;gap:6px;font:italic 800 clamp(1.16rem,3.7vw,1.65rem)/1 Outfit,sans-serif;letter-spacing:-.045em;color:white}
+.invite-brand img {width:1.35em;height:1.35em}.invite-brand b {color:#ff68c4}
+#modalBox .login-invite h2 {margin:14px 0 8px;font:italic 800 clamp(1.52rem,5.7vw,2.5rem)/1.08 Outfit,sans-serif;letter-spacing:-.04em}
+#modalBox .login-invite p {margin:0 auto 17px;max-width:43ch;color:#ded2ea;font:500 clamp(.88rem,2.9vw,1.04rem)/1.45 Figtree,sans-serif}
+.login-invite .invite-primary {padding:8px 22px;background:linear-gradient(110deg,#c31b91,#a21b91 55%,#9e4932);color:#fff;width:min(100%,310px)}
+.install-invite {position:relative;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:center;gap:9px 5px;text-align:left}
+.install-invite .invite-brand {justify-content:start}.install-copy {grid-column:1}
+.invite-phone {grid-column:2;grid-row:1/4;width:100%;max-height:236px;object-fit:contain;mask-image:linear-gradient(90deg,transparent,#000 18%,#000 93%,transparent),linear-gradient(transparent,#000 8%,#000 93%,transparent);mask-composite:intersect}
+.install-invite .invite-primary {grid-column:1}.install-invite :is(.install-guide,.invite-optout) {grid-column:1/-1;justify-self:center;text-align:center}
+.invite-phone {clip-path:polygon(32% 0,100% 0,100% 100%,0 100%,0 77%,17% 74%)}
+.invite-optout {display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;font:600 .82rem Figtree,sans-serif;color:#eee0f2;cursor:pointer}
+.invite-optout input {width:18px;height:18px;accent-color:#af218e}
+#modalBox .login-invite .install-guide {font-size:.83rem;margin:6px 0 0;border:1px solid #75567d;padding:9px;border-radius:9px}
+.bonus-invite {padding-top:12px}.invite-reward-art {display:block;width:min(69%,270px);max-height:22dvh;object-fit:contain;margin:0 auto 7px;clip-path:polygon(2% 98%,2% 86%,5% 80%,8% 78%,2% 73%,3% 70%,11% 71%,14% 78%,18% 74%,22% 63%,18% 62%,19% 53%,25% 41%,25% 34%,16% 31%,17% 22%,23% 14%,29% 12%,34% 13%,38% 24%,40% 36%,43% 26%,43% 16%,45% 12%,44% 8%,45% 3%,52% 2%,55% 6%,54% 13%,58% 18%,60% 31%,63% 35%,66% 27%,66% 19%,74% 14%,79% 16%,86% 26%,86% 33%,78% 40%,80% 50%,83% 58%,79% 69%,79% 77%,85% 77%,91% 73%,96% 78%,98% 88%,100% 98%,84% 100%,22% 100%)}
+.bonus-invite h2 em {color:#ffd277;font-style:inherit}
+.invite-options {display:flex;justify-content:center;align-items:center;gap:14px;margin-top:7px}
+.invite-options button,.invite-later {background:none;border:0;color:#f4e1f2;text-decoration:underline;font-weight:650;min-height:44px;cursor:pointer}
+.invite-later {display:block;margin:3px auto}
+@media(max-width:600px){
+ #modal:has(.login-invite) {align-items:flex-end;padding:0 6px max(6px,env(safe-area-inset-bottom))}
+ #modalBox:has(.login-invite) {border-radius:21px;max-height:94dvh}
+ .install-invite {padding:26px 16px 10px;gap:5px 0}
+ .install-invite .invite-brand {grid-column:1/-1}
+ .invite-phone {grid-row:2/4}
+ .install-invite .invite-primary {padding-inline:8px;font-size:.93rem}
+ .member-navigation .top {display:flex}.member-navigation .top .member-menu-trigger {min-width:30px}
+}
+@media(max-width:360px){.member-navigation .top .logo {font-size:1rem}.member-navigation .top .logo-svg {width:23px}.monthly-winners :is(th,td){padding:6px}.install-invite{grid-template-columns:1.7fr 1fr}}

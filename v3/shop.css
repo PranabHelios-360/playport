@@ -1,0 +1,109 @@
+.coin-shop { max-width: 960px; margin-inline: auto; }
+.shop-title { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:clamp(22px,4vw,44px); border:1px solid var(--line-2); border-radius:24px; background:radial-gradient(ellipse at 90% 95%,#d84fa42b,transparent 60%),var(--panel); }
+.shop-title h1 { font-size:clamp(32px,6vw,52px); letter-spacing:-.045em; margin:0; }
+.shop-title p,.shop-note,.shop-question p,.shop-review small { color:var(--soft); line-height:1.5; }
+.shop-title p { margin:8px 0 0; }
+.shop-stack { display:inline-block; position:relative; width:54px; height:50px; flex:none; }
+.shop-stack i { position:absolute; left:2px; bottom:calc(3px + 4px * var(--layer)); display:grid; place-items:center; width:48px; height:25px; border:2px solid #fff0a7; border-radius:50%; color:#674004; background:linear-gradient(145deg,#fff3a1,#edb74b 58%,#d58e28); box-shadow:0 3px #ab691f,0 5px #79451a; font:bold 12px Georgia,serif; }
+.shop-tabs,.shop-offers,.shop-footer { display:flex; gap:6px; margin:20px 0; }
+.shop-tabs { border-bottom:1px solid var(--line); }
+.shop-tabs a,.shop-offers a,.shop-footer a { min-height:44px; display:grid; align-items:center; padding:8px 14px; color:var(--soft); font-weight:650; }
+.shop-tabs [aria-current="page"] { color:var(--text); border-bottom:3px solid var(--accent-hi); }
+.shop-offers { width:fit-content; padding:4px; border-radius:14px; background:var(--panel); border:1px solid var(--line); }
+.shop-offers [aria-current="page"] { border-radius:10px; color:var(--text); background:var(--card-2); box-shadow:0 1px 4px #0002; }
+.shop-note { margin:14px 0 20px; }
+.shop-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.shop-pack { display:flex; flex-direction:column; align-items:flex-start; gap:7px; padding:clamp(14px,2.6vw,26px); border:1px solid var(--line-2); border-radius:18px; background:linear-gradient(138deg,var(--card),var(--panel)); color:var(--text); text-align:left; cursor:pointer; font:inherit; }
+.shop-pack:hover,.shop-pack:focus-visible { border-color:var(--accent-hi); }
+.shop-pack strong { font-size:clamp(18px,3vw,26px); letter-spacing:-.04em; }
+.shop-bonus,.shop-extra { font-size:14px; color:var(--soft); }
+.shop-extra { color:var(--accent-hi); }
+.shop-price { margin-top:8px; width:100%; text-align:center; border-radius:10px; padding:9px 4px; color:var(--text); background:color-mix(in srgb,var(--accent) 17%,var(--panel)); font-weight:750; }
+.shop-record,.shop-question,.shop-receipt { padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--panel); margin-bottom:8px; }
+.shop-record,.shop-receipt,.shop-review p { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.shop-record small,.shop-review label,.shop-review label span { display:block; margin-block:6px; }
+.shop-question summary { cursor:pointer; font-weight:650; }
+.shop-review input:not([type=radio]) { width:100%; padding:12px; font:inherit; color:var(--text); background:var(--panel); border:1px solid var(--line-2); border-radius:10px; }
+.payment-picker { min-width:0; border:0; padding:0; margin:18px 0; }
+.payment-picker legend { font-weight:700; padding:0; margin-bottom:10px; }
+.payment-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.shop-review .payment-option { position:relative; margin:0; cursor:pointer; }
+.payment-option input { position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer; z-index:1; }
+.shop-review .payment-tile {
+  display:flex; flex-direction:column; justify-content:center; align-items:center; gap:9px;
+  margin:0; min-height:88px; height:100%; padding:12px 5px; text-align:center;
+  font-size:14px; line-height:1.2; font-weight:650; color:var(--text);
+  background:var(--panel); border:1px solid var(--line-2); border-radius:12px;
+}
+.shop-review .payment-tile span { margin:0; }
+.payment-option input:checked + .payment-tile {
+  border-color:var(--accent-hi); background:color-mix(in srgb,var(--accent) 12%,var(--panel));
+  box-shadow:inset 0 0 0 1px var(--accent-hi);
+}
+.payment-option input:checked + .payment-tile::after {
+  content:'✓'; position:absolute; top:6px; right:6px; width:15px; height:15px;
+  border-radius:50%; background:var(--accent-hi); color:var(--bg); font-size:11px; line-height:15px;
+}
+.payment-option input:focus-visible + .payment-tile { outline:2px solid var(--text); outline-offset:2px; }
+.shop-review .payment-mark {
+  display:inline-grid; place-items:center; min-width:32px; height:25px; border-radius:6px;
+  font:750 16px/1 system-ui,sans-serif; letter-spacing:-.07em; padding:0 6px;
+}
+.payment-mark.mark-cash { color:#032d13; background:#52e58a; }
+.payment-mark.mark-chime { color:#09583c; background:#b7f6d7; }
+.payment-mark.mark-cards { color:#15338b; background:#eff4ff; font-size:13px; font-style:italic; }
+.payment-mark.mark-apple { color:#fff; background:#181822; }
+.payment-mark.mark-google { color:#315ba1; background:#f2f5ff; }
+@media(max-width:360px) { .payment-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.shop-review .btn { width:100%; margin-top:18px; }
+.shop-footer { border-top:1px solid var(--line); }
+@media(max-width:620px) {
+  .shop-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .shop-title { border-radius:18px; }
+  .shop-offers { width:100%; }
+  .shop-offers a { flex:1; text-align:center; }
+}
+/* The coin art sits behind live package values and controls. */
+.page.coin-shop {
+  --shop-gold:#ffce58; --shop-ink:#fff6fb; --shop-muted:#e2ccdf;
+  width:100%; padding:clamp(12px,2.2vw,22px); color:var(--shop-ink);
+  background:radial-gradient(ellipse at 65% 5%,#301035,transparent 44%),#160a1c;
+}
+body:has(.coin-shop) #app {background:#160a1c}
+.coin-shop .shop-title {position:relative;isolation:isolate;overflow:hidden;padding:clamp(16px,3vw,32px);min-height:clamp(102px,16vw,170px);border:1px solid #a449ac;border-radius:20px;background:linear-gradient(110deg,#2a0e33,#200828);color:var(--shop-ink)}
+.shop-title::after {content:"";position:absolute;z-index:-1;inset:0 0 0 auto;width:53%;background:url("assets/shop/banner.webp") 62% center / cover no-repeat;mask-image:linear-gradient(90deg,transparent,#000 32%)}
+.coin-shop .shop-title>div {width:57%}
+.coin-shop .shop-title h1 {width:fit-content;display:block;margin:0;font:italic 800 clamp(2rem,5.3vw,3.5rem)/1 Figtree,sans-serif;letter-spacing:-.045em;color:#fff4e9;background:linear-gradient(100deg,#fff5ef 48%,#ffdc7a 58%,#ffbf38);background-clip:text;-webkit-text-fill-color:transparent}
+.coin-shop .shop-title p {margin:6px 0 0;font:italic 500 clamp(.8rem,2vw,1.15rem)/1.35 Figtree,sans-serif;color:#f1dff3}
+.coin-shop :is(.shop-tabs,.shop-offers) {display:flex;justify-content:space-between;width:100%;margin:10px 0;gap:0}
+.coin-shop :is(.shop-tabs,.shop-offers) a {display:flex;flex:1;align-items:center;justify-content:center;gap:7px;min-width:0;padding:7px 4px;min-height:44px;color:var(--shop-muted);text-align:center}
+.coin-shop :is(.shop-tabs,.shop-offers) svg {width:19px;height:19px;flex:none}
+.coin-shop .shop-tabs {border-color:#69326d}.coin-shop .shop-tabs [aria-current=page] {color:white;border-bottom:3px solid #f183ff}
+.coin-shop .shop-offers {padding:0;border-radius:24px;background:#29132e;border-color:#743c79}
+.coin-shop .shop-offers [aria-current=page] {color:white;border-radius:24px;background:linear-gradient(180deg,#91299c,#4e175c);box-shadow:inset 0 0 0 1px #e18ce6}
+.coin-shop .shop-note {margin:12px 2px 17px;color:var(--shop-muted);font-size:.92rem}
+.coin-shop .shop-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,1.4vw,16px)}
+:root[data-site][data-theme] .coin-shop .shop-pack {
+  position:relative;isolation:isolate;display:grid;justify-items:start;align-content:center;row-gap:7px;
+  min-width:0;min-height:clamp(122px,17vw,171px);padding:clamp(10px,2vw,21px);
+  border:1px solid #b95bc4;border-radius:15px;background:radial-gradient(ellipse at 97% 20%,#461249,transparent 68%),linear-gradient(135deg,#35133c,#1e0d26);
+  color:var(--shop-ink);box-shadow:inset 0 1px 0 #fdbeff36;
+}
+:root[data-site][data-theme] .coin-shop .shop-pack:is(:hover,:focus-visible) {border-color:#ffda86;box-shadow:inset 0 0 0 1px #ffd368}
+.shop-pack-art {position:absolute;z-index:-1;right:1%;bottom:2%;width:41%;height:84%;object-fit:contain;object-position:right center;mix-blend-mode:lighten;pointer-events:none}
+.shop-pack .shop-quantity {display:flex;align-items:center;gap:6px;font:780 clamp(1.02rem,3.1vw,1.8rem)/1.15 Figtree,sans-serif;letter-spacing:-.035em}
+.shop-quantity i,.shop-bonus i {display:inline-grid;place-items:center;flex:none;width:1.65rem;height:1.65rem;border-radius:50%;background:linear-gradient(150deg,#fff09c,#f8b52c 78%);border:1px solid #ffe8a0;color:#38220a;font:850 .7rem/1 Figtree,sans-serif}
+.shop-pack .shop-bonus {display:inline-flex;align-items:center;gap:4px;border-radius:15px;padding:2px 6px 2px 2px;background:#260e2fe8;color:#fff2ff;border:1px solid #783781;line-height:1.1}
+.shop-bonus i {width:20px;height:20px;border-color:#91d391;background:linear-gradient(#42924a,#1b5729);color:white;font-size:9px}
+.shop-bonus small {font-size:clamp(.65rem,1.4vw,.83rem)}
+.shop-pack .shop-price {margin:0;padding:5px 9px;width:fit-content;min-width:55%;border:1px solid #ffdf85;border-radius:25px;color:#322006;background:linear-gradient(#ffe58c,#ffc445 65%,#ebb032);font:800 clamp(.96rem,2.1vw,1.4rem)/1.15 Figtree,sans-serif}
+.shop-promo,.shop-ribbon {position:absolute;top:-3px;right:0;padding:4px 8px;border-radius:14px;background:linear-gradient(#9635ac,#58206d);border:1px solid #cd79de;color:white;font:750 clamp(.65rem,1.5vw,.87rem)/1 Figtree,sans-serif}
+.shop-first .shop-pack {padding-top:24px}
+:root[data-site][data-theme] .coin-shop .shop-featured {grid-column:1/-1;margin-top:6px;border:2px solid #f9c45a;box-shadow:0 0 12px #ffbf3c27;padding-top:23px;min-height:116px}
+.shop-featured .shop-quantity {font-size:clamp(1.25rem,3.5vw,2rem)}
+.shop-featured .shop-price {min-width:24%}
+.shop-featured .shop-pack-art {width:40%;height:94%;right:1%;mask-image:linear-gradient(90deg,transparent,#000 22%)}
+.shop-ribbon {left:11px;right:auto;top:-9px;border-color:#84ab63;background:#31592f}
+.coin-shop .shop-footer a {color:var(--shop-muted)}.coin-shop .shop-footer {margin:14px 0 0;border-color:#66316b}
+@media(min-width:620px){.shop-featured .shop-bonus {position:absolute;left:35%;top:42%}}
+@media(max-width:430px){.coin-shop :is(.shop-tabs,.shop-offers) a {font-size:.87rem}.shop-quantity i {width:22px;height:22px;font-size:10px}.shop-pack-art {height:63%;bottom:1%}.shop-first .shop-bonus {font-size:.8rem}}

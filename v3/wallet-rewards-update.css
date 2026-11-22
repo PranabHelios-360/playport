@@ -1,0 +1,128 @@
+
+#modalBox:has(.game-load-form) {
+  --load-pad:clamp(16px,4vw,28px);
+  width:min(100%,480px);padding:0;overflow-x:hidden;border-radius:20px;
+}
+#modalBox:has(.game-load-form) .modal-x {
+  top:10px;right:10px;z-index:2;background:#160c22c9;color:white;border:1px solid #ffffff45;
+}
+#modalBox .load-cover {
+  display:flex;align-items:flex-end;min-height:108px;padding:20px var(--load-pad,clamp(16px,4vw,28px)) 16px;color:#fff;
+  background:linear-gradient(90deg,#130c21 2%,#180d27d6 44%,#180d272c 90%),var(--load-art) center 48%/cover;
+  border-bottom:1px solid #ba96cb50;
+}
+#modalBox .load-cover p {display:flex;align-items:center;gap:7px;color:#f6dfab;font-size:.85rem;font-weight:700;margin:0 0 7px}
+#modalBox .load-cover .coin {width:27px;height:27px;min-width:27px;font-size:.65rem}
+#modalBox .load-cover h2 {text-align:left;color:white;font:750 clamp(1.5rem,5vw,2rem)/1.1 var(--r777-type);letter-spacing:-.035em;margin:0}
+#modalBox .game-load-form {display:grid;gap:12px;margin:0;padding:16px var(--load-pad) max(16px,env(safe-area-inset-bottom))}
+#modalBox .game-wallet-preview {display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:6px;margin:0;padding:10px 11px;font-size:.87rem}
+#modalBox .game-wallet-preview span {display:flex;align-items:center;gap:6px;color:var(--soft);font-weight:650}
+#modalBox .game-wallet-preview svg {width:17px;height:17px}
+#modalBox .game-wallet-preview b,#modalBox .game-wallet-preview output {font-weight:750;min-width:0}
+#modalBox .game-wallet-preview i {font-style:normal;color:var(--mute)}
+.load-label,.load-actions,.load-stepper,.load-stepper>div {display:flex;align-items:center}
+#modalBox .load-label {justify-content:space-between;margin:0 0 -8px}
+.load-label label {font-weight:700}
+.load-label button {min-height:40px;padding:0 6px;background:none;border:0;color:var(--soft);text-decoration:underline;text-underline-offset:3px}
+#modalBox .load-stepper {padding:5px;gap:6px;background:var(--card);border:1px solid var(--line-2);border-radius:12px}
+.load-stepper>button {border:1px solid var(--line-2);background:var(--panel);color:var(--text);border-radius:8px;width:44px;height:44px;font-size:1.35rem}
+.load-stepper>div {flex:1;min-width:0;justify-content:center;gap:2px;color:var(--text);font-size:1.5rem;font-weight:750}
+#modalBox .load-stepper input {width:6ch;max-width:calc(100% - 1em);padding:0;border:0;border-radius:3px;background:transparent;color:inherit;font:inherit;text-align:center;appearance:textfield;font-variant-numeric:tabular-nums}
+.load-stepper input::-webkit-inner-spin-button,.load-stepper input::-webkit-outer-spin-button {appearance:none}
+#modalBox .game-presets button {display:grid;align-content:center;gap:2px;min-height:48px;padding:5px 2px;font-size:.92rem;border-radius:10px}
+#modalBox .game-presets button small {font-size:.70rem;font-weight:550;color:var(--mute)}
+#modalBox .game-presets button[aria-pressed=true] {border-color:var(--game-gold);background:color-mix(in srgb,var(--game-gold) 10%,var(--panel));color:var(--text)}
+#modalBox .game-load-form .game-totals {margin:0;padding:12px}
+#modalBox .game-load-form .game-totals div:last-child dd {font-size:1.22rem}
+#modalBox .load-actions {display:grid;grid-template-columns:1fr 2fr;gap:8px}
+#modalBox .load-actions>* {min-height:44px;margin:0}
+#modalBox .load-actions .btn-accent {background:#f6c65b;color:#281900;border:1px solid #f6c65b}
+#modalBox .transfer-feedback:empty {display:none}
+#modalBox .load-stepper button:disabled {opacity:.44}
+@media(max-height:520px) {#modalBox .load-cover {min-height:70px}}
+
+#modalBox:has(:is(.withdraw-sheet,.redeem-form)) {width:min(100%,480px);padding:0;overflow-x:hidden}
+#modalBox .withdraw-sheet {overflow:hidden;border-radius:inherit}
+#modalBox:has(:is(.redeem-form,.withdraw-sheet)) .modal-x {z-index:2;right:10px;top:10px;background:#180e24bc;color:white}
+.cash-cover {padding:20px clamp(16px,4vw,26px);padding-right:30%;color:white;position:relative;isolation:isolate;background:linear-gradient(110deg,#20142a,#341d3b)}
+#modalBox .cash-cover h2,#modalBox .cash-cover p,#modalBox .load-cover h2 {outline:none}
+#modalBox .cash-cover h2 {margin:0;color:#fff;text-align:left;font-size:1.65rem;letter-spacing:-.035em}
+#modalBox .cash-cover p {color:#eadfec;margin:6px 0;font-size:.89rem;line-height:1.4}
+.cash-cover small {font-weight:650;color:#ffdfa1;font-size:.78rem}
+#modalBox .cash-body {padding:15px clamp(16px,4vw,26px) max(16px,env(safe-area-inset-bottom))}
+#modalBox .cash-body h3 {font-size:1rem;margin:14px 0 8px}
+#modalBox .cash-body :is(.cash-line,.wallet-line) {margin:0;border:1px solid var(--line-2);background:var(--card);color:var(--text);border-radius:11px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;font-size:.92rem}
+.cash-line b,.cash-body .wallet-line b {font-variant-numeric:tabular-nums}
+.cash-line i {color:var(--mute);font-style:normal;font-weight:400}
+.cash-line output {color:var(--green)}
+#modalBox .withdraw-sheet .cash-hint,#modalBox .redeem-info {font-size:.85rem;line-height:1.45;color:var(--soft);margin:9px 0}
+#modalBox .withdraw-sheet .opt-list {display:grid;gap:4px;padding:0;margin:0 0 12px}
+#modalBox .withdraw-sheet .cry-opt {display:flex;gap:8px;align-items:center;background:var(--card);color:var(--text);border:1px solid var(--line);padding:4px 10px;border-radius:9px;min-height:44px}
+#modalBox .withdraw-sheet .cry-opt .cry {width:27px;height:27px;flex:0 0 27px;font-size:1rem}
+#modalBox .withdraw-sheet .cry-opt .cry svg {max-width:65%}
+#modalBox .withdraw-sheet .cry-opt small {color:var(--mute);font-size:.76rem}
+#modalBox .withdraw-sheet .cry-opt.on {border-color:var(--accent-hi);background:var(--panel)}
+#modalBox .withdraw-sheet .tick-ok {margin-left:auto}
+#modalBox .withdraw-sheet .cash-primary {width:100%}
+:root[data-site=a] #modal #modalBox :is(.cash-primary,.load-actions .btn-accent) {background:#f6c65b;color:#281900;border:1px solid #f6c65b;border-radius:11px;min-height:44px}
+#modalBox .redeem-form {gap:10px;margin:0}
+#modalBox .redeem-value {text-align:center;font-size:1.5rem;font-weight:750;font-variant-numeric:tabular-nums}
+.redeem-slider {margin:0;width:100%;height:30px;accent-color:var(--accent-hi)}
+.range-labels {display:flex;justify-content:space-between;font-size:.8rem;color:var(--mute)}
+#modalBox .redeem-info {border-inline-start:2px solid var(--accent-hi);padding:3px 10px;margin:3px 0}
+
+.cash-cover::after {content:"";position:absolute;z-index:-1;right:4%;bottom:2%;height:88%;aspect-ratio:434/296;max-width:34%;background:url("assets/wallet-gold.webp") 90.66% 17.24% / 218.43% 560.47% no-repeat;mask-image:radial-gradient(ellipse,#000 48%,transparent 78%)}
+/* This palette belongs to the wallet dialogs and Rewards only. */
+#modalBox:has(:is(.game-load-form,.redeem-form,.withdraw-sheet,.game-success)),.page.rewards {
+ --r777-type:Figtree,system-ui,sans-serif;--bg:#130e21;--panel:#22132b;--card:#261932;--card-2:#34213c;
+ --line:#53365c;--line-2:#80538b;--game-line:#60416a;--game-panel:#24152e;--game-base:#1d1226;--game-gold:#ffda80;
+ --text:#fff7ff;--soft:#e2d5e7;--mute:#c4b2cb;--accent:#b91f9e;--accent-hi:#ed91df;--green:#91e6bb;
+ color:var(--text);color-scheme:dark;
+}
+#modalBox:has(:is(.game-load-form,.redeem-form,.withdraw-sheet,.game-success)) {
+ background:linear-gradient(145deg,#2a1533,#190f24 71%);border:1px solid #915398;
+ overflow-y:auto;max-height:calc(100dvh - 12px - env(safe-area-inset-bottom));scroll-padding-block:10px;
+}
+#modalBox .load-cover h2 {color:#fff5fb}
+#modalBox :is(.redeem-value,.withdraw-sheet .field) {background:#21142a;color:#fff7ff;border:1px solid #80538b}
+#modalBox .game-wallet-preview {background:#24152d;border-color:#6f4374;color:#fff4fc}
+#modalBox .game-presets button {background:#2b1a33;color:#f9eefb;border:1px solid #65416d}
+#modalBox .game-presets button[aria-pressed=true] {background:#422042;color:#ffe7a9;border:1px solid #e6ad57}
+.receipt-balances {display:grid;gap:8px;margin:12px 0;padding:12px;background:var(--game-panel);border-radius:12px}
+.receipt-balances div {display:flex;justify-content:space-between;gap:10px}.receipt-balances dd {margin:0;font-weight:700}
+#modalBox .load-actions .btn-outline {background:#271b2f;border-color:#7f6086;color:#fff}
+#modalBox .game-wallet-preview span,#modalBox .game-presets button small {color:#decbe3}
+#modalBox .cash-cover::after {pointer-events:none}
+.page.rewards {
+ max-width:860px;padding:clamp(14px,3.8vw,28px);background:radial-gradient(ellipse at 96% 0%,#36103a,transparent 39%),linear-gradient(#160d24,#110b1c);
+ border-radius:18px;--rw-edge:#73457f;--rw-gold:#ffd475;
+}
+.rewards .reward-banner {position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;min-height:clamp(100px,19vw,154px);padding:clamp(14px,3.4vw,26px);margin:8px 0 12px;border:1px solid #91569c;border-radius:16px;background:linear-gradient(105deg,#281336 25%,#361858 70%,#512351)}
+.rewards .reward-banner img {position:absolute;right:0;z-index:-1;top:0;height:100%;width:49%;object-fit:cover;object-position:center;mask-image:linear-gradient(90deg,transparent,#000 28%)}
+.rewards .reward-banner h1 {font:800 clamp(1.85rem,6vw,3rem)/1 Figtree,sans-serif;letter-spacing:-.045em;color:white;margin:0}
+.rewards .reward-banner p {font-size:clamp(.88rem,2.3vw,1.1rem);color:#f1ddea;margin:6px 0 0}
+:root[data-site=a] .rewards :is(.pts-card,.ck,.panel-card,.promo-box) {background:linear-gradient(125deg,#281634,#191324);color:#fff5fb;border:1px solid var(--rw-edge);border-radius:15px;box-shadow:none}
+:root[data-site=a] .rewards .pts-card {background:linear-gradient(115deg,#3a1a40,#20142f 60%,#241b46);border-color:#a367a4}
+:root[data-site=a] .rewards .pts-num {font:800 clamp(2.25rem,8vw,3.5rem)/1.05 Figtree,sans-serif;letter-spacing:-.045em;color:var(--rw-gold);margin-top:5px}
+.rewards .pts-top small,.rewards .pts-lv {color:#e9d6f1}
+:root[data-site=a] .rewards :is(.pts-bot,.ck-day,.quest,.rw-tabs) {border-color:#644068;color:#fff3ff}
+:root[data-site=a] .rewards .rw-tabs {background:#24152f;gap:3px;padding:4px}
+:root[data-site=a] .rewards .rw-tabs button {min-width:0;min-height:42px;color:#e7d2ee;padding-inline:4px}
+:root[data-site=a] .rewards .rw-tabs .on {background:linear-gradient(150deg,#8d217d,#52195c);color:white;box-shadow:inset 0 0 0 1px #d96cc6}
+.rewards .ck-h {align-items:baseline;gap:10px}.rewards .streak {color:#d6bdde}
+:root[data-site=a] .rewards .ck-days {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+:root[data-site=a] .rewards .ck-day {background:#1e1328;border:1px solid #66436d;color:#f7edfa}
+:root[data-site=a] .rewards .ck-day.today {background:linear-gradient(145deg,#60384b,#35213c);border:1px solid #ffce6e;box-shadow:0 0 8px #eb96312b}
+:root[data-site=a] .rewards .ck-day small {color:#dcc7e2}
+:root[data-site=a] .rewards .ck-cta .btn-accent {background:linear-gradient(165deg,#ffe18c,#f4b53e);color:#281900;min-height:46px}
+:root[data-site=a] .rewards .quest {border:1px solid #6a4075;border-radius:12px;padding:12px;background:linear-gradient(115deg,#30203a,#201429)}
+.rewards .q-top {display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:9px;align-items:center}
+.rewards .q-top b {color:#fff5ff}.rewards .q-top p {color:#cfbdd6}
+.rewards .quest-icon {display:grid;place-items:center;width:32px;height:36px;color:#ed9de9}
+.rewards .quest-icon svg {width:25px;height:25px}
+:root[data-site=a] .rewards .q-pts {color:var(--rw-gold);font-variant-numeric:tabular-nums}
+:root[data-site=a] .rewards .q-bar .bar-track {background:#4a3153}
+:root[data-site=a] .rewards .q-bar .bar-track i {background:linear-gradient(90deg,#e8aa44,#ffdc89)}
+:root[data-site=a] .rewards .q-bar .bar-track .done {background:linear-gradient(90deg,#ae35cd,#db7bd4)}
+:root[data-site=a] .rewards .claimed {color:#99ebbf}
+@media(min-width:700px){:root[data-site=a] .rewards .ck-days {grid-template-columns:repeat(7,minmax(0,1fr))}.rewards .quests {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}

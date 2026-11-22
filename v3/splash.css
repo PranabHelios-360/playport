@@ -1,0 +1,68 @@
+#loader[hidden] {display:none}
+#loader:has(.power-scene) {background:#10051b;transition:none;z-index:1000}
+.power-scene {
+  position:absolute;inset:0;isolation:isolate;overflow:hidden;container-type:size;
+  color:#fff7ff;text-align:center;font-family:Figtree,system-ui,sans-serif;
+  background:radial-gradient(ellipse at 50% 45%,#340c40 0%,#1a0828 42%,#0d0417 80%);
+}
+.power-scene::before,.power-scene::after {
+  content:"";position:absolute;z-index:-1;width:min(103%,850px);aspect-ratio:720/320;height:auto;
+  pointer-events:none;background:url("assets/splash/ribbon.svg") center/contain no-repeat;
+  mix-blend-mode:screen;
+  transform-origin:center;animation:power-ribbon 9s ease-in-out infinite alternate;
+}
+.power-scene::before {top:-2%;left:-3%}
+.power-scene::after {bottom:-4%;right:-5%;rotate:180deg;animation-delay:-5s}
+.power-core {
+  position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);
+  width:min(94cqw,77cqh,600px);display:flex;flex-direction:column;align-items:center;
+}
+.power-brand {display:flex;align-items:center;justify-content:center;gap:.21em;font-size:min(11.5cqw,8.3cqh,69px);line-height:1;white-space:nowrap}
+.power-brand img {width:1.13em;height:1.13em;border-radius:50%;mix-blend-mode:screen;animation:power-pulse 3.6s ease-in-out infinite}
+.power-brand strong {font:italic 900 1em/1 Figtree,Arial,sans-serif;letter-spacing:-.052em;color:#fff9f3}
+.power-brand strong span {color:#fa39b5}
+.power-stage {position:relative;width:100%;height:min(76cqw,39cqh,320px);margin:min(3.8cqh,26px) auto min(2cqh,18px);isolation:isolate}
+.power-layer {position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .65s ease-in-out;pointer-events:none}
+.power-scene[data-theme="slots"] .slots,.power-scene[data-theme="dragon"] .dragon,.power-scene[data-theme="fortune"] .fortune {opacity:1}
+.power-stage img {display:block;width:100%;height:auto}
+.power-machine,.power-dragon,.power-fortune {position:relative;mix-blend-mode:screen;mask-image:linear-gradient(to right,transparent,#000 9% 91%,transparent),linear-gradient(to bottom,transparent,#000 11% 88%,transparent);mask-composite:intersect}
+.power-machine {width:100%;aspect-ratio:728/309}
+.reel {position:absolute;width:14%;height:41.42%;overflow:hidden;mask-image:linear-gradient(transparent,#000 16% 81%,transparent);opacity:.94}
+.reel.one {left:25.69%;top:24.27%;--face:url("assets/splash/reel-0.webp")}
+.reel.two {left:42.17%;top:19.42%;--face:url("assets/splash/reel-1.webp")}
+.reel.three {left:58.52%;top:14.24%;--face:url("assets/splash/reel-2.webp")}
+.reel b {display:block;width:100%;height:200%;background:var(--face) top/100% 50% repeat-y;animation:power-roll 2.8s cubic-bezier(.46,0,.26,1) infinite}
+.reel.two b {animation-delay:.13s}.reel.three b {animation-delay:.26s}
+.power-dragon {width:min(83cqw,41cqh,347px);aspect-ratio:521/466}
+.dragon-eye {position:absolute;left:70.4%;top:30%;width:2.3%;aspect-ratio:2;background:#fff0bb;border-radius:50%;box-shadow:0 0 8px 3px #ff69d7;animation:power-eye 3s ease-in-out infinite alternate}
+.dragon-mist {position:absolute;inset:40% -5% 0;background:radial-gradient(ellipse at 21% 75%,#a85cc857,transparent 35%),radial-gradient(ellipse at 81% 87%,#9a46fb57,transparent 32%);animation:power-drift 6s ease-in-out infinite alternate}
+.dragon-charge {position:absolute;left:55%;top:32%;width:37%;height:16%;fill:none;stroke:#ffc6ff;stroke-width:1;filter:drop-shadow(0 0 2px #ed56ff);animation:power-eye 4s ease-in-out infinite alternate-reverse}
+.power-fortune {width:min(100%,60cqh,470px);aspect-ratio:518/342}
+.orbit-plane {position:absolute;inset:5% 12%;transform:rotate(-24deg) scaleY(.45)}
+.orbit-dust {position:absolute;inset:0;border-radius:50%;animation:power-orbit 7s linear infinite}
+.orbit-dust::before,.orbit-dust::after {content:"";position:absolute;top:50%;left:0;width:5px;height:8px;background:#ffdfa2;border-radius:50%;box-shadow:0 0 9px 2px #ff9f3b,9px 2px 2px -1px #ffcc85}
+.orbit-dust::after {left:auto;right:0;background:#e590ff;box-shadow:0 0 10px 2px #e36fff}
+.power-message {margin:0;color:#fff5ff;font:italic 650 clamp(15px,min(5cqw,3.8cqh),28px)/1.35 Figtree,system-ui,sans-serif;transition:opacity .16s ease}
+.power-message.fading {opacity:0}
+.power-meter {margin-top:min(2.6cqh,22px);width:65%;height:8px;overflow:hidden;border-radius:8px;border:1px solid #a957ab;background:#22092c;box-shadow:0 0 12px #d03ac82e}
+.power-meter i {display:block;height:100%;width:63%;border-radius:inherit;background:linear-gradient(90deg,#8b48ff,#f230de 44%,#ffb134 87%,#fff0ae);animation:power-loading 1.65s ease-in-out infinite alternate}
+.power-credit {position:absolute;bottom:max(5cqh,env(safe-area-inset-bottom));left:0;right:0;display:grid;gap:3px;justify-items:center;color:#ffeff9}
+.power-credit small {font-size:clamp(10px,1.8cqh,14px);color:#ccb5d4}
+.power-credit b {font-size:clamp(13px,2.4cqh,18px);font-style:italic}
+.power-retry {margin:12px 0 0;background:#ffce61;color:#241024;border:0;border-radius:30px;padding:10px 25px;font:700 15px Figtree, sans-serif;cursor:pointer}
+.power-retry[hidden],.power-failed .power-meter {display:none}
+.power-stage * {animation-play-state:paused}
+.power-scene[data-theme="slots"] .slots *,.power-scene[data-theme="dragon"] .dragon *,.power-scene[data-theme="fortune"] .fortune * {animation-play-state:running}
+.power-failed *, .power-failed::before,.power-failed::after {animation:none!important}
+.launch-stage.game-opening-stage {height:min(65dvh,580px);aspect-ratio:auto;width:100%}
+@keyframes power-pulse {50%{filter:drop-shadow(0 0 6px #f488e3)}}
+@keyframes power-ribbon {to{transform:translate(2%,-3%) scale(1.05)}}
+@keyframes power-roll {0%,24%{transform:translateY(0)}82%,100%{transform:translateY(-50%)}}
+@keyframes power-drift {to{transform:translate(6%,-4%)}}
+@keyframes power-eye {from{opacity:.14}to{opacity:.72}}
+@keyframes power-orbit {to{transform:rotate(360deg)}}
+@keyframes power-loading {from{transform:translateX(-12%)}to{transform:translateX(72%)}}
+@media(prefers-reduced-motion:reduce) {
+  .power-scene *,.power-scene::before,.power-scene::after {animation:none!important;transition:none!important}
+  .power-meter i {width:100%;opacity:.8}
+}

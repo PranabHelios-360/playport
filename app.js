@@ -1079,6 +1079,9 @@ function showChooser() {
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
           <b>Loaded777</b><span>Gold &amp; ruby &middot; Wine, Navy or White &middot; side menu</span></button>
+        <a class="ch-opt c" href="v3/">
+          <div class="ch-prev"><img src="v3/assets/landing/recharge-hero.png" alt="" loading="lazy"></div>
+          <b>Recharge777 Cinema</b><span>Full redesign &middot; Splash intro &middot; New wallet and shop</span></a>
       </div>
     </div>`;
   ch.hidden = false;

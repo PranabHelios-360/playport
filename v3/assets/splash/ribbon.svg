@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" fill="none">
+<defs>
+  <linearGradient id="silk" x1="127" y1="41" x2="181" y2="178" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#210438" stop-opacity=".1"/><stop offset=".48" stop-color="#580084"/><stop offset=".76" stop-color="#9222b8"/><stop offset=".92" stop-color="#390a4e"/><stop offset="1" stop-color="#160720" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="edge"><stop stop-color="#5c15ae" stop-opacity="0"/><stop offset=".24" stop-color="#b41fff"/><stop offset=".49" stop-color="#ff8ef2"/><stop offset=".70" stop-color="#ffcc6e"/><stop offset=".88" stop-color="#ff6baa"/><stop offset="1" stop-color="#b6158a" stop-opacity="0"/></linearGradient>
+  <filter id="glow" x="-15%" y="-30%" width="130%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+  <path id="flow" d="M-35 311C80 107 304 176 492 36Q570 -22 611 -67"/>
+</defs>
+<path d="M-30 154C85 31 280 69 355-35H628C491 109 367 134 249 158S38 224-30 310Z" fill="url(#silk)"/>
+<path d="M-24 223C70 66 265 111 401-37" stroke="url(#edge)" opacity=".58" stroke-width="1.6"/>
+<use href="#flow" stroke="url(#edge)" stroke-width="9" filter="url(#glow)" opacity=".7"/>
+<use href="#flow" stroke="url(#edge)" stroke-width="2"/>
+</svg>

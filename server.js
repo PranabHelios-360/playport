@@ -4,11 +4,11 @@ const path = require('path');
 
 const root = __dirname;
 const port = process.env.PORT || 6400;
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp' };
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.webmanifest': 'application/manifest+json' };
 
 http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
-  if (p === '/') p = '/index.html';
+  if (p.endsWith('/')) p += 'index.html';
   const file = path.normalize(path.join(root, p));
   if (!file.startsWith(root) || file.endsWith('server.js')) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (err, data) => {

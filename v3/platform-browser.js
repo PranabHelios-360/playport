@@ -39,7 +39,7 @@ function directoryCards(filter, query) {
         <strong>${p.name}</strong><small>${tags.map(t=>`<span>${t}</span>`).join('')}</small>
         <span class="charged-view">${p.preview ? 'Preview' : 'View'} <i aria-hidden="true">→</i></span>
       </${tag}>
-      <button type="button" class="charged-heart" data-platform-favorite="${p.id}" aria-label="${p.name}, ${document.documentElement.lang==='es'?'favorito':'favorite'}" aria-pressed="${saved}"><span aria-hidden="true">${saved?'♥':'♡'}</span></button>
+      <button type="button" class="charged-heart" data-platform-favorite="${p.id}" aria-label="${p.name} — ${document.documentElement.lang==='es'?'favorito':'favorite'}" aria-pressed="${saved}"><span aria-hidden="true">${saved?'♥':'♡'}</span></button>
     </article>`;
   }).join('');
 }
@@ -47,7 +47,7 @@ function directoryCards(filter, query) {
 function platformDirectory(mainHeading = false) {
   const heading = mainHeading ? 'h1' : 'h2';
   return `<section class="charged-directory" aria-labelledby="charged-heading">
-    <header class="charged-intro"><div><${heading} id="charged-heading">Platforms</${heading}><small>Each platform has its own game login. Unlock one to load credits and play.</small></div></header>
+    <header class="charged-intro"><div><p>Featured platforms</p><${heading} id="charged-heading"><span>Your games.</span><em>Fully charged.</em></${heading}><small>Explore your favorite platforms.</small></div></header>
     <div class="charged-tools"><label class="charged-search">${I.search}<input type="search" placeholder="Search platforms" aria-label="Search platforms" autocomplete="off"></label>
     <div class="charged-filters" role="group" aria-label="Filter platforms">${directoryFilters.map(([id,label,icon])=>`<button type="button" data-platform-filter="${id}" aria-pressed="${id==='all'}"><i aria-hidden="true">${icon}</i><span>${label}</span></button>`).join('')}</div></div>
     <div class="charged-grid">${directoryCards('all','')}</div></section>`;

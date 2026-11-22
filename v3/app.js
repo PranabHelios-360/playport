@@ -102,7 +102,6 @@ const SITES = {
 // Flat, scalable brand marks shared by header, drawer, footer and loader.
 SITES.a.img = null;
 SITES.a.svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" fill=\"none\" aria-hidden=\"true\"><defs><linearGradient id=\"rgold\" x1=\"8\" y1=\"4\" x2=\"54\" y2=\"61\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#ffe4f5\"/><stop offset=\".28\" stop-color=\"#bb1677\"/><stop offset=\".5\" stop-color=\"#ff9bd6\"/><stop offset=\".75\" stop-color=\"#9f185f\"/><stop offset=\"1\" stop-color=\"#ffc4e8\"/></linearGradient><radialGradient id=\"rcore\"><stop stop-color=\"#34204c\"/><stop offset=\"1\" stop-color=\"#101b38\"/></radialGradient></defs><circle cx=\"32\" cy=\"32\" r=\"30\" fill=\"url(#rgold)\"/><circle cx=\"32\" cy=\"32\" r=\"27\" fill=\"url(#rcore)\" stroke=\"#ffb4df\" stroke-width=\".7\"/><circle cx=\"32\" cy=\"32\" r=\"24.5\" stroke=\"#d72d90\" stroke-width=\".6\"/><path d=\"M36 9L15 35h15l-4 20 23-30H34l2-16Z\" fill=\"url(#rgold)\" stroke=\"#ffe6f6\" stroke-width=\".8\" stroke-linejoin=\"round\"/><path d=\"M12 17A26 26 0 0 1 42 8\" stroke=\"#fff0fa\" stroke-width=\"1.2\" stroke-linecap=\"round\" opacity=\".7\"/></svg>";
-SITES.a.svg = null; // flat accent mark (see clean.css)
 SITES.b.svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\" fill=\"none\" aria-hidden=\"true\"><rect width=\"64\" height=\"64\" rx=\"20\" fill=\"#f5b82e\"/><path d=\"M18 15h30L32 34h11L22 52l7-22H18l12-9H18z\" fill=\"#151a31\"/></svg>";
 S.site = null;
 const site = () => SITES[S.site || 'a'];
@@ -255,9 +254,9 @@ function landingReviews() {
     {name:'Sample player',quote:'Switching between the light and dark themes is a nice touch.'}
   ] : configured;
   return `<section class="player-stories" aria-labelledby="stories-title">
-    <div class="stories-intro"><h2 id="stories-title">Player reviews</h2><p>A place for the experiences, favorites, and feedback that make our community.</p>
+    <div class="stories-intro"><p class="section-kicker">THE RECHARGE777 COMMUNITY</p><h2 id="stories-title">Every player.<br>A different story.</h2><p>A place for the experiences, favorites, and feedback that make our community.</p>
     ${sample ? '<span class="preview-label">Design preview · sample reviews</span><p class="review-note">These examples show the layout. They are not customer testimonials.</p>' : '<span class="community-note">Player reviews</span>'}</div>
-    <div class="review-grid">${reviews.map((r,i)=>`<article class="review-card"><div class="review-top"><span class="quote-mark" aria-hidden="true">“</span><span>${sample?'Sample review':'Player review'}</span></div><blockquote>${esc(r.quote)}</blockquote><div class="review-person"><span class="review-avatar avatar-${i}" aria-hidden="true">${sample?'R':esc(r.name.slice(0,1))}</span><div><b>${esc(r.name)}</b><small>${sample?'Preview content':esc(r.location||'Recharge777 community')}</small></div></div></article>`).join('')}</div>
+    <div class="review-grid">${reviews.map((r,i)=>`<article class="review-card"><div class="review-top"><span class="quote-mark" aria-hidden="true">“</span><span>${sample?'SAMPLE REVIEW':'PLAYER REVIEW'}</span></div><blockquote>${esc(r.quote)}</blockquote><div class="review-person"><span class="review-avatar avatar-${i}" aria-hidden="true">${sample?'R':esc(r.name.slice(0,1))}</span><div><b>${esc(r.name)}</b><small>${sample?'Preview content':esc(r.location||'Recharge777 community')}</small></div></div></article>`).join('')}</div>
   </section>`;
 }
 
@@ -268,8 +267,8 @@ function appDownloadSection() {
   const badge = (url,icon,top,label) => url ? `<a class="store-badge" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${icon}<span><small>${top}</small><b>${label}</b></span></a>` : `<button class="store-badge" disabled aria-label="${label} download unavailable in this preview">${icon}<span><small>${top}</small><b>${label}</b></span></button>`;
   const apple = '<svg viewBox="0 0 24 28" aria-hidden="true"><path fill="currentColor" d="M17.5 0c.3 2-1.1 4-2.2 5.1-1.2 1.2-2.8 1.8-4.2 1.6-.3-1.9 1-3.9 2.1-5C14.5.6 16.1 0 17.5 0ZM21.1 21.3c-.8 1.8-1.2 2.6-2.3 4.2-1.4 2-3.3 2.2-5.2 1.3-1.7-.8-3.3-.8-5.1.1-1.8.8-3.2.6-4.6-1.3C.1 20.3-.8 13.8 1.9 10.3c1.8-2.5 5-2.8 7.1-1.8 1.5.7 2.6.8 4.3 0 2.4-1.1 5.3-.8 7.2 1.6-4.4 2.7-3.6 8.5.6 10.2v1Z"/></svg>';
   const play = '<svg viewBox="0 0 26 28" aria-hidden="true"><path fill="#65d6b4" d="M2 1v26l13-13Z"/><path fill="#6db6ff" d="m2 1 16 9-3 4Z"/><path fill="#ffcf5c" d="m15 14 3-4 7 4-7 4Z"/><path fill="#f7839f" d="m2 27 13-13 3 4Z"/></svg>';
-  return `<section class="app-promo" aria-labelledby="app-title"><div class="app-promo-copy"><h2 id="app-title">Get the Recharge777 app</h2><p>Explore your platforms from your phone, tablet, or computer.</p><div class="store-badges">${badge(ios,apple,'Download on the','App Store')}${badge(android,play,'Get it on','Google Play')}</div>${!ios||!android?'<p class="download-note">Preview: official app download links have not been provided.</p>':''}<a class="mobile-browser-link" href="#/games">Explore games in your browser</a></div>
-    <div class="phone-scene" aria-hidden="true"><span class="floating-coin coin-one">7</span><span class="floating-coin coin-two">7</span><span class="floating-coin coin-three">7</span><div class="demo-phone"><div class="phone-island"></div><div class="phone-brand">Recharge<b>777</b></div><img src="assets/landing/recharge-hero.png" alt="" loading="lazy"><div class="phone-caption">Your games</div><div class="phone-games"><span class="category-art art-slots"></span><span class="category-art art-fish"></span><span class="category-art art-store"></span></div><div class="phone-action">Explore games</div><div class="phone-nav">Home &nbsp; Games &nbsp; Wallet</div></div></div>
+  return `<section class="app-promo" aria-labelledby="app-title"><div class="app-promo-copy"><p class="section-kicker">YOUR NEXT SESSION, ANYWHERE</p><h2 id="app-title">Take <span>Recharge777</span><br>with you.</h2><p>Explore your platforms from your phone, tablet, or computer.</p><div class="store-badges">${badge(ios,apple,'Download on the','App Store')}${badge(android,play,'Get it on','Google Play')}</div>${!ios||!android?'<p class="download-note">Preview: official app download links have not been provided.</p>':''}<a class="mobile-browser-link" href="#/games">Explore games in your browser</a></div>
+    <div class="phone-scene" aria-hidden="true"><span class="floating-coin coin-one">7</span><span class="floating-coin coin-two">7</span><span class="floating-coin coin-three">7</span><div class="demo-phone"><div class="phone-island"></div><div class="phone-brand">Recharge<b>777</b></div><img src="assets/landing/recharge-hero.png" alt="" loading="lazy"><div class="phone-caption">YOUR GAME LIBRARY</div><div class="phone-games"><span class="category-art art-slots"></span><span class="category-art art-fish"></span><span class="category-art art-store"></span></div><div class="phone-action">Explore games</div><div class="phone-nav">Home &nbsp; Games &nbsp; Wallet</div></div></div>
   </section>`;
 }
 
@@ -277,62 +276,31 @@ function authPasswordField(id,name,label,placeholder,isNew=true) {
   return `<div class="join-field"><label for="${id}">${label}</label><div class="join-input">${I.lock}<input id="${id}" name="${name}" type="password" ${isNew ? 'minlength="8" autocomplete="new-password"' : 'autocomplete="current-password"'} required placeholder="${placeholder}"><button type="button" data-act="join-visibility" aria-controls="${id}" aria-label="Show password" aria-pressed="false">${I.eyeOff}</button></div></div>`;
 }
 
-const AUTH_COUNTRIES = [['US','+1'],['CA','+1'],['MX','+52'],['ES','+34'],['GB','+44'],['IN','+91'],['NP','+977'],['PH','+63']];
-const authMailIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/></svg>';
-const authPhoneIcon = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18.5h3"/></svg>';
-
-/* Two-tab switch used by sign-up (Email | Phone) and login (Account | Phone). */
-function authTabs(prefix, first, firstLabel) {
-  return `<div class="auth-tabs" role="tablist" aria-label="Sign-in method">
-    <button type="button" role="tab" id="${prefix}-tab-${first}" aria-selected="true" aria-controls="${prefix}-${first}-pane" data-act="auth-tab" data-auth="${first}">${firstLabel}</button>
-    <button type="button" role="tab" id="${prefix}-tab-phone" aria-selected="false" aria-controls="${prefix}-phone-pane" data-act="auth-tab" data-auth="phone" tabindex="-1">Phone</button>
-  </div>`;
-}
-function authPhoneField(prefix) {
-  return `<div class="join-field auth-pane" id="${prefix}-phone-pane" role="tabpanel" aria-labelledby="${prefix}-tab-phone" data-pane="phone" hidden>
-    <label for="${prefix}-phone">Phone number</label>
-    <div class="join-input phone-input"><select name="cc" aria-label="Country code" disabled>${AUTH_COUNTRIES.map(([c,code])=>`<option value="${code}">${c} ${code}</option>`).join('')}</select><input id="${prefix}-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" required disabled minlength="7" maxlength="20" placeholder="555 010 1234"></div></div>`;
-}
-function authSetMethod(form, method) {
-  form.dataset.authMethod = method;
-  form.querySelectorAll('[data-act="auth-tab"]').forEach(tab => {
-    const on = tab.dataset.auth === method;
-    tab.setAttribute('aria-selected', String(on));
-    tab.tabIndex = on ? 0 : -1;
-  });
-  form.querySelectorAll('.auth-pane').forEach(pane => {
-    const on = pane.dataset.pane === method;
-    pane.hidden = !on;
-    pane.querySelectorAll('input,select').forEach(el => { el.disabled = !on; });
-  });
-}
-function authPhone(d) {
-  const digits = String(d.phone || '').replace(/\D/g, '');
-  return digits.length >= 7 && digits.length <= 15 ? `${d.cc || '+1'} ${digits}` : '';
-}
-
 function landingLogin() {
   const remembered = store.get('p3_login_name','');
-  return `<div class="page guest-auth-page"><section class="landing-register return-screen auth-card" aria-labelledby="return-title">
-    <header class="auth-head"><h1 id="return-title">Member login</h1><p>Sign in to your Recharge777 account.</p></header>
-    <form class="register-panel return-panel" data-form="login" data-auth-method="account">
-      ${authTabs('login','account','Account')}
-      <div class="join-field auth-pane" id="login-account-pane" role="tabpanel" aria-labelledby="login-tab-account" data-pane="account"><label for="return-name">Email or username</label><div class="join-input">${I.user}<input id="return-name" name="u" autocomplete="username" required placeholder="Email or username" value="${esc(remembered)}"></div></div>
-      ${authPhoneField('login')}
-      ${authPasswordField('return-password','p','Password','Your password',false)}
+  return `<div class="page guest-auth-page"><section class="landing-register return-screen" aria-labelledby="return-title">
+    <header class="return-hero"><img src="assets/platform-scenes/vegas.jpg" alt="" fetchpriority="high"><div><h1 id="return-title"><span>Welcome</span> <em>back!</em></h1><p>Sign in to your Recharge777 account.</p></div></header>
+    <form class="register-panel return-panel demo-entry" data-form="demo-login">
+      <div class="join-field"><label for="demo-player">Demo player ID</label><div class="join-input">${I.user}<input id="demo-player" name="player" type="text" required autocomplete="off" placeholder="Enter any player ID"></div></div>
+      <button class="register-submit" type="submit"><span>Open demo wallet</span>${I.chev}</button>
+      <p class="register-note">Sample balance and activity. No password needed.</p>
+    </form>
+    <details class="saved-login" ${remembered?'open':''}><summary>Sign in to a saved account</summary>
+    <form class="register-panel return-panel" data-form="login">
+      <div class="join-field"><label for="return-name">Username or email</label><div class="join-input">${I.user}<input id="return-name" name="u" autocomplete="username" required placeholder="Enter your username or email" value="${esc(remembered)}"></div></div>
+      ${authPasswordField('return-password','p','Password','Enter your password',false)}
       <div class="return-options"><label class="register-consent"><input name="rememberName" type="checkbox" ${remembered?'checked':''}><span>Remember my login name</span></label><button class="auth-link" type="button" data-act="login-help">Forgot password?</button></div>
-      <button class="register-submit" type="submit"><span>Sign in</span></button>
-      <p class="register-note">Demo: any login works. New details open a sample wallet.</p>
+      <button class="register-submit" type="submit">${I.bolt}<span>Sign in</span><span aria-hidden="true">→</span></button>
       <p class="auth-divider">Social sign-in unavailable in this demo</p>
       <div class="provider-buttons"><button disabled type="button">Google</button><button disabled type="button">Apple</button></div>
       <div class="auth-switch"><span>New here?</span> <a href="#/register">Create an account</a></div></form>
-    </section></div>`;
+    </details></section></div>`;
 }
 
 function welcomeEntry() {
   return `<div class="page guest-auth-page"><section class="welcome-entry">
-    <div class="welcome-art"><img src="assets/landing/join-777.jpg" alt="" fetchpriority="high"></div><div class="welcome-copy">
-    <h1>Welcome to Recharge777</h1><p>Fish games, slots and keno from six platforms, with one wallet for credits.</p>
+    <div class="welcome-art"><img src="assets/landing/join-777.jpg" alt="" fetchpriority="high"><span aria-hidden="true">777</span></div><div class="welcome-copy">
+    <h1>Play. <em>Recharge.</em></h1><p>Your home for game platforms, fish games, and slots.</p>
     <nav class="entry-shortcuts"><a href="#/games/platforms">${I.controller}<span>Games</span></a><a href="#/store">${I.coins}<span>Coin shop</span></a><a href="#/rewards">${I.gift}<span>Rewards</span></a></nav>
     <a class="register-submit" href="#/register">${I.user}<span>Create free account</span></a>
     <a class="continue-guest" href="#/login">${I.out}<span>Sign in</span></a>
@@ -345,22 +313,23 @@ function signupProgress(step) {
 
 function landingRegistration() {
   if (S.user) return '';
-  return `<section class="landing-register auth-card" aria-labelledby="register-title">
-    <header class="auth-head"><h1 id="register-title">Create your account</h1>
-      <p>One login for your wallet, credits and game accounts.</p></header>
-    <form class="register-panel" data-form="join" data-auth-method="email">
-      ${authTabs('join','email','Email')}
-      <div class="join-field auth-pane" id="join-email-pane" role="tabpanel" aria-labelledby="join-tab-email" data-pane="email"><label for="join-email">Email</label><div class="join-input">${authMailIcon}<input id="join-email" name="email" type="email" autocomplete="email" required placeholder="name@example.com"></div></div>
-      ${authPhoneField('join')}
+  return `<section class="landing-register guardian-registration" aria-labelledby="register-title">
+    <header class="guardian-intro">
+      <img src="assets/landing/guardian-register.webp" alt="" width="510" height="254" fetchpriority="high">
+      <div><h1 id="register-title"><span>Create your</span> <em>account</em></h1>
+      <p>Manage your game accounts and credits in one place.</p></div>
+    </header>
+    <form class="register-panel" data-form="join">
+      <div class="join-field"><label for="join-email">Email</label><div class="join-input"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/></svg><input id="join-email" name="email" type="email" autocomplete="email" required placeholder="Your email address"></div></div>
       ${authPasswordField('join-password','password','Password','At least 8 characters')}
       ${authPasswordField('join-confirm','confirm','Confirm password','Confirm your password')}
       <div class="join-consents"><div class="register-consent"><input id="join-terms" type="checkbox" required aria-labelledby="join-policy-label"><div id="join-policy-label"><label for="join-terms">I accept the</label> <button type="button" data-act="foot-doc" data-doc="Terms of service">Terms of service</button> <span>and</span> <button type="button" data-act="foot-doc" data-doc="Privacy policy">Privacy policy</button></div></div>
       <label class="register-consent"><input type="checkbox" required><span>I am 21 or older.</span></label>
       <label class="register-consent"><input type="checkbox" name="offers"><span>Send me offers and updates (optional).</span></label></div>
-      <button class="register-submit" type="submit"><span>Continue</span></button>
-      <p class="register-note">Next we send a 6-digit code to confirm it is you.</p>
-      <div class="auth-or"><span>or</span></div>
-      <a class="continue-guest" href="#/games/platforms"><span>Continue as guest</span></a>
+      <button class="register-submit" type="submit">${I.user}<span>Register now</span></button>
+      <p class="register-note">Demo registration · Account saved on this device.</p>
+      <div class="guardian-divider"><span>or</span></div>
+      <a class="continue-guest" href="#/games/platforms">${I.user}<span>Continue as guest</span></a>
       <div class="auth-switch"><span>Already have an account?</span> <a href="#/login">Sign in</a></div>
     </form></section>`;
 }
@@ -375,7 +344,7 @@ ${featureRewards()}${communityUpdates()}</div>`;
 
 function viewCatalog(category) {
   if (S.cat === 'All' && ['Slots','Fish'].includes(category)) S.cat=category;
-  return `<div class="page">${crumb(['Games','#/games'],[category==='all'?'All games':category==='Fish'?'Fish games':'Slots'])}<div class="catalog-intro"><h1>${category==='all'?'All games':category==='Fish'?'Fish games':'Slots'}</h1><p>Browse titles across all platforms. Each platform uses its own game account.</p></div><div class="filters">${['All','Fish','Slots','Keno'].map(c=>`<button class="chip ${S.cat===c?'on':''}" data-cat="${c}">${c}</button>`).join('')}<label class="search">${I.search}<input type="search" placeholder="Search games" value="${esc(S.q)}" data-search aria-label="Search games"></label></div><div class="grid" id="gameGrid" data-plat="all">${gameGrid(GAMES)}</div></div>`;
+  return `<div class="page">${crumb(['Games','#/games'],[category==='all'?'All games':category==='Fish'?'Fish games':'Slots'])}<div class="catalog-intro"><p class="section-kicker">FIND YOUR NEXT FAVORITE</p><h1>${category==='all'?'All games':category==='Fish'?'Dive into fish games.':'Explore the reels.'}</h1><p>Browse titles across all platforms. Each platform uses its own game account.</p></div><div class="filters">${['All','Fish','Slots','Keno'].map(c=>`<button class="chip ${S.cat===c?'on':''}" data-cat="${c}">${c}</button>`).join('')}<label class="search">${I.search}<input type="search" placeholder="Search games" value="${esc(S.q)}" data-search aria-label="Search games"></label></div><div class="grid" id="gameGrid" data-plat="all">${gameGrid(GAMES)}</div></div>`;
 }
 
 function viewStore() {
@@ -486,7 +455,7 @@ function viewBalance() {
         <strong>${amount(S.user.wallet)}</strong><span class="wallet-currency">USD</span><small><b>${amount(creditsTotal())}</b> <span>in game credits</span></small>
       </div><i class="wallet-illustration" aria-hidden="true"></i></section>
       <h2 class="wallet-actions-title">Wallet actions</h2>
-      <div class="wallet-actions-grid">${BAL_ITEMS.map(item=>`<button type="button" class="wallet-action-tile" data-balsheet="${item.id}"><span class="wallet-action-icon" aria-hidden="true">${item.icon}</span><span class="wallet-action-copy"><b>${item.label}</b><small>${descriptions[item.id] || item.sub}</small></span><span class="wallet-action-chevron" aria-hidden="true">${I.chev}</span></button>`).join('')}</div>
+      <div class="wallet-actions-grid">${BAL_ITEMS.map(item=>`<button type="button" class="wallet-action-tile" data-balsheet="${item.id}"><span class="wallet-action-icon" aria-hidden="true"></span><span class="wallet-action-copy"><b>${item.label}</b><small>${descriptions[item.id] || item.sub}</small></span><span class="wallet-action-chevron" aria-hidden="true">${I.chev}</span></button>`).join('')}</div>
       <a href="#/rewards" class="wallet-offers"><i class="wallet-gift-art" aria-hidden="true"></i><div><h2>Rewards &amp; bonuses</h2><p>Explore your rewards and offers.</p></div><span>View offers ${I.chev}</span></a>
       <p class="wallet-age">21+ <span aria-hidden="true">•</span> <button type="button" data-act="foot-doc" data-doc="Responsible play">Play responsibly</button></p>
     </div>`;
@@ -556,19 +525,21 @@ function spotlightStage() {
 function spotlightCaption() {
   const p = featuredPlatforms[spotlightIndex];
   const tag = p.preview ? 'button' : 'a';
-  return `<${tag} class="showcase-caption" ${featuredDestination(p)}><strong>${p.name}</strong><span>Open platform</span></${tag}>`;
+  return `<${tag} class="showcase-caption" ${featuredDestination(p)}><strong>${p.name}</strong><span>Explore this platform</span></${tag}>`;
 }
 
 function platformSpotlight(lobby = false) {
   const heading = lobby ? 'h1' : 'h2';
   return `<section class="world-collection" aria-labelledby="collection-title"><div class="showcase-inner">
-    <header><${heading} id="collection-title">Featured platforms</${heading}></header>
+    <header><span class="showcase-brand" role="img" aria-label="Recharge777"></span><p>Featured platforms</p>
+    <${heading} id="collection-title"><span>Your next favorite.</span><em>One swipe away.</em></${heading}></header>
     <div class="collection-stage" id="spotlightStage" data-original="${featuredPlatforms[spotlightIndex].id === 'golden-treasure'}">${spotlightStage()}</div>
     <div id="spotName" aria-live="polite">${spotlightCaption()}</div>
     <div class="collection-controls"><button type="button" data-act="spotlight-prev" aria-label="Previous platform">${I.chev}</button>
     <span class="collection-position" aria-hidden="true">${featuredPlatforms.map((p,i)=>`<i class="${i === spotlightIndex ? 'current' : ''}"></i>`).join('')}</span>
     <button type="button" data-act="spotlight-next" aria-label="Next platform">${I.chev}</button>${carouselPause()}</div>
-    <a class="collection-all" href="#/browse/all"><span>View all games</span><span aria-hidden="true">→</span></a></div></section>`;
+    <a class="collection-all" href="#/browse/all"><span>View all games</span><span aria-hidden="true">→</span></a>
+    <p class="showcase-foot">Browse platforms. Find your favorite.</p></div></section>`;
 }
 
 function advanceSpotlight(step) {
@@ -635,7 +606,7 @@ function viewAccount() {
     <header class="profile-heading">${crumb(['Profile'])}
     <h1 class="product-heading">My account</h1></header>
     ${memberCard(u)}
-    <p class="member-since">${u.email ? `<span class="profile-mail" aria-hidden="true">✉</span> ${esc(u.email)}` : ""}${u.email && u.phone ? " &middot; " : ""}${u.phone ? `<span class="profile-phone">${esc(u.phone)}</span>` : ""} &middot; <span>Member since</span> ${new Date(u.since).toLocaleDateString(document.documentElement.lang || 'en', { month: 'short', year: 'numeric' })}</p>
+    <p class="member-since"><span class="profile-mail" aria-hidden="true">✉</span> ${esc(u.email)} &middot; <span>Member since</span> ${new Date(u.since).toLocaleDateString(document.documentElement.lang || 'en', { month: 'short', year: 'numeric' })}</p>
     <section class="money-card">
       <div class="mc-cols"><div><small>${I.wallet}<span>Wallet</span></small><b>${usd(u.wallet)}</b></div><div><small>${I.controller}<span>In games</span></small><b>${usd(creditsTotal())}</b></div><div><small>${I.trophy}<span>Points</span></small><b>${u.points.toLocaleString('en-US')}</b></div></div>
       <div class="mc-acts"><a class="round-act" href="#/balance" data-bal-go="deposit"><span class="ra-ico dep">${I.plus}</span>Deposit</a><a class="round-act" href="#/balance" data-bal-go="withdraw"><span class="ra-ico wd">${I.dl}</span>Withdraw</a></div>
@@ -757,14 +728,14 @@ function rwToday() {
     return `<div class="ck-day ${isToday ? 'today' : ''} ${collected ? 'got' : ''}"><small>${isToday ? 'TODAY' : `DAY ${i + 1}`}</small><b>${collected ? I.check : v}</b></div>`;
   }).join('');
   return `<section class="ck">
-      <div class="ck-h"><h3>Daily check-in</h3><span class="streak">${st.streakNow ? `<i>&#128293;</i>${st.streakNow}-day streak` : 'Start a streak today'}</span></div>
+      <div class="ck-h"><h3>DAILY CHECK-IN</h3><span class="streak">${st.streakNow ? `<i>&#128293;</i>${st.streakNow}-day streak` : 'Start a streak today'}</span></div>
       <div class="ck-days">${days}</div>
       <div class="ck-cta">${st.done
         ? `<button class="btn btn-ghost btn-lg" disabled>Collected. Come back tomorrow</button>`
         : `<button class="btn btn-accent btn-lg" data-act="checkin">Collect +${st.reward} pts</button>`}</div>
     </section>
     <section class="panel-card">
-      <h3 class="rw-h">Quests</h3>
+      <h3 class="rw-h">QUESTS</h3>
       <div class="quests">${QUESTS.map(q => {
         const n = Math.min(q.now(), q.goal), done = S.user.claimed.includes(q.id);
         return `<div class="quest" data-quest="${q.id}">
@@ -784,7 +755,7 @@ function rwPromos() {
       <p class="note">Demo codes: BONUS50, RECHARGE100</p>
     </section>
     <section class="panel-card">
-      <h3 class="rw-h">Offers for you</h3>
+      <h3 class="rw-h">OFFERS FOR YOU</h3>
       <div class="offers">
         <div class="offer"><span class="offer-ico">${I.bolt}</span><div><b>Daily 1st load bonus</b><p class="o-amt">Up to +15% credits &middot; first load each day</p><p>Milky Way, Fire Kirin and Juwa give +10%, Orion Stars +15%.</p></div><a class="btn btn-outline btn-sm" href="#/games">Load a game</a></div>
         <div class="offer"><span class="offer-ico">${I.plus}</span><div><b>Points on every load</b><p class="o-amt">1 pt for every $1 you load</p><p>Spend them in the Shop for cashable money.</p></div><button class="btn btn-outline btn-sm" data-rw="shop">Open shop</button></div>
@@ -800,7 +771,7 @@ function rwCompete() {
   const rows = names.map((n, i) => ({ n, v: base[i] })).concat(me).sort((a, b) => b.v - a.v);
   const prize = ['1,000 pts', '500 pts', '250 pts'];
   return `<section class="panel-card">
-      <div class="rw-row"><h3 class="rw-h">Weekly leaderboard</h3><span class="pill">Resets Monday</span></div>
+      <div class="rw-row"><h3 class="rw-h">WEEKLY LEADERBOARD</h3><span class="pill">RESETS MONDAY</span></div>
       <p class="card-sub">Earn points from check-ins, quests and loads. Top 3 win bonus points.</p>
       <div class="lb">${rows.map((x, i) => `<div class="lb-row ${x.me ? 'me' : ''} ${i < 3 ? 'top' : ''}">
         <span class="lb-n">#${i + 1}</span><span class="lb-u">${esc(x.n)}${x.me ? ' <em>you</em>' : ''}</span>${i < 3 ? `<span class="lb-prize">${prize[i]}</span>` : '<span></span>'}<b>${x.v.toLocaleString('en-US')} pts</b></div>`).join('')}</div>
@@ -820,25 +791,25 @@ function rwYou() {
   const lv = levelInfo();
   const link = `https://recharge777.com/r/${S.user.refCode}`;
   return `<section class="panel-card">
-      <h3 class="rw-h">Invite friends</h3>
+      <h3 class="rw-h">INVITE FRIENDS</h3>
       <p>Earn <b>+250 points</b> when a friend signs up with your code and makes their first deposit.</p>
       <div class="invite"><div class="field code-box">${S.user.refCode}</div>
         <button class="btn btn-outline" data-copyval="${link}" data-what="Invite link">${I.copy}Copy link</button>
         <button class="btn btn-accent" data-act="share" data-link="${link}">Share</button></div>
     </section>
     <section class="panel-card">
-      <h3 class="rw-h">Your level</h3>
+      <h3 class="rw-h">YOUR LEVEL</h3>
       <div class="lv"><b>${lv.cur ? lv.cur[0] : 'No level yet'}</b><span>${lv.next ? `${(lv.next[1] - lv.lt).toLocaleString('en-US')} pts to ${lv.next[0]}` : 'Top level reached'}</span></div>
       <div class="bar-track lv-bar"><i style="width:${lv.next ? Math.min(100, (lv.lt / lv.next[1]) * 100) : 100}%"></i></div>
       <div class="lv-steps">${LEVELS.map(l => `<span class="${lv.lt >= l[1] ? 'on' : ''}">${l[0]}<small>${l[1].toLocaleString('en-US')}</small></span>`).join('')}</div>
     </section>
     <section class="panel-card">
-      <h3 class="rw-h">Profile photo</h3>
+      <h3 class="rw-h">PROFILE PHOTO</h3>
       <p class="card-sub">Pick one to complete your profile (+50 pts).</p>
       ${avatarChoices()}
     </section>
     <section class="panel-card">
-      <h3 class="rw-h">History</h3>
+      <h3 class="rw-h">HISTORY</h3>
       ${S.user.pts.length ? `<div class="hist">${S.user.pts.map(h => `<div class="hist-row"><div><b>${esc(h.label)}</b><small>${h.when}</small></div><div class="hist-amt"><b class="${h.amt >= 0 ? 'pos' : 'neg'}">${h.amt >= 0 ? '+' : ''}${h.amt.toLocaleString('en-US')} pts</b><span class="credited">${h.amt >= 0 ? 'Credited' : 'Spent'}</span></div></div>`).join('')}</div>` : '<p class="card-sub">No points yet. Collect your daily check-in to start.</p>'}
     </section>`;
 }
@@ -851,9 +822,9 @@ function viewRewards() {
   const body = { today: rwToday, promos: rwPromos, compete: rwCompete, shop: rwShop, you: rwYou }[S.rw]();
   return `<div class="page rewards">
     ${crumb(['Rewards'])}
-    <header class="reward-banner"><div><h1>Rewards</h1><p>Points, daily check-ins and promo codes.</p></div><img src="assets/wallet-rewards.jpg" alt=""></header>
+    <header class="reward-banner"><div><h1>Rewards</h1><p>Play more. Earn more.</p></div><img src="assets/wallet-rewards.jpg" alt=""></header>
     <section class="pts-card">
-      <div class="pts-top"><div><small>Your points</small><b class="pts-num">${S.user.points.toLocaleString('en-US')}</b></div><span class="pts-lv">${lv.cur ? `${lv.cur[0]} level` : 'No level yet'}</span></div>
+      <div class="pts-top"><div><small>YOUR POINTS</small><b class="pts-num">${S.user.points.toLocaleString('en-US')}</b></div><span class="pts-lv">${lv.cur ? `${lv.cur[0]} level` : 'No level yet'}</span></div>
       <div class="pts-bot"><span>Cashable <b>${usd(S.user.cashable)}</b></span>${S.user.cashable > 0 ? `<button class="btn btn-accent btn-sm" data-act="cash-move">Move to wallet</button>` : ''}</div>
     </section>
     <nav class="rw-tabs">${tabs.map(([k, t]) => `<button class="${S.rw === k ? 'on' : ''}" data-rw="${k}">${t}${k === 'today' && canCheckin() && S.rw !== 'today' ? '<i class="rw-dot"></i>' : ''}</button>`).join('')}</nav>
@@ -872,7 +843,7 @@ function needLogin(title) {
       </section></div>`;
   }
   return `<div class="page">${crumb([title])}
-    <div class="card gate"><h2>Log in to see this page</h2><p class="card-sub">Don't have an account yet? Sign up with your email or phone. It takes about a minute.</p>
+    <div class="card gate"><h2>Log in to see this page</h2><p class="card-sub">Don't have an account yet? Sign up with your email. It takes about a minute.</p>
       <div class="gate-acts"><button class="btn btn-accent" data-act="signup">Sign up</button><button class="btn btn-outline" data-act="login">Sign in</button></div></div>
   </div>`;
 }
@@ -899,7 +870,7 @@ function menuHtml() {
     <select class="menu-language" aria-label="Language" onchange="window.setLanguage(this.value)"><option value="en">English</option><option value="es">Español</option></select>
     <button class="icon-btn" data-close-menu aria-label="Close menu">${I.x}</button></header>
   ${memberCard(player)}
-  <div class="menu-wallet"><div><small>${I.wallet}<span>Wallet balance</span></small><strong>${usd(player.wallet)}</strong><span>Available balance</span></div><div><small>${I.coins}<span>Game credits</span></small><strong>${usd(creditsTotal())}</strong><span>Across your platforms</span></div></div>
+  <div class="menu-wallet"><div><small>${I.wallet}<span>WALLET BALANCE</span></small><strong>${usd(player.wallet)}</strong><span>Available balance</span></div><div><small>${I.coins}<span>GAME CREDITS</span></small><strong>${usd(creditsTotal())}</strong><span>Across your platforms</span></div></div>
   <div class="member-actions"><a href="#/balance" data-bal-go="deposit">${I.dl}<span>Deposit</span></a><a href="#/balance" data-bal-go="withdraw">${I.dl}<span>Withdraw</span></a></div>
   <nav class="drawer-nav">
   ${row('#/account','Account & security','Profile and login settings',I.shield)}
@@ -1095,7 +1066,7 @@ function walletBoxB() {
     </aside>`;
   const st = checkinState();
   return `<aside class="b-wallet">
-      <small>My wallet</small><b class="b-bal">${usd(S.user.wallet)}</b>
+      <small>MY WALLET</small><b class="b-bal">${usd(S.user.wallet)}</b>
       <span class="b-sub">${usd(creditsTotal())} in ${unlockedCount()} game${unlockedCount() === 1 ? '' : 's'}</span>
       <div class="b-wal-acts"><a class="btn btn-accent" href="#/balance" data-bal-go="deposit">Deposit</a><a class="btn btn-ghost" href="#/balance" data-bal-go="withdraw">Withdraw</a></div>
       <div class="b-ck"><div><b>Daily check-in</b><small>${st.streakNow ? `${st.streakNow}-day streak` : 'Start a streak'}</small></div>
@@ -1301,36 +1272,35 @@ function closeModal() {
 
 const pending = {};
 let phoneTimer;
-/* Demo verification: no message is actually sent and any 6 digits are accepted. */
-function renewPhoneCode(announce) {
+function renewPhoneCode() {
   clearInterval(phoneTimer);
+  const demoCode = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6,'0');
+  pending.code = demoCode;
   const form = $('#modalBox').querySelector('.phone-preview');
-  if (!form) return;
   const resend = form.querySelector('[data-act="demo-resend"]');
+  form.querySelector('output').textContent = demoCode;
   form.querySelectorAll('.code-in input').forEach(input=>input.value='');
   form.querySelector('.phone-error').hidden = true;
-  form.querySelector('.code-in input')?.focus();
-  if (announce) toast(`New code sent to ${pending.contact}`);
   const until = Date.now()+30000;
   function tick() {
     const seconds = Math.max(0,Math.ceil((until-Date.now())/1000));
     resend.disabled = seconds>0;
-    resend.querySelector('time').textContent = seconds ? ` (0:${String(seconds).padStart(2,'0')})` : '';
+    resend.querySelector('time').textContent = seconds ? ` · 0:${String(seconds).padStart(2,'0')}` : '';
     if (!seconds || !form.isConnected) clearInterval(phoneTimer);
   }
   tick();
   phoneTimer=setInterval(tick,500);
 }
 function phonePreview() {
-  const byPhone = Boolean(pending.phone);
-  openModal(`<div class="phone-step-heading"><h2>Enter verification code</h2>
-    <p><span>We sent a 6-digit code to</span> <b class="verify-target">${esc(pending.contact)}</b></p>${signupProgress(2)}</div>
-    <form class="phone-preview" data-form="code">
-    <label for="verify-digit-0">Verification code</label><div class="code-in">${Array.from({length:6},(_,i)=>`<input id="verify-digit-${i}" aria-label="${i+1}/6" inputmode="numeric" autocomplete="${i?'off':'one-time-code'}" maxlength="1" pattern="[0-9]" required>`).join('')}</div>
-    <div class="code-tools"><span>Demo: any 6 digits work.</span><button type="button" class="auth-link" data-act="demo-resend"><span>Resend code</span><time></time></button></div>
-    <p class="phone-error" role="alert" hidden>Enter all 6 digits.</p>
-    <button class="register-submit" type="submit">Verify and create account</button><button class="auth-link back-account" type="button" data-act="landing-register">${byPhone ? 'Change phone number' : 'Change email'}</button></form>`);
-  renewPhoneCode(false);
+  openModal(`<div class="phone-step-heading"><div class="phone-brand">Recharge<b>777</b></div><span aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="3" width="24" height="41" rx="5"/><path d="M14 7h10M16 39h6"/><path fill="var(--panel)" d="M25 14h15a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 5v-5h-2a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z"/><path d="M26 22h2m3 0h2m3 0h2"/></svg></span><h2>Verify your phone</h2>
+    <p>Use a sample number and the demo code below. No SMS is sent.</p>${signupProgress(2)}</div>
+    <form class="phone-preview" data-form="code"><label for="preview-phone">Phone number</label>
+    <div class="preview-phone-row"><select aria-label="Country calling code"><option>US +1</option><option>CA +1</option><option>MX +52</option><option>ES +34</option></select><input id="preview-phone" class="field" type="tel" inputmode="tel" autocomplete="off" pattern="[0-9]{7,12}" placeholder="5550101234" required></div>
+    <label for="verify-digit-0">Verification code</label><div class="code-in">${Array.from({length:6},(_,i)=>`<input id="verify-digit-${i}" aria-label="${i+1}/6" inputmode="numeric" pattern="[0-9]" required>`).join('')}</div>
+    <div class="code-tools"><span><span>Demo code</span> <output></output></span><button type="button" class="auth-link" data-act="demo-resend"><span>New demo code</span><time></time></button></div>
+    <p class="phone-error" role="alert" hidden>Enter the six digits shown above.</p>
+    <button class="register-submit" type="submit">Verify and create account</button><button class="auth-link back-account" type="button" data-act="landing-register">Back to account details</button></form>`);
+  renewPhoneCode();
 }
 function signupStep(step) {
   const bar = n => `<div class="dots-steps">${[1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</div>`;
@@ -1526,9 +1496,9 @@ function updateGameLoad(form) {
   const error=form.querySelector('.transfer-feedback');
   if (error) error.textContent = input.validity.rangeOverflow ? 'This amount exceeds your wallet balance.' : '';
   const bonus = valid ? gameLoadBonus(form.elements.plat.value, amount) : 0;
-  form.querySelector('[data-wallet-after]').textContent = valid ? usd(S.user.wallet - amount) : '–';
-  form.querySelector('[data-load-bonus]').textContent = valid ? usd(bonus) : '–';
-  form.querySelector('[data-load-total]').textContent = valid ? usd(amount + bonus) : '–';
+  form.querySelector('[data-wallet-after]').textContent = valid ? usd(S.user.wallet - amount) : '—';
+  form.querySelector('[data-load-bonus]').textContent = valid ? usd(bonus) : '—';
+  form.querySelector('[data-load-total]').textContent = valid ? usd(amount + bonus) : '—';
   const presets = [...form.querySelectorAll('[data-amt]')];
   const selected = presets.find(button => valid && Number(button.dataset.amt) === amount);
   presets.forEach(button => button.setAttribute('aria-pressed', String(button === selected)));
@@ -1576,8 +1546,8 @@ function updateRedeem(form) {
   const value = input.valueAsNumber;
   const slider = form.querySelector('.redeem-slider');
   if (Number.isFinite(value)) slider.value = value;
-  form.querySelector('[data-game-after]').textContent = valid ? usd(available-value) : '–';
-  form.querySelector('[data-redeem-after]').textContent = valid ? usd(S.user.wallet+value) : '–';
+  form.querySelector('[data-game-after]').textContent = valid ? usd(available-value) : '—';
+  form.querySelector('[data-redeem-after]').textContent = valid ? usd(S.user.wallet+value) : '—';
   form.querySelector('[type=submit]').disabled = !valid;
   form.querySelector('.transfer-feedback').textContent = available < 1 ? 'At least $1.00 in game credits is required.' : input.validity.rangeOverflow ? 'This amount exceeds your game balance.' : '';
 }
@@ -1734,11 +1704,6 @@ document.addEventListener('click', e => {
     panel?.querySelector('input')?.focus({preventScroll:true});
     return;
   }
-  if (a === 'auth-tab') {
-    const form = t.closest('form');
-    if (form) { authSetMethod(form, t.dataset.auth); form.querySelector('.auth-pane:not([hidden]) input')?.focus(); }
-    return;
-  }
   if (a === 'join-visibility') {
     const input = document.getElementById(t.getAttribute('aria-controls'));
     const showing = input.type === 'password';
@@ -1771,8 +1736,8 @@ document.addEventListener('click', e => {
     else document.querySelectorAll('#modalBox .cred').forEach(c => { const b = c.querySelector('[data-act="pw"]'); if (b) { const v = c.querySelector('[data-copyval]').dataset.copyval; c.outerHTML = credRow('Password', v, v, true); } });
   }
   if (a === 'signup') { setMenu(false); if(S.site==='b') signupStep(1); else {closeModal();location.hash='#/register';} }
-  if (a === 'demo-resend' && !t.disabled && pending.join) renewPhoneCode(true);
-  if (a === 'resend') toast(`New code sent to ${pending.contact || pending.email}`);
+  if (a === 'demo-resend' && !t.disabled && pending.join) renewPhoneCode();
+  if (a === 'resend') toast(`New code sent to ${pending.email}`);
   if (a === 'login') {
     setMenu(false);
     if (S.site !== 'b') {
@@ -1904,7 +1869,6 @@ document.addEventListener('click', e => {
 document.addEventListener('input', e => {
   const join = e.target.closest('[data-form="join"]');
   if (join) join.elements.confirm.setCustomValidity('');
-  if (e.target.name === 'phone') e.target.setCustomValidity('');
 });
 
 document.addEventListener('submit', async e => {
@@ -1916,12 +1880,6 @@ document.addEventListener('submit', async e => {
   const amt = Number(d.amt);
   if (k === 'quick') { pending.email = d.email; signupStep(1); }
   if (k === 'join') {
-    const byPhone = f.dataset.authMethod === 'phone';
-    const phone = byPhone ? authPhone(d) : '';
-    if (byPhone && !phone) {
-      f.elements.phone.setCustomValidity(document.documentElement.lang === 'es' ? 'Introduce un número de teléfono válido.' : 'Enter a valid phone number.');
-      f.elements.phone.reportValidity(); return;
-    }
     if (d.password !== d.confirm) {
       f.elements.confirm.setCustomValidity(document.documentElement.lang === 'es' ? 'Las contraseñas deben coincidir.' : 'The passwords must match.');
       f.elements.confirm.reportValidity(); return;
@@ -1932,27 +1890,25 @@ document.addEventListener('submit', async e => {
     try {
       const credential = await passwordKey(d.password);
       if (!f.isConnected || S.user) return;
-      pending.email = byPhone ? '' : d.email.trim();
-      pending.phone = phone;
-      pending.contact = phone || pending.email;
-      pending.first = byPhone ? 'Player' : pending.email.split('@')[0];
-      pending.join = {passwordKey:credential,marketingOptIn:d.offers === 'on',signupMethod:byPhone ? 'phone' : 'email'};
+      pending.email = d.email.trim();
+      pending.first = pending.email.split('@')[0];
+      pending.join = {passwordKey:credential,marketingOptIn:d.offers === 'on'};
       signupStep(2);
     } catch { toast('Registration is unavailable in this browser.'); }
     finally { submit.disabled = false; }
     return;
   }
-  if (k === 'email') { delete pending.join; delete pending.phone; pending.first = d.first.trim(); pending.email = d.email.trim(); pending.contact = pending.email; signupStep(2); }
+  if (k === 'email') { delete pending.join; pending.first = d.first.trim(); pending.email = d.email.trim(); signupStep(2); }
   if (k === 'code') {
     if (f.classList.contains('phone-preview')) {
       if (!pending.join) return;
       const digits = [...f.querySelectorAll('.code-in input')].map(input=>input.value).join('');
-      if (!/^\d{6}$/.test(digits)) {f.querySelector('.phone-error').hidden=false;return;}
-      clearInterval(phoneTimer);
+      if (digits !== pending.code) {f.querySelector('.phone-error').hidden=false;return;}
+      clearInterval(phoneTimer);delete pending.code;
     }
     const credentials = makeCreds(pending.first);
     if (pending.join) { delete credentials.password; Object.assign(credentials,pending.join); delete pending.join; }
-    S.user = normUser({ first: pending.first, email: pending.email || '', phone: pending.phone || '', since: new Date().toISOString().slice(0, 10), ...credentials });
+    S.user = normUser({ first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...credentials });
     S.showPw = true;
     save();
     if (route().r) {
@@ -1970,33 +1926,16 @@ document.addEventListener('submit', async e => {
   }
   if (k === 'login') {
     const saved = normUser(store.get('p3_account', null));
-    const byPhone = f.dataset.authMethod === 'phone';
-    const phone = byPhone ? authPhone(d) : '';
-    if (byPhone && !phone) {
-      f.elements.phone.setCustomValidity(document.documentElement.lang === 'es' ? 'Introduce un número de teléfono válido.' : 'Enter a valid phone number.');
-      f.elements.phone.reportValidity(); return;
+    const name = d.u.trim();
+    const match = saved && (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === saved.email.toLowerCase());
+    if (S.site !== 'b' || saved?.passwordKey) {
+      if (!match || !(await matchesPassword(saved,d.p))) {toast('Incorrect login details');return;}
     }
-    const name = byPhone ? phone : String(d.u || '').trim();
-    const same = (a, b) => Boolean(a) && Boolean(b) && String(a).toLowerCase() === String(b).toLowerCase();
-    const digitsOf = v => String(v || '').replace(/\D/g, '');
-    const match = saved && (byPhone
-      ? Boolean(saved.phone) && digitsOf(saved.phone) === digitsOf(phone)
-      : same(name, saved.username) || same(name, saved.email));
-    /* Saved local accounts keep their password check; in this demo any other login opens a sample wallet. */
-    if (match && saved.passwordKey && !(await matchesPassword(saved,d.p))) {toast('Incorrect login details');return;}
-    if (S.site === 'b' && !match && saved?.passwordKey) {toast('Incorrect login details');return;}
-    if (f.elements.rememberName && !byPhone) {
+    if (f.elements.rememberName) {
       if (d.rememberName) store.set('p3_login_name',name);
       else store.del('p3_login_name');
     }
-    if (match) S.user = saved;
-    else if (byPhone) {
-      S.user = demoUser('player' + digitsOf(phone).slice(-4), d.p);
-      Object.assign(S.user, { email: '', phone, demoSession: true });
-    } else {
-      S.user = demoUser(name, d.p);
-      if (S.site !== 'b') S.user.demoSession = true;
-    }
+    S.user = match ? saved : demoUser(name, d.p);
     save();
     closeModal();
     if (S.site === 'b') {goHome();toast(`Welcome back, ${S.user.first}`);}
@@ -2194,8 +2133,8 @@ document.getElementById('loader').setAttribute('data-ready','');
 // Open directly on Recharge777; alternate site remains available in the footer.
 
 function walletOverview(){
- const u=S.user, value=x=>Number.isFinite(x)?x.toFixed(2):'–';
- openModal(`<div class="coin-wallet"><div class="coin-wallet-title"><div><h2>Balance overview</h2></div></div><div class="coin-balance"><span class="currency-token gc">GC</span><div><b>Gold Coins</b><small>Play only</small></div><strong>${value(u?.goldCoins)}</strong></div><div class="sweeps-balance"><div class="coin-balance"><span class="currency-token sc">SC</span><div><b>Sweepstakes Coins</b></div><strong>${value(u?.sweepsCoins)}</strong></div><div class="balance-divider"></div><div class="coin-breakdown"><span>Unplayed <b>${value(u?.unplayedSC)}</b></span><span>Redeemable <b>${value(u?.redeemableSC)}</b></span></div></div><p class="coin-disclaimer">GC/SC balances are not connected yet.</p><div class="coin-wallet-actions"><button class="btn btn-accent" data-act="wallet-deposit">+ Deposit</button><button class="btn btn-ghost" data-act="wallet-withdraw">↥ Withdraw</button></div><button class="coin-help" data-act="coin-help">ⓘ <span>What is GC/SC?</span> →</button>${!u?'<p class="hint">Sign in to manage your wallet.</p>':''}</div>`);
+ const u=S.user, value=x=>Number.isFinite(x)?x.toFixed(2):'—';
+ openModal(`<div class="coin-wallet"><div class="coin-wallet-title"><div><p class="section-kicker">YOUR WALLET</p><h2>Balance overview</h2></div></div><div class="coin-balance"><span class="currency-token gc">GC</span><div><b>Gold Coins</b><small>Play only</small></div><strong>${value(u?.goldCoins)}</strong></div><div class="sweeps-balance"><div class="coin-balance"><span class="currency-token sc">SC</span><div><b>Sweepstakes Coins</b></div><strong>${value(u?.sweepsCoins)}</strong></div><div class="balance-divider"></div><div class="coin-breakdown"><span>Unplayed <b>${value(u?.unplayedSC)}</b></span><span>Redeemable <b>${value(u?.redeemableSC)}</b></span></div></div><p class="coin-disclaimer">GC/SC balances are not connected yet.</p><div class="coin-wallet-actions"><button class="btn btn-accent" data-act="wallet-deposit">+ Deposit</button><button class="btn btn-ghost" data-act="wallet-withdraw">↥ Withdraw</button></div><button class="coin-help" data-act="coin-help">ⓘ <span>What is GC/SC?</span> →</button>${!u?'<p class="hint">Sign in to manage your wallet.</p>':''}</div>`);
 }
 function communityUpdates() {
   const previewMethods = [
@@ -2208,10 +2147,10 @@ function communityUpdates() {
     {name:'Monero',bg:'#f16722',sym:'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M1 17h4V8l7 7 7-7v9h4"/></svg>'}
   ];
   return communityShowcase() + `<section class="method-gallery" aria-labelledby="method-title">
-    <header><span class="method-wallet-icon" aria-hidden="true">${I.wallet}</span><div><h2 id="method-title">Payment methods</h2><p>Crypto and Cash App. Live payments are not connected in this preview.</p></div></header>
+    <header><span class="method-wallet-icon" aria-hidden="true">${I.wallet}</span><div><h2 id="method-title">Wallet payment methods</h2><p>Preview only · Live payments are not connected.</p></div></header>
     <ul>${previewMethods.map(method=>`<li><span aria-hidden="true">${cryptoIco(method)}</span><b>${method.name}</b></li>`).join('')}</ul>
     <footer><a href="#/balance">${I.wallet}<span>Open wallet</span>${I.chev}</a><button data-act="foot-doc" data-doc="FAQ">${I.help}<span>Help center</span></button></footer></section>`;
 }
 
 
-function featureRewards(){return `<section class="feature-rewards"><h2>More on Recharge777</h2><div class="feature-grid"><a href="#/rewards"><span class="reward-art art-1"></span><span class="feature-txt"><b>Rewards</b><small>Daily check-in, quests and promo codes</small></span>${I.chev}</a><button data-act="bell"><span class="reward-art art-2"></span><span class="feature-txt"><b>Inbox</b><small>Notices about your account</small></span>${I.chev}</button><button data-act="reward-wheel"><span class="reward-art art-0"></span><span class="feature-txt"><b>Thunder Wheel</b><small>Coming soon</small></span>${I.chev}</button><button data-act="reward-early"><span class="reward-art art-3"></span><span class="feature-txt"><b>Early access</b><small>Platforms we are adding next</small></span>${I.chev}</button></div></section>`;}
+function featureRewards(){return `<section class="feature-rewards"><p class="section-kicker">MORE TO EXPLORE</p><h2>Power up your experience.</h2><div class="feature-grid"><button data-act="reward-wheel"><span class="reward-art art-0"></span><b>THUNDER WHEEL</b><small>New rewards · Coming soon</small></button><a href="#/rewards"><span class="reward-art art-1"></span><b>REWARDS CLUB</b><small>Explore your points and benefits</small></a><button data-act="bell"><span class="reward-art art-2"></span><b>INBOX</b><small>Your account announcements</small></button><button data-act="reward-early"><span class="reward-art art-3"></span><b>EARLY ACCESS</b><small>Discover what is coming next</small></button></div></section>`;}

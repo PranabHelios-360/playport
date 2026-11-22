@@ -5,7 +5,7 @@ function depositPage() {
   const d = depositDraft;
   const preferred = ['btcln', 'btc', 'ltc', 'eth'];
   const method = CRYPTO.find(c => c.id === d.method);
-  const money = d.amount === '' ? '–' : usd(Number(d.amount));
+  const money = d.amount === '' ? '—' : usd(Number(d.amount));
   const card = c => `<label class="dep-method">
     <input type="radio" name="dep-method" value="${c.id}" ${c.id === d.method ? 'checked' : ''}>
     ${cryptoIco(c)}<span><b>${esc(c.name)}</b><small>${c.bolt ? 'Lightning network' : esc(c.code)}</small></span></label>`;
@@ -35,7 +35,7 @@ function depositPage() {
   const stopped = blocked();
   return `<div class="page deposit-page">
     <a class="dep-back" href="#/balance">${I.arrowL}<span>Back to wallet</span></a>
-    <header class="dep-hero"><div><h1>Deposit to your wallet</h1><p>Choose an amount and a payment method.</p></div>
+    <header class="dep-hero"><div><h1>Recharge your <em>wallet.</em></h1><p>Choose an amount and a payment method.</p></div>
       <img src="assets/wallet-coins.jpg" class="wallet-banner-art" alt=""></header>
     <ol class="dep-steps" aria-label="Deposit progress">${['Details','Review','Payment'].map((name,i) => `<li ${i === d.step ? 'aria-current="step"' : ''}><i>${i < d.step || d.paid ? I.check : i+1}</i><span>${name}</span></li>`).join('')}</ol>
     ${stopped && !d.paid ? `<p class="warn">${esc(stopped)}</p>` : [details,review,payment][d.step]}
@@ -67,7 +67,7 @@ document.addEventListener('input', e => {
   if (!depositDraft || !e.target.closest('[data-deposit-form]')) return;
   if (e.target.id === 'dep-amount') {
     depositDraft.amount = e.target.value;
-    document.querySelector('[data-dep-total]').textContent = e.target.value ? usd(Number(e.target.value)) : '–';
+    document.querySelector('[data-dep-total]').textContent = e.target.value ? usd(Number(e.target.value)) : '—';
     document.querySelectorAll('[data-dep-pick]').forEach(b => b.setAttribute('aria-pressed', Number(b.dataset.depPick) === Number(e.target.value)));
   } else if (e.target.name === 'dep-method') {
     depositDraft.method = e.target.value;

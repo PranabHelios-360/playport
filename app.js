@@ -69,7 +69,7 @@ function save() {
 
 const SITES = {
   a: { name: 'Recharge777', word: 'Recharge<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20', img: 'assets/logos/r777-logo.png' },
-  b: { name: 'Loaded777', word: 'Loaded<b>777</b>', svg: '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="l7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a1"/><stop offset=".45" stop-color="#e3a21a"/><stop offset=".75" stop-color="#ffd25a"/><stop offset="1" stop-color="#b9780c"/></linearGradient><radialGradient id="l7c" cx=".5" cy=".38" r=".65"><stop offset="0" stop-color="#3d1418"/><stop offset="1" stop-color="#120607"/></radialGradient></defs><circle cx="32" cy="32" r="31" fill="url(#l7g)"/><circle cx="32" cy="32" r="25.5" fill="url(#l7c)" stroke="#7a4a08" stroke-width="1.2"/><path d="M20.5 17.5h24v6.2L33.6 46.5h-8.4l10.6-21.2H20.5Z" fill="#e2343f" stroke="#ffd36b" stroke-width="2.2" stroke-linejoin="round"/><path d="M23 20.4h18.5" stroke="#ff9aa0" stroke-width="1.6" stroke-linecap="round" opacity=".75"/></svg>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#0c0809' }
+  b: { name: 'Gamewallet777', word: 'Gamewallet<b>777</b>', svg: '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="l7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a1"/><stop offset=".45" stop-color="#e3a21a"/><stop offset=".75" stop-color="#ffd25a"/><stop offset="1" stop-color="#b9780c"/></linearGradient><radialGradient id="l7c" cx=".5" cy=".38" r=".65"><stop offset="0" stop-color="#3d1418"/><stop offset="1" stop-color="#120607"/></radialGradient></defs><circle cx="32" cy="32" r="31" fill="url(#l7g)"/><circle cx="32" cy="32" r="25.5" fill="url(#l7c)" stroke="#7a4a08" stroke-width="1.2"/><path d="M20.5 17.5h24v6.2L33.6 46.5h-8.4l10.6-21.2H20.5Z" fill="#e2343f" stroke="#ffd36b" stroke-width="2.2" stroke-linejoin="round"/><path d="M23 20.4h18.5" stroke="#ff9aa0" stroke-width="1.6" stroke-linecap="round" opacity=".75"/></svg>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#0c0809' }
 };
 S.site = null;
 const site = () => SITES[S.site || 'a'];
@@ -440,7 +440,7 @@ function viewAccount() {
     <div class="set-list"><button class="set-row" data-act="logout"><span class="set-txt"><b>Logout</b></span>${I.out}</button></div>
   </div>`;
 }
-/* ---------- Loaded777 dashboard ---------- */
+/* ---------- Gamewallet777 dashboard ---------- */
 
 const D_ICO = {
   phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2" stroke-linecap="round"/></svg>',
@@ -496,7 +496,7 @@ function dashboardHtml(inPanel) {
     <div class="d-list">
       ${row(I.gauge, 'Daily deposit limit', u.limit ? `$${u.limit} per day` : 'No limit', 'data-sheet="limit"')}
       ${row(I.pause, 'Take a break', blocked() || 'Pause deposits, or self-exclude', 'data-sheet="break"')}
-      ${inPanel ? row(navIco.swap, 'Switch site', 'Recharge777 or Loaded777', 'data-act="choose-site"') : ''}
+      ${inPanel ? row(navIco.swap, 'Switch site', 'Recharge777, Gamewallet777 or Skillslots777', 'data-act="choose-site"') : ''}
       ${row(I.out, 'Logout', '', 'data-act="logout"', '')}
     </div>`;
 }
@@ -959,7 +959,7 @@ function videoModal(id) {
     <div class="launch-foot"><span>${BRAND()} videos</span><button class="btn btn-ghost btn-sm" data-close>Close</button></div>`, true);
 }
 
-/* ---------- Loaded777 (site b) ---------- */
+/* ---------- Gamewallet777 (site b) ---------- */
 
 const B_SLIDES = [
   { g: 'milkyway--shooting-star', t: 'Shooting Star', s: 'Rubies, cherries and a Grand jackpot. New on Milky Way.' },
@@ -1078,10 +1078,10 @@ function showChooser() {
           <b>Recharge777</b><span>Neon pink &middot; Plum, Navy or White &middot; bottom menu</span></button>
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
-          <b>Loaded777</b><span>Gold &amp; ruby &middot; Wine, Navy or White &middot; side menu</span></button>
+          <b>Gamewallet777</b><span>Gold &amp; ruby &middot; Wine, Navy or White &middot; side menu</span></button>
         <a class="ch-opt c" href="v3/">
-          <div class="ch-prev"><img src="v3/assets/landing/recharge-hero.png" alt="" loading="lazy"></div>
-          <b>Recharge777 Cinema</b><span>Full redesign &middot; Splash intro &middot; New wallet and shop</span></a>
+          <div class="ch-prev"><img src="v3/assets/landing/join-777.jpg" alt="" loading="lazy"></div>
+          <b>Skillslots777</b><span>Full redesign &middot; Splash intro &middot; New wallet and shop</span></a>
       </div>
     </div>`;
   ch.hidden = false;

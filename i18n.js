@@ -26,7 +26,7 @@ const ES = {
   'Choose your site': 'Elige tu sitio', 'Same games, same wallet. Pick the look you like.': 'Los mismos juegos y la misma billetera. Elige el estilo que te guste.',
   'Neon pink · Plum, Navy or White · bottom menu': 'Rosa neón · Ciruela, Azul marino o Blanco · menú inferior',
   'Gold & ruby · Wine, Navy or White · side menu': 'Oro y rubí · Vino, Azul marino o Blanco · menú lateral',
-  'Recharge777 or Loaded777': 'Recharge777 o Loaded777',
+  'Recharge777 or Gamewallet777': 'Recharge777 o Gamewallet777',
 
   // home (guest)
   'One wallet for': 'Una billetera para', 'every game': 'todos los juegos',
@@ -101,7 +101,7 @@ const ES = {
   'Log in to see this page': 'Inicia sesión para ver esta página', "Don't have an account yet? Sign up with your email. It takes about a minute.": '¿Aún no tienes cuenta? Regístrate con tu correo. Toma un minuto.',
   'Here is your Recharge777 login. Next, deposit to your wallet and unlock your first game.': 'Este es tu acceso a Recharge777. Ahora deposita en tu billetera y desbloquea tu primer juego.',
   'Username': 'Usuario', 'Unlock a game': 'Desbloquear un juego', 'Copy username': 'Copiar usuario', 'Show password': 'Mostrar contraseña', 'Hide password': 'Ocultar contraseña', 'Copy password': 'Copiar contraseña',
-  'Welcome to Loaded777': 'Bienvenido a Loaded777', 'Sign up to get your wallet, game accounts and rewards.': 'Regístrate para obtener tu billetera, cuentas de juego y recompensas.',
+  'Welcome to Gamewallet777': 'Bienvenido a Gamewallet777', 'Sign up to get your wallet, game accounts and rewards.': 'Regístrate para obtener tu billetera, cuentas de juego y recompensas.',
   'Join now': 'Únete ahora',
 
   // how it works doc + FAQ
@@ -243,6 +243,7 @@ const ES = {
   'Move money from your wallet into Fire Kirin. First load each day gets +10%.': 'Pasa dinero de tu billetera a Fire Kirin. La primera carga de cada día recibe +10%.',
   'Move money from your wallet into Fire Kirin.': 'Pasa dinero de tu billetera a Fire Kirin.',
   'Open the Fire Kirin web version or app and log in.': 'Abre la versión web o la app de Fire Kirin e inicia sesión.',
+  'Recharge777, Gamewallet777 or Skillslots777': 'Recharge777, Gamewallet777 o Skillslots777',
   'Player ID': 'ID de jugador', 'Copy Player ID': 'Copiar ID de jugador',
   'Enter a phone number with at least 6 digits': 'Escribe un número de teléfono de al menos 6 dígitos',
   'Email': 'Correo', 'Phone': 'Teléfono', 'Phone number': 'Número de teléfono', 'Country code': 'Código de país', 'At least 6 digits': 'Al menos 6 dígitos',
@@ -349,7 +350,7 @@ const I18N = (() => {
   let rx = null, map = null;
   const escRx = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   function names() {
-    const n = ['Recharge777', 'Loaded777'];
+    const n = ['Recharge777', 'Gamewallet777', 'Skillslots777'];
     if (typeof PLATFORMS !== 'undefined') PLATFORMS.forEach(p => n.push(p.name));
     if (typeof GAMES !== 'undefined') GAMES.forEach(g => n.push(g.name));
     return [...new Set(n)].sort((a, b) => b.length - a.length);

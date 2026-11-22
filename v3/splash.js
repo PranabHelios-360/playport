@@ -54,7 +54,7 @@ window.RechargeSplash = (() => {
           const enter = document.createElement('button');
           enter.type = 'button';
           enter.className = 'power-continue';
-          enter.textContent = container===host ? 'Enter Recharge777 →' : 'Open preview →';
+          enter.textContent = container===host ? 'Enter Skillslots777 →' : 'Open preview →';
           enter.onclick = dismiss;
           scene.querySelector('.power-core').append(enter);
           dismissal = setTimeout(dismiss, Math.ceil(remaining));
@@ -78,7 +78,7 @@ window.RechargeSplash = (() => {
     const source = event.target instanceof HTMLScriptElement ? event.target.src : event.filename;
     if (source && Array.from(document.scripts).some(script => script.hasAttribute('data-boot') && script.src === source)) {
       failed = true;
-      opening.fail('Recharge777 couldn’t start.', () => location.reload());
+      opening.fail('Skillslots777 couldn’t start.', () => location.reload());
     }
   }
   window.addEventListener('error', handleError, true);
@@ -86,7 +86,7 @@ window.RechargeSplash = (() => {
     window.removeEventListener('error', handleError, true);
     if (failed) return;
     if (!host.hasAttribute('data-ready')) {
-      opening.fail('Recharge777 couldn’t start.', () => location.reload());
+      opening.fail('Skillslots777 couldn’t start.', () => location.reload());
       return;
     }
     opening.ready(() => {

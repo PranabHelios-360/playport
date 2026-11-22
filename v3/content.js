@@ -1,4 +1,4 @@
-// Add verified Recharge777 content here. Leave unavailable items null/empty.
+// Add verified Skillslots777 content here. Leave unavailable items null/empty.
 // Review format: { name: 'Display name', quote: 'Approved review text', location: 'Optional location' }
 window.RECHARGE_CONTENT = {
   iosUrl: null,

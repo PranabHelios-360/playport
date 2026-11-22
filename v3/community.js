@@ -62,8 +62,8 @@ function communityShowcase() {
   const stories = configured.length ? configured : storyExamples;
   const reviews = approved.length ? approved : storyExamples;
   return `<div class="community-theater"><section class="story-room" aria-labelledby="story-title">
-    <header><p class="section-kicker">THE RECHARGE777 COMMUNITY</p><h2 id="story-title"><span>Player Stories,</span> <em>In One Place.</em></h2>
-    <p class="story-disclosure">${configured.length ? 'Stories from the Recharge777 community.' : 'Preview stories with fictional players.'}</p></header>
+    <header><p class="section-kicker">THE SKILLSLOTS777 COMMUNITY</p><h2 id="story-title"><span>Player Stories,</span> <em>In One Place.</em></h2>
+    <p class="story-disclosure">${configured.length ? 'Stories from the Skillslots777 community.' : 'Preview stories with fictional players.'}</p></header>
     <div class="story-inner"><div id="featured-story" aria-live="polite">${featureStory(stories[0])}</div>
     <div class="story-strip">${stories.map((story,i)=>`<button class="story-choice" data-story-index="${i}" aria-controls="featured-story" aria-pressed="${i===0}">
       ${storyPoster(story)}<span class="thumb-play" aria-hidden="true">▸</span>${storyTime(story)}<span class="story-name">${esc(story.name)}</span></button>`).join('')}</div></div>

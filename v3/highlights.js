@@ -177,14 +177,14 @@ function finishRechargeLogin() {
   location.hash='#/';
 }
 function promoBrand() {
-  return '<div class="invite-brand"><img src="assets/logos/recharge-mark.svg" alt=""><span>Recharge<b>777</b></span></div>';
+  return '<div class="invite-brand"><img src="assets/logos/recharge-mark.svg" alt=""><span>Skillslots<b>777</b></span></div>';
 }
 function promoOptOut(kind) {
   return `<label class="invite-optout"><input type="checkbox" data-hide-invite="${kind}"><span>Don’t show again</span></label>`;
 }
 function showInstallInvite() {
   openModal(`<section class="login-invite install-invite" data-route="${esc(location.hash)}">
-    ${promoBrand()}<div class="install-copy"><h2>Install the Recharge777 app</h2><p>Open your wallet and game platforms straight from your home screen.</p></div>
+    ${promoBrand()}<div class="install-copy"><h2>Install the Skillslots777 app</h2><p>Open your wallet and game platforms straight from your home screen.</p></div>
     <img class="invite-phone" src="assets/install-phone.jpg" alt="">
     <button class="invite-primary" type="button" data-highlight-action="install">${I.dl}<span>Install app now</span></button>
     <p class="install-guide" role="status" hidden></p>${promoOptOut('install')}</section>`);

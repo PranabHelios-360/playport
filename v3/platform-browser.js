@@ -68,7 +68,7 @@ document.addEventListener('click',event => {
   const section = button.closest('.charged-directory');
   if (button.hasAttribute('data-directory-preview')) {
     const platform = directoryPreviews.find(p => p.id === button.dataset.directoryPreview);
-    openModal(`<header class="game-access"><img class="preview-cover" src="assets/platform-scenes/${platform.id}.webp" alt=""><h2>${platform.name}</h2></header><p>Artwork preview. This platform is not connected to Recharge777.</p><a class="btn btn-accent" href="#/browse/all" data-close-after>View all games</a>`);
+    openModal(`<header class="game-access"><img class="preview-cover" src="assets/platform-scenes/${platform.id}.webp" alt=""><h2>${platform.name}</h2></header><p>Artwork preview. This platform is not connected to Skillslots777.</p><a class="btn btn-accent" href="#/browse/all" data-close-after>View all games</a>`);
     return;
   }
   if (button.hasAttribute('data-platform-filter')) {

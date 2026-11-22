@@ -101,3 +101,11 @@ body:has(.charged-lobby) .top .member-menu-trigger {color:#fff6fb;min-width:30px
 .charged-filters button {white-space:nowrap;padding:4px 6px;gap:4px}
 @container (max-width:420px) {.charged-filters button {font-size:.72rem}.charged-filters i {font-size:1.05em}}
 @container (max-width:420px) {.charged-filters {grid-template-columns:1.5fr 1fr .74fr 1.34fr;gap:5px}.charged-filters button {padding:4px 3px;gap:3px}}
+/* account choices on each platform card */
+.charged-acts {position:absolute;right:5cqw;bottom:6cqw;left:6cqw;display:flex;justify-content:flex-end;gap:2.4cqw;z-index:2}
+.charged-acts button {padding:2.4cqw 3.6cqw;border-radius:999px;border:1px solid #f0c35a;background:#170b29d9;color:#ffe7a8;font:800 4.6cqw/1 Figtree,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:0 6px 14px #0007}
+.charged-acts button.gold {background:linear-gradient(165deg,#fff4aa,#ffce60 52%,#eaa23d);color:#31171c}
+.charged-acts button:hover {filter:brightness(1.08)}
+.charged-open small {max-width:100%}
+@container (min-width:240px) {.charged-acts {right:4.8cqw;bottom:5cqw;gap:2cqw}.charged-acts button {padding:2cqw 4cqw;font-size:3.7cqw}}
+@container (max-width:239px) {.charged-card:has(.charged-acts) .charged-open {aspect-ratio:1.45/1;padding-top:6cqw}}

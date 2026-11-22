@@ -1376,6 +1376,7 @@ function gameCredsModal(pid, fresh) {
   openModal(`<div class="game-access sheet-head">${coin(p, 'md')}<div><h2>${fresh ? `${p.name} account ready` : p.name}</h2><p>${a.linked ? 'Linked to your existing account' : 'Use this login in the game'}</p></div></div>
     ${credRow('Username', a.username, a.username)}
     ${credRow('Password', a.password, a.password, true)}
+    <button class="btn btn-outline btn-block gedit-btn" data-act="gedit" data-plat="${pid}">${I.key}Edit username or password</button>
     <div class="wallet-line">Credits <b>${usd(a.credits)}</b></div>
     <div class="sheet-grid">
       <button class="btn btn-accent" data-act="play" data-plat="${pid}">${I.play}Play</button>
@@ -1767,6 +1768,7 @@ document.addEventListener('click', e => {
     setMenu(false); S.user = null; store.set('p3_user', null); S.showPw = false; goHome(); toast('Signed out');
   }
   if (a === 'unlock') unlockModal(pid);
+  if ((a === 'unlock-go' || a === 'unlock-link' || a === 'gcreds' || a === 'gedit') && !requireLogin()) return;
   if (a === 'unlock-go') {
     S.user.accounts[pid] = { username: `${S.user.username.replace(/^(pp|ld|rc)_/, '').slice(0, 10)}_${pid.slice(0, 2)}${Math.floor(100 + Math.random() * 900)}`, password: makePw(), credits: 0 };
     S.showPw = true;
@@ -1785,6 +1787,16 @@ document.addEventListener('click', e => {
   }
   if (a === 'load-history') { S.actTab = 'done'; S.actChip = 'Loads'; closeModal(); if (location.hash === '#/activity') render(true); else location.hash = '#/activity'; return; }
   if (a === 'gcreds') gameCredsModal(pid);
+  if (a === 'gedit') {
+    const p = plat(pid), ga = acct(pid);
+    openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Edit ${p.name} login</h2><p>Change it here if you changed it in the ${p.name} app, or to pick your own.</p>
+      <form class="form-row" data-form="gedit"><input type="hidden" name="plat" value="${pid}">
+        <label class="lbl" for="ge-u">Username</label><input id="ge-u" class="field" name="u" value="${esc(ga.username)}" autocomplete="off" required minlength="3" maxlength="24">
+        <label class="lbl" for="ge-p">Password</label><input id="ge-p" class="field" name="p" value="${esc(ga.password)}" autocomplete="off" required minlength="4" maxlength="32">
+        <button class="btn btn-accent btn-block" type="submit">Save login</button>
+      </form>
+      <p class="note"><a href="#" data-act="gcreds" data-plat="${pid}">Back</a></p>`);
+  }
   if (a === 'download') downloadModal(pid);
   if (a === 'play') playModal(pid);
   if (a === 'web') launch(pid, t.dataset.gameId);
@@ -2034,6 +2046,11 @@ document.addEventListener('submit', async e => {
       button.textContent='Retry demo transfer';
     } finally { delete f.dataset.sending; }
     return;
+  }
+  if (k === 'gedit') {
+    const ga = S.user.accounts[d.plat];
+    ga.username = d.u.trim(); ga.password = d.p;
+    refresh(); gameCredsModal(d.plat); toast(`${plat(d.plat).name} login updated`);
   }
   if (k === 'link') {
     S.user.accounts[d.plat] = { username: d.u.trim(), password: d.p, credits: 0, linked: true };

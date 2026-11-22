@@ -1447,7 +1447,7 @@ function credsCard(pid, opts = {}) {
       <p class="gc-sub">${opts.fresh ? `Your ${p.name} account is ready. ` : ''}${g ? `In the ${p.name} app. ` : ''}${a.linked ? 'Linked to your existing login.' : 'Log in to the game with these.'}</p>
       ${credLine('Username', a.username)}
       ${credLine('Password', a.password, true)}
-      ${a.linked ? '' : `<button class="gc-reset" data-act="reset-pw" data-plat="${pid}">${I2.reset}Reset password</button>`}
+      <div class="gc-row2">${a.linked ? '' : `<button class="gc-reset" data-act="reset-pw" data-plat="${pid}">${I2.reset}Reset password</button>`}<button class="gc-reset" data-act="gedit" data-plat="${pid}">${I.key}Edit login</button></div>
       <button class="btn btn-accent gc-play" data-act="web" data-plat="${pid}" ${g ? `data-game-id="${g.id}"` : ''}>Play ${g ? esc(g.name) : p.name} ${I2.ext}</button>
       <div class="gc-meta"><span><b>${scv(a.credits)}</b> &middot; <b>${gcv(a.gc || 0)}</b></span>
         <a href="#" data-act="load" data-plat="${pid}">Load</a>
@@ -1702,6 +1702,16 @@ document.addEventListener('click', e => {
       <p class="note"><a href="#" data-act="unlock" data-plat="${pid}">Back</a> &middot; Don't have one? <a href="#" data-act="unlock-go" data-plat="${pid}">Auto create it</a></p>`);
   }
   if (a === 'gcreds') gameCredsModal(pid);
+  if (a === 'gedit') {
+    const p = plat(pid), ga = acct(pid);
+    openModal(`<div class="modal-coin">${coin(p, 'md')}</div><h2>Edit ${p.name} login</h2><p>Change it here if you changed it in the ${p.name} app, or to pick your own.</p>
+      <form class="form-row" data-form="gedit"><input type="hidden" name="plat" value="${pid}">
+        <label class="lbl" for="ge-u">Username</label><input id="ge-u" class="field" name="u" value="${esc(ga.username)}" autocomplete="off" required minlength="3" maxlength="24">
+        <label class="lbl" for="ge-p">Password</label><input id="ge-p" class="field" name="p" value="${esc(ga.password)}" autocomplete="off" required minlength="4" maxlength="32">
+        <button class="btn btn-accent btn-block" type="submit">Save login</button>
+      </form>
+      <p class="note"><a href="#" data-act="gcreds" data-plat="${pid}">Back</a></p>`);
+  }
   if (a === 'download') downloadModal(pid);
   if (a === 'play') playModal(pid);
   if (a === 'web') launch(pid, t.dataset.gameId);
@@ -1869,6 +1879,11 @@ document.addEventListener('submit', e => {
       addTx({ kind: 'Bonus', label: `Daily 1st bonus (+${lp.daily}%)`, p: d.plat, amt: bonus, status: 'done' });
       closeModal(); refresh(); toast(`${scv(amt)} loaded into ${lp.name} + ${scv(bonus)} daily first-load bonus`);
     } else { closeModal(); refresh(); toast(`${scv(amt)} loaded into ${lp.name}`); }
+  }
+  if (k === 'gedit') {
+    const ga = S.user.accounts[d.plat];
+    ga.username = d.u.trim(); ga.password = d.p; ga.linked = true;
+    S.showPw = false; refresh(); gameCredsModal(d.plat); toast(`${plat(d.plat).name} login updated`);
   }
   if (k === 'link') {
     S.user.accounts[d.plat] = { username: d.u.trim(), password: d.p, credits: 0, linked: true };

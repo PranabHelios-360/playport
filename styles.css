@@ -2050,3 +2050,5 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .phone-in { display: grid; grid-template-columns: 112px 1fr; gap: 8px; }
 .phone-in select.field { padding-left: 10px; padding-right: 6px; }
 .forgot { justify-self: end; margin: -4px 2px 2px; font-size: 13.5px; font-weight: 700; color: var(--accent-text); }
+.gc-row2 {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+.gc-row2 .gc-reset {padding:0 8px}

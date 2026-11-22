@@ -28,6 +28,7 @@ Object.assign(pairs,{
   'Verify and create account':'Verificar y crear cuenta','No email?':'¿No recibiste el correo?',
   'Send a new code':'Enviar un código nuevo','change the email':'cambiar el correo',
   'Use your Skillslots777 username and password.':'Usa tu nombre de usuario y contraseña de Skillslots777.',
+  'I have an account':'Ya tengo una cuenta','Auto-create':'Crear automáticamente','My login':'Mi acceso','Edit username or password':'Editar usuario o contraseña','Save login':'Guardar acceso','Username':'Usuario',
   'Account':'Cuenta','Phone':'Teléfono','Phone number':'Número de teléfono','Your phone number':'Tu número de teléfono','Sign in with':'Iniciar sesión con','Enter your phone number':'Escribe tu número de teléfono','Use your Skillslots777 username, email or phone, and your password.':'Usa tu usuario, correo o teléfono de Skillslots777 y tu contraseña.',
   'Username or email':'Usuario o correo','Password':'Contraseña','New here?':'¿Eres nuevo?',
   'How it works':'Cómo funciona','Live chat':'Chat en vivo','Contact us':'Contáctanos','Switch site':'Cambiar de sitio',

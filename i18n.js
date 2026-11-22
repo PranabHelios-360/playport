@@ -244,6 +244,7 @@ const ES = {
   'Move money from your wallet into Fire Kirin.': 'Pasa dinero de tu billetera a Fire Kirin.',
   'Open the Fire Kirin web version or app and log in.': 'Abre la versión web o la app de Fire Kirin e inicia sesión.',
   'Recharge777, Gamewallet777 or Skillslots777': 'Recharge777, Gamewallet777 o Skillslots777',
+  'Edit login': 'Editar acceso', 'Save login': 'Guardar acceso', 'Edit Fire Kirin login': 'Editar acceso de Fire Kirin', 'Change it here if you changed it in the Fire Kirin app, or to pick your own.': 'Cámbialo aquí si lo cambiaste en la app de Fire Kirin, o para elegir el tuyo.', 'Fire Kirin login updated': 'Acceso de Fire Kirin actualizado',
   'Player ID': 'ID de jugador', 'Copy Player ID': 'Copiar ID de jugador',
   'Enter a phone number with at least 6 digits': 'Escribe un número de teléfono de al menos 6 dígitos',
   'Email': 'Correo', 'Phone': 'Teléfono', 'Phone number': 'Número de teléfono', 'Country code': 'Código de país', 'At least 6 digits': 'Al menos 6 dígitos',

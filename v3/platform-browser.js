@@ -30,15 +30,19 @@ function directoryCards(filter, query) {
   return note + entries.map(p => {
     const saved = favorites.includes(p.id);
     const tags = p.preview ? ['Platform preview'] : [...new Set(GAMES.filter(g=>g.p===p.id).map(g=>g.cat))];
-    const tag = p.preview ? 'button' : 'a';
-    const action = p.preview ? `type="button" data-directory-preview="${p.id}"` : `href="#/platform/${p.id}"`;
+    const tag = p.preview ? 'button' : 'div';
+    const action = p.preview ? `type="button" data-directory-preview="${p.id}"` : '';
+    const mine = !p.preview && typeof acct === 'function' && acct(p.id);
     return `<article class="charged-card" data-platform="${p.id}">
       <img class="charged-scene" src="assets/platform-scenes/${p.id}.${p.preview ? 'webp' : 'jpg'}" alt="" loading="lazy">
       <i class="flow-spark" aria-hidden="true"></i><${tag} class="charged-open" ${action}>
         <i class="charged-badge" aria-hidden="true" style="--badge:${catalog.indexOf(p)}"></i>
         <strong>${p.name}</strong><small>${tags.map(t=>`<span>${t}</span>`).join('')}</small>
-        <span class="charged-view">${p.preview ? 'Preview' : 'View'} <i aria-hidden="true">→</i></span>
+        ${p.preview ? '<span class="charged-view">Preview <i aria-hidden="true">→</i></span>' : ''}
       </${tag}>
+      ${p.preview ? '' : mine
+        ? `<div class="charged-acts"><button type="button" data-act="gcreds" data-plat="${p.id}">My login</button><button type="button" class="gold" data-act="play" data-plat="${p.id}">Play</button></div>`
+        : `<div class="charged-acts"><button type="button" data-act="unlock-link" data-plat="${p.id}">I have an account</button><button type="button" class="gold" data-act="unlock-go" data-plat="${p.id}">Auto-create</button></div>`}
       <button type="button" class="charged-heart" data-platform-favorite="${p.id}" aria-label="${p.name} — ${document.documentElement.lang==='es'?'favorito':'favorite'}" aria-pressed="${saved}"><span aria-hidden="true">${saved?'♥':'♡'}</span></button>
     </article>`;
   }).join('');

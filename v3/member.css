@@ -222,3 +222,4 @@
 [data-theme="white"] .login-via,[data-theme="white"] .login-phone-row select{background:#fff;border-color:#d4cfe4;color:#2a2440}
 [data-theme="white"] .login-via button{color:#6b6585}
 [data-via][hidden]{display:none!important}
+.gedit-btn {margin-top:10px}

@@ -2052,3 +2052,12 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .forgot { justify-self: end; margin: -4px 2px 2px; font-size: 13.5px; font-weight: 700; color: var(--accent-text); }
 .gc-row2 {display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
 .gc-row2 .gc-reset {padding:0 8px}
+
+/* ===== demo site switcher (same bar on all three sites) ===== */
+.site-switch {position:relative;z-index:60;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 10px;background:#08080d;border-bottom:1px solid #26263a;font:600 13px/1 Figtree,system-ui,sans-serif;overflow-x:auto;scrollbar-width:none}
+.site-switch::-webkit-scrollbar {display:none}
+.site-switch > small {color:#8d8da6;margin-right:2px;white-space:nowrap}
+.site-switch a,.site-switch button,.site-switch span {flex:none;display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;border:1px solid #33334a;background:#14141f;color:#d8d8e6;font:inherit;text-decoration:none;white-space:nowrap;cursor:pointer}
+.site-switch a:hover,.site-switch button:hover {border-color:#6b6b8c;color:#fff}
+.site-switch .on {background:#fff;border-color:#fff;color:#0b0b12;cursor:default}
+@media (max-width:420px) {.site-switch {justify-content:flex-start;padding:6px 8px;gap:5px}.site-switch > small {display:none}.site-switch a,.site-switch button,.site-switch span {padding:0 10px;font-size:12.5px}}

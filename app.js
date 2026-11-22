@@ -1087,6 +1087,11 @@ function showChooser() {
   ch.hidden = false;
   document.body.style.overflow = 'hidden';
 }
+function siteSwitch() {
+  const el = document.getElementById('siteSwitch');
+  if (!el) return;
+  el.innerHTML = `<small>Site:</small>${[['a', 'Recharge777'], ['b', 'Gamewallet777']].map(([k, n]) => `<button type="button" class="${S.site === k ? 'on' : ''}" data-site-pick="${k}" ${S.site === k ? 'aria-current="page"' : ''}>${n}</button>`).join('')}<a href="v3/">Skillslots777</a>`;
+}
 function pickSite(k) {
   if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
   applySite(k);
@@ -1094,6 +1099,7 @@ function pickSite(k) {
   document.getElementById('chooser').hidden = true;
   document.body.style.overflow = '';
   render();
+  siteSwitch();
 }
 
 /* ---------- router ---------- */
@@ -1955,9 +1961,12 @@ document.addEventListener('keydown', e => {
 
 window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); showLoader(420); render(); });
 if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
-applySite('a');
+const wantSite = new URLSearchParams(location.search).get('site');
+if (wantSite) history.replaceState(null, '', location.pathname + '#/');
+applySite(wantSite === 'b' ? 'b' : 'a');
 render();
+siteSwitch();
 fillLangPicks();
 I18N.start();
-showLoader(1300, true);
-setTimeout(showChooser, 1300);
+if (wantSite === 'a' || wantSite === 'b') showLoader(500, true);
+else { showLoader(1300, true); setTimeout(showChooser, 1300); }

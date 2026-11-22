@@ -28,6 +28,7 @@ Object.assign(pairs,{
   'Verify and create account':'Verificar y crear cuenta','No email?':'¿No recibiste el correo?',
   'Send a new code':'Enviar un código nuevo','change the email':'cambiar el correo',
   'Use your Recharge777 username and password.':'Usa tu nombre de usuario y contraseña de Recharge777.',
+  'Account':'Cuenta','Phone':'Teléfono','Phone number':'Número de teléfono','Your phone number':'Tu número de teléfono','Sign in with':'Iniciar sesión con','Enter your phone number':'Escribe tu número de teléfono','Use your Recharge777 username, email or phone, and your password.':'Usa tu usuario, correo o teléfono de Recharge777 y tu contraseña.',
   'Username or email':'Usuario o correo','Password':'Contraseña','New here?':'¿Eres nuevo?',
   'How it works':'Cómo funciona','Live chat':'Chat en vivo','Contact us':'Contáctanos','Switch site':'Cambiar de sitio',
   'Terms of service':'Términos del servicio','Privacy policy':'Política de privacidad','Sweepstakes rules':'Reglas de sorteos','Responsible play':'Juego responsable',

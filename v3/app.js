@@ -287,7 +287,9 @@ function landingLogin() {
     </form>
     <details class="saved-login" ${remembered?'open':''}><summary>Sign in to a saved account</summary>
     <form class="register-panel return-panel" data-form="login">
-      <div class="join-field"><label for="return-name">Username or email</label><div class="join-input">${I.user}<input id="return-name" name="u" autocomplete="username" required placeholder="Enter your username or email" value="${esc(remembered)}"></div></div>
+      <div class="login-via" role="tablist" aria-label="Sign in with"><button type="button" role="tab" class="on" aria-selected="true" data-login-via="account">Account</button><button type="button" role="tab" aria-selected="false" data-login-via="phone">Phone</button></div>
+      <div class="join-field" data-via="account"><label for="return-name">Username or email</label><div class="join-input">${I.user}<input id="return-name" name="u" autocomplete="username" required placeholder="Enter your username or email" value="${esc(remembered)}"></div></div>
+      <div class="join-field" data-via="phone" hidden><label for="return-phone">Phone number</label><div class="login-phone-row"><select name="cc" aria-label="Country calling code" disabled><option value="+1">US +1</option><option value="+1">CA +1</option><option value="+52">MX +52</option><option value="+34">ES +34</option></select><div class="join-input"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10.5 18.5h3"/></svg><input id="return-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" required disabled placeholder="Your phone number"></div></div></div>
       ${authPasswordField('return-password','p','Password','Enter your password',false)}
       <div class="return-options"><label class="register-consent"><input name="rememberName" type="checkbox" ${remembered?'checked':''}><span>Remember my login name</span></label><button class="auth-link" type="button" data-act="login-help">Forgot password?</button></div>
       <button class="register-submit" type="submit">${I.bolt}<span>Sign in</span><span aria-hidden="true">→</span></button>
@@ -1625,6 +1627,14 @@ function todayDeposits() {
 /* ---------- events ---------- */
 
 document.addEventListener('click', e => {
+  const via = e.target.closest('[data-login-via]');
+  if (via) {
+    const form = via.closest('form'), mode = via.dataset.loginVia;
+    form.querySelectorAll('[data-login-via]').forEach(b => { const on = b === via; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    form.querySelectorAll('[data-via]').forEach(g => { const on = g.dataset.via === mode; g.hidden = !on; g.querySelectorAll('input,select').forEach(x => { x.disabled = !on; }); if (g.matches('input,select')) g.disabled = !on; });
+    const first = form.querySelector(`[data-via="${mode}"] input, input[data-via="${mode}"]`); if (first) first.focus();
+    return;
+  }
   if (document.body.classList.contains('chat-open') && e.target.closest('.tabbar a[href^="#/"]')) setChat(false);
   if (document.body.classList.contains('menu-open') && e.target.closest('.drawer a[href^="#/"], .tabbar a[data-nav], .top button:not([data-menu]), .top a')) setMenu(false);
   const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-bal-go],[data-close-after],[data-balsheet],[data-sheet],[data-wtab],.m-list a');
@@ -1746,9 +1756,11 @@ document.addEventListener('click', e => {
       else location.hash = '#/login';
       return;
     }
-    openModal(`<h2>Sign in</h2><p>Use your ${BRAND()} username and password.</p>
+    openModal(`<h2>Sign in</h2><p>Use your ${BRAND()} username, email or phone, and your password.</p>
       <form class="form-row" data-form="login">
-        <input class="field" name="u" placeholder="Username or email" autocomplete="username" required>
+        <div class="login-via" role="tablist" aria-label="Sign in with"><button type="button" role="tab" class="on" aria-selected="true" data-login-via="account">Account</button><button type="button" role="tab" aria-selected="false" data-login-via="phone">Phone</button></div>
+        <input class="field" data-via="account" name="u" placeholder="Username or email" autocomplete="username" required>
+        <div class="login-phone-row" data-via="phone" hidden><select class="field" name="cc" aria-label="Country calling code" disabled><option value="+1">US +1</option><option value="+52">MX +52</option><option value="+34">ES +34</option></select><input class="field" name="phone" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" required disabled></div>
         <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
         <button class="btn btn-accent btn-block" type="submit">Sign in</button>
       </form>
@@ -1905,10 +1917,12 @@ document.addEventListener('submit', async e => {
       const digits = [...f.querySelectorAll('.code-in input')].map(input=>input.value).join('');
       if (digits !== pending.code) {f.querySelector('.phone-error').hidden=false;return;}
       clearInterval(phoneTimer);delete pending.code;
+      const ph = f.querySelector('#preview-phone'), cc = f.querySelector('.preview-phone-row select');
+      if (ph && ph.value.trim()) pending.phone = `${(cc && cc.value.split(' ').pop()) || '+1'} ${ph.value.replace(/[^0-9]/g, '')}`;
     }
     const credentials = makeCreds(pending.first);
     if (pending.join) { delete credentials.password; Object.assign(credentials,pending.join); delete pending.join; }
-    S.user = normUser({ first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...credentials });
+    S.user = normUser({ first: pending.first, email: pending.email, phone: pending.phone || '', since: new Date().toISOString().slice(0, 10), ...credentials });
     S.showPw = true;
     save();
     if (route().r) {
@@ -1926,12 +1940,14 @@ document.addEventListener('submit', async e => {
   }
   if (k === 'login') {
     const saved = normUser(store.get('p3_account', null));
-    const name = d.u.trim();
-    const match = saved && (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === saved.email.toLowerCase());
+    const digits = (d.phone || '').replace(/[^0-9]/g, '');
+    const name = d.phone ? `${d.cc || '+1'} ${digits}` : (d.u || '').trim();
+    if (d.phone && digits.length < 7) { toast('Enter your phone number'); return; }
+    const match = saved && (d.phone ? !!saved.phone && saved.phone.replace(/[^0-9]/g, '').endsWith(digits) : (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === (saved.email || '').toLowerCase()));
     if (S.site !== 'b' || saved?.passwordKey) {
       if (!match || !(await matchesPassword(saved,d.p))) {toast('Incorrect login details');return;}
     }
-    if (f.elements.rememberName) {
+    if (f.elements.rememberName && !d.phone) {
       if (d.rememberName) store.set('p3_login_name',name);
       else store.del('p3_login_name');
     }

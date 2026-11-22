@@ -212,3 +212,13 @@
 @media(hover:hover){.wallet-action-tile:hover {border-color:var(--tone);box-shadow:inset 0 0 0 1px var(--tone)}.wallet-offers:hover>span{background:#802d89}}
 @media(max-width:440px){.wallet-action-chevron {display:none}.wallet-action-tile{grid-template-columns:auto minmax(0,1fr)}}
 @media(max-width:355px){.wallet-action-tile{padding:9px 7px}.wallet-action-icon{width:26px}.wallet-offers p{max-width:19ch}.wallet-offers>span{font-size:.7rem;padding:6px}.wallet-figures{max-width:58%}}
+
+/* sign in with Account or Phone */
+.login-via{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid #756b97;border-radius:12px;background:#20233e}
+.login-via button{min-height:38px;border:0;border-radius:9px;background:transparent;color:#b8b5d0;font:700 .95rem/1 Outfit,sans-serif;cursor:pointer}
+.login-via button.on{background:#ef8fd9;color:#1d1030}
+.login-phone-row{display:grid;grid-template-columns:104px 1fr;gap:8px}
+.login-phone-row select{min-height:44px;border:1px solid #756b97;border-radius:10px;background:#20233e;color:#e7e4ff;padding:0 8px;font:600 .95rem Figtree,sans-serif}
+[data-theme="white"] .login-via,[data-theme="white"] .login-phone-row select{background:#fff;border-color:#d4cfe4;color:#2a2440}
+[data-theme="white"] .login-via button{color:#6b6585}
+[data-via][hidden]{display:none!important}

@@ -1,4 +1,4 @@
-﻿const PLATFORMS = [
+const PLATFORMS = [
   { id: 'milkyway', name: 'Milky Way', c1: '#1d2370', c2: '#7a4dff', logo: 'assets/logos/mw-icon.jpg', daily: 10, blurb: 'Space-themed slots, keno and fish games, with the Milky Way jackpot wheel.' },
   { id: 'firekirin', name: 'Fire Kirin', c1: '#0b4d26', c2: '#c99a14', logo: 'assets/logos/fk-icon.jpg', daily: 10, blurb: 'Fish tables and lucky slots. Home of Jade Fortune and Space Jet.' },
   { id: 'orion', name: 'Orion Stars', c1: '#7a2510', c2: '#f29a2e', daily: 15, blurb: 'The biggest catalogue: fish, slots and keno.' },
@@ -575,7 +575,7 @@ function syncQuests() {
       got.push(`+${q.pts} pts: ${q.name}`);
     }
   });
-  if (got.length) { store.set('pp_user', S.user); store.set('pp_account', S.user); setTimeout(() => toast(got.join(' Â· ')), 300); }
+  if (got.length) { store.set('pp_user', S.user); store.set('pp_account', S.user); setTimeout(() => toast(got.join(' · ')), 300); }
 }
 
 function levelInfo() {

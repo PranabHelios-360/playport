@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --accent: #ff3d9a; --accent-hi: #ff6fb5; --on-accent: #ffffff; --ruby: #e2343f; --ruby-hi: #ff5a63;
   --green: #22c06d; --gold: #f2b62f;
   --r: 16px; --gut: 64px; --top-h: 84px; --tab-h: 92px;
@@ -1998,3 +1998,27 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
   .vs-thumb { width: 50px; }
   .vs-thumbs { gap: 9px; }
 }
+
+/* load sheet: keep the coin badge small inside the amount box, tighter spacing */
+.ld-val { gap: 12px; }
+.ld-val > span:not(.cur-coin) { font: 900 36px var(--mono); color: var(--gold); letter-spacing: -.02em; }
+.ld-val .cur-coin { width: 32px; height: 32px; font: 900 11px/1 var(--mono); letter-spacing: -.02em; }
+.ld-val .cur-coin.sc { color: #fff; }
+.ld-val .cur-coin.gc { color: #6b4300; }
+.ld-bal { padding: 10px 2px; }
+.ld-wallet { padding: 8px 2px; }
+.ld-info { margin-top: 2px; font-size: 14px; }
+.ld-down { margin: 2px 0; }
+.ld-down svg { width: 24px; height: 24px; }
+.ld-amt { padding: 14px; }
+.ld-step { margin: 12px 0; }
+.ld-chips .ld-chip { font-size: 15px; }
+@media (max-width: 620px) {
+  .ld-val > span:not(.cur-coin) { font-size: 28px; }
+  .ld-val .cur-coin { width: 28px; height: 28px; font-size: 10px; }
+  .ld-flow { font-size: 16px; }
+  .ld-game .coin.md { --s: 48px; }
+  .ld-foot .btn { height: 50px; }
+}
+.ld-bonus { display: block; }
+.ld-bonus svg { display: inline-block; vertical-align: -2px; margin-right: 6px; }

@@ -483,26 +483,21 @@ function openBalSheet(id) {
 }
 
 function viewActivity() {
-  if (!S.user) return viewActivityPreview();
+  if (!S.user) return needLogin('Activity');
   const chips = ['All', 'Deposits', 'Withdrawals', 'Loads', 'Redeems', 'P2P', 'Vouchers', 'Bonus'];
   const rows = S.user.tx.filter(t => (S.actTab === 'done' ? t.status === 'done' : t.status === 'pending') && (S.actChip === 'All' || t.kind === S.actChip));
-  return `<div class="page history-page">
-    <header class="history-heading">${crumb(['Activity'])}<h1>Transaction history</h1></header>
-    <div class="history-tabs" role="group" aria-label="Transaction status">
-      <button aria-pressed="${S.actTab === 'done'}" data-tab="done">Finished</button>
-      <button aria-pressed="${S.actTab === 'pending'}" data-tab="pending">In progress</button>
+  return `<div class="page activity-plain">
+    ${crumb(['Activity'])}
+    <div class="tabs">
+      <button class="${S.actTab === 'done' ? 'on' : ''}" data-tab="done">Finished</button>
+      <button class="${S.actTab === 'pending' ? 'on' : ''}" data-tab="pending">In progress</button>
     </div>
-    <div class="history-filters" role="group" aria-label="Transaction category">${chips.map(c => `<button aria-pressed="${S.actChip === c}" data-chip="${c}">${c}</button>`).join('')}</div>
-    ${rows.length ? `<ul class="history-list">${rows.map(t => {
-      const platform = t.p && plat(t.p);
-      const credit = t.amt >= 0;
-      const pending = t.status === 'pending';
-      return `<li class="history-entry">
-        <span class="history-symbol" aria-hidden="true">${platform ? coin(platform, 'sm') : `<span class="history-direction">${credit ? I.plus : I.arrowL}</span>`}</span>
-        <div class="history-description"><b>${esc(t.label)}</b><small>${platform ? esc(platform.name) + ' · ' : ''}${esc(t.when)}</small></div>
-        <div class="history-amount"><strong class="${credit ? 'credit' : ''}">${credit ? '+' : '−'}${usd(Math.abs(t.amt))}</strong><small class="history-status${pending ? ' pending' : ''}">${pending ? 'Processing' : 'Finished'}</small></div>
-      </li>`;
-    }).join('')}</ul>` : '<p class="history-empty">No transactions found for the selected filter</p>'}
+    <div class="filters">${chips.map(c => `<button class="chip ${S.actChip === c ? 'on' : ''}" data-chip="${c}">${c}</button>`).join('')}</div>
+    ${rows.length ? `<div class="rows tx">${rows.map(t => { const p = t.p && plat(t.p); return `<div class="row-card slim">
+        <div class="row-main">${p ? coin(p, 'sm') : `<span class="tx-ico">${t.amt >= 0 ? I.plus : I.arrowL}</span>`}<span><b>${esc(t.label)}</b><small>${p ? esc(p.name) + ' &middot; ' : ''}${esc(t.when)}</small></span></div>
+        <div class="row-acts"><b class="${t.amt >= 0 ? 'pos' : 'neg'}">${t.amt >= 0 ? '+' : '-'}${usd(Math.abs(t.amt))}</b>${t.status === 'pending' ? '<span class="pend">Processing</span>' : ''}</div>
+      </div>`; }).join('')}</div>`
+      : '<p class="empty big">No transactions found for the selected filter</p>'}
   </div>`;
 }
 
@@ -1678,14 +1673,14 @@ document.addEventListener('click', e => {
   if (t.dataset.tab) {
     S.actTab = t.dataset.tab;
     render(true);
-    document.querySelector(`.history-page [data-tab="${S.actTab}"]`)?.focus({ preventScroll: true });
+    document.querySelector(`.activity-plain [data-tab="${S.actTab}"]`)?.focus({ preventScroll: true });
     return;
   }
   if (t.dataset.rw) { S.rw = t.dataset.rw; if (location.hash !== '#/rewards') location.hash = '#/rewards'; else render(true); return; }
   if (t.dataset.chip) {
     S.actChip = t.dataset.chip;
     render(true);
-    document.querySelector(`.history-page [data-chip="${S.actChip}"]`)?.focus({ preventScroll: true });
+    document.querySelector(`.activity-plain [data-chip="${S.actChip}"]`)?.focus({ preventScroll: true });
     return;
   }
   if (t.dataset.copyval) {

@@ -980,14 +980,18 @@ const navIco = {
 };
 
 function sideHtml(name) {
-  const items = [['home', '#/', 'Lobby'], ['games', '#/games', 'My Games'], ['rewards', '#/rewards', 'Rewards'], ['balance', '#/balance', 'Wallet'], ['activity', '#/activity', 'Activity'], ['account', '#/account', 'Account']];
+  const u = S.user;
+  const main = [['home', '#/', 'Lobby'], ['games', '#/games', 'Games']].concat(u ? [['balance', '#/balance', 'Balance'], ['activity', '#/activity', 'Activity'], ['rewards', '#/rewards', 'Rewards']] : []);
   return `<a class="logo" href="#/">${logoInner()}</a>
-    <nav class="side-nav">${items.map(([k, h, t]) => `<a href="${h}" class="${name === k ? 'on' : ''}">${navIco[k]}<span>${t}</span>${k === 'rewards' && canCheckin() ? '<i class="side-dot"></i>' : ''}</a>`).join('')}
-      <a href="#" data-act="chat">${navIco.chat}<span>Help &amp; chat</span></a>
+    ${u ? `<div class="side-prof m-prof"><a class="m-prof-link" href="#/account">${avatarHtml(u)}<span class="m-prof-txt"><b>Profile</b><small>${esc(u.first)}</small></span></a><button class="m-prof-id" data-copyval="${esc(u.username)}" data-what="Player ID" aria-label="Copy Player ID"><small>Player ID</small><code>${esc(u.username)}</code>${I.copy}</button></div>` : ''}
+    <nav class="side-nav">${main.map(([k, h, t]) => `<a href="${h}" class="${name === k ? 'on' : ''}">${navIco[k]}<span>${t}</span>${k === 'rewards' && canCheckin() ? '<i class="side-dot"></i>' : ''}</a>`).join('')}
+      <a href="#" data-act="chat">${navIco.chat}<span>Help &amp; chat</span></a></nav>
+    <nav class="side-nav side-more">
+      <a href="#" data-act="telegram">${I.tg}<span>Join our Telegram</span></a>
+      <a href="#" data-act="get-app">${I.dl}<span>Download App</span></a>
+      <a href="#" data-act="foot-doc" data-doc="How it works">${I.help}<span>How it works</span></a>
       <a href="#" data-act="choose-site">${navIco.swap}<span>Switch site</span></a></nav>
-    <div class="side-foot">${S.user
-      ? `<a class="side-user" href="#/account">${avatarHtml(S.user)}<span><b>${esc(S.user.first)}</b><small>${scv(S.user.wallet)} wallet</small></span></a>`
-      : `<button class="btn btn-accent btn-block" data-act="signup">Join now</button><button class="btn btn-ghost btn-block" data-act="login">Log in</button>`}</div>`;
+    <div class="side-foot">${u ? `<button class="side-logout" data-act="logout">${I.out}<span>Logout</span></button>` : ''}</div>`;
 }
 
 function platCardB(p) {
@@ -1576,7 +1580,7 @@ function toast(t) {
 }
 
 function setMenu(open) {
-  if (open) { const d = $('#drawer'); const dash = S.site === 'b'; d.classList.toggle('dash-drawer', dash); d.innerHTML = dash ? dashboardHtml(true) : menuHtml(); }
+  if (open) { const d = $('#drawer'); d.classList.remove('dash-drawer'); d.innerHTML = menuHtml(); }
   document.body.classList.toggle('menu-open', open);
 }
 function setChat(open) {

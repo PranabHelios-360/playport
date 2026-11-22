@@ -108,9 +108,9 @@ function activitySpotlight(){
   const preview=!publicRedemptions.length;
   const months=preview?highlightPeriods:[...new Set(publicRedemptions.map(row=>row.at.slice(0,7)))];
   return `<section class="member-standings" aria-labelledby="highlights-title">
-    <header class="standings-cover"><div><h1 id="highlights-title">Activity &amp; <em>Highlights</em></h1><p>Recent highlights and monthly standings.</p>${preview?'<span class="standings-tag">Sample data</span>':''}</div></header>
+    <header class="standings-cover"><div><h1 id="highlights-title">Activity &amp; highlights</h1><p>Recent highlights and monthly standings.</p>${preview?'<span class="standings-tag">Sample data</span>':''}</div></header>
     <div class="standings-content">
-    <section><header class="standings-heading"><h2>${I.trophy} Latest big winners</h2>${latest.length?`<button class="standings-pill" data-highlight-action="latest">Latest ${latest.length}</button>`:''}</header>
+    <section><header class="standings-heading"><h2>${I.trophy} Recent winners</h2>${latest.length?`<button class="standings-pill" data-highlight-action="latest">Latest ${latest.length}</button>`:''}</header>
     ${latest.length?`<div class="winning-card" aria-live="polite">${winnerBody()}</div>${latest.length>1?`<div class="winning-controls"><button data-highlight-action="prev" aria-label="Previous winner">${I.arrowL}</button><div class="winner-choices">${winnerChoices()}</div><button data-highlight-action="next" aria-label="Next winner">${I.chev}</button></div><div class="winner-footer"><div class="winner-dots">${winnerDots()}</div><span data-winner-position>${payoutIndex+1} / ${latest.length}</span></div>`:''}`:'<p class="results-empty">No verified redemptions to show.</p>'}</section>
     <section><header class="standings-heading"><h2 id="monthly-title">${I.trophy} Monthly leaderboard</h2>${months.length?`<select class="standings-pill" id="leader-month" aria-label="Leaderboard month">${months.map(m=>`<option value="${m}" ${m===highlightPeriod?'selected':''}>${new Date(m+'-15').toLocaleDateString(undefined,{month:'long',year:'numeric'})}</option>`).join('')}</select>`:''}</header>
     ${months.length?`<table class="standings-table" aria-labelledby="monthly-title"><thead><tr><th>Rank</th><th>Player</th><th>Redeemed</th></tr></thead><tbody id="ranked-players">${monthlyRows()}</tbody></table><button class="standings-expand" data-highlight-action="ranks" ${monthlyLeaders().length<=6?'hidden':''}>${showAllRanks?'Show top 6':'View all '+Math.min(10,monthlyLeaders().length)+' standings'}</button>`:'<p class="results-empty">Monthly standings are unavailable.</p>'}</section>
@@ -145,7 +145,7 @@ function highlightsHome() {
   return `<div class="page member-highlights member-worlds">
     ${activitySpotlight()}
     <section class="member-world-hero" aria-labelledby="home-world-title">
-      <header><p>Featured platforms</p><h2 id="home-world-title">Your next world awaits.</h2></header>
+      <header><h2 id="home-world-title">Featured platforms</h2></header>
       <div class="home-world-stage" data-original="${homeWorldIndex === 1}">${homeWorldCards()}</div>
       <div class="home-world-controls"><button type="button" data-act="spotlight-prev" aria-label="Previous platform">${I.chev}</button>
         <span class="home-world-position" aria-hidden="true">${homeWorldIds.map((_,i)=>`<i class="${i === homeWorldIndex ? 'current' : ''}"></i>`).join('')}</span>

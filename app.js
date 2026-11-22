@@ -414,7 +414,7 @@ function viewAccount() {
     <section class="prof-card">
       <button class="av-btn" data-act="avatar-pick" aria-label="Change avatar">${avatarHtml(u, 'big')}</button>
       <div class="prof-txt"><b>${esc(u.first)}</b><button class="pid" data-copyval="${esc(u.username)}" data-what="Player ID"><span>Player ID: ${esc(u.username)}</span>${I.copy}</button>
-        <small>${esc(u.email)} &middot; since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</small></div>
+        <small>${esc(u.email || u.phone)} &middot; since ${new Date(u.since).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</small></div>
     </section>
     <section class="money-card">
       <div class="mc-cols"><div><small>Sweeps Coins</small><b>${fmt(u.wallet)}</b></div><div><small>Gold Coins</small><b>${Math.round(u.gc).toLocaleString('en-US')}</b></div><div><small>Points</small><b>${u.points.toLocaleString('en-US')}</b></div></div>
@@ -1146,30 +1146,40 @@ function closeModal() {
 }
 
 const pending = {};
+const CC = [['+1', 'US'], ['+52', 'MX'], ['+34', 'ES'], ['+44', 'UK'], ['+91', 'IN'], ['+977', 'NP']];
+const authTabs = (first) => `<div class="auth-tabs" role="tablist">${[['email', first], ['phone', 'Phone']].map(([k, t]) => `<button type="button" role="tab" class="${(S.authVia || 'email') === k ? 'on' : ''}" data-auth-via="${k}">${t}</button>`).join('')}</div>`;
+const phoneField = (cc, num) => `<div class="phone-in"><select class="field" name="cc" aria-label="Country code">${CC.map(([c, n]) => `<option value="${c}" ${c === (cc || '+1') ? 'selected' : ''}>${n} ${c}</option>`).join('')}</select>
+  <input class="field" type="tel" name="phone" inputmode="tel" placeholder="Phone number" autocomplete="tel-national" required minlength="6" value="${esc(num || '')}"></div>`;
 function signupStep(step) {
   const bar = n => `<div class="dots-steps">${[1, 2, 3].map(k => `<i class="${k <= n ? 'on' : ''}"></i>`).join('')}</div>`;
+  const via = S.authVia || 'email';
   if (step === 1) {
+    S.authModal = 'signup';
     openModal(`${bar(1)}<h2>Create your account</h2><p>This is your ${BRAND()} login for your wallet. Game accounts come later, one per game.</p>
+      ${authTabs('Email')}
       <form class="form-row" data-form="email">
         <input class="field" name="first" placeholder="First name" autocomplete="given-name" required value="${esc(pending.first || '')}">
-        <input class="field" type="email" name="email" placeholder="Email address" autocomplete="email" required value="${esc(pending.email || '')}">
+        ${via === 'phone' ? phoneField(pending.cc, pending.phone) : `<input class="field" type="email" name="email" placeholder="Email address" autocomplete="email" required value="${esc(pending.email || '')}">`}
         <label class="check"><input type="checkbox" required> I'm 21 or older and agree to the terms and sweepstakes rules.</label>
         <button class="btn btn-accent btn-block" type="submit">Send code</button>
-      </form>`);
+      </form>
+      <p class="note">Already have an account? <a href="#" data-act="login">Log in</a></p>`);
   } else if (step === 2) {
-    openModal(`${bar(2)}<h2>Check your email</h2><p>We sent a 6-digit code to <b>${esc(pending.email)}</b>. Any 6 digits work in this demo.</p>
+    const phone = pending.via === 'phone';
+    const target = phone ? `${pending.cc} ${pending.phone}` : pending.email;
+    openModal(`${bar(2)}<h2>${phone ? 'Check your phone' : 'Check your email'}</h2><p>We sent a 6-digit code to <b>${esc(target)}</b>. Any 6 digits work in this demo.</p>
       <form data-form="code">
         <div class="code-in">${Array.from({ length: 6 }, () => '<input inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]" aria-label="Digit" required>').join('')}</div>
         <button class="btn btn-accent btn-block" type="submit" style="margin-top:16px">Verify and create account</button>
       </form>
-      <p class="note">No email? <a href="#" data-act="resend">Send a new code</a> or <a href="#" data-act="signup">change the email</a></p>`);
+      <p class="note">${phone ? 'No text?' : 'No email?'} <a href="#" data-act="resend">Send a new code</a> or <a href="#" data-act="signup">${phone ? 'change the number' : 'change the email'}</a></p>`);
   } else {
     const u = S.user;
     openModal(`${bar(3)}<div class="done-mark">${I.check}</div><h2>You're in, ${esc(u.first)}</h2>
       <p>Here is your ${BRAND()} login. Next, deposit to your wallet and unlock your first game.</p>
       ${credRow('Username', u.username, u.username)}
       ${credRow('Password', u.password, u.password, true)}
-      <div class="warn">We also emailed these to ${esc(u.email)}. You can change both under My account.</div>
+      <div class="warn">${u.email ? `We also emailed these to ${esc(u.email)}.` : `We also texted these to ${esc(u.phone)}.`} You can change both under My account.</div>
       <div class="modal-acts"><a class="btn btn-accent" href="#/balance" data-bal-go="deposit" data-close-after>Deposit</a><a class="btn btn-outline" href="#/games" data-close-after>Unlock a game</a></div>`);
   }
 }
@@ -1601,7 +1611,7 @@ function todayDeposits() {
 
 document.addEventListener('click', e => {
   const cm = document.getElementById('curMenu'); if (cm && !cm.hidden && !e.target.closest('.cur-wrap')) cm.hidden = true;
-  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-bslide],[data-post],[data-video],[data-vreview],[data-cur],[data-avsel],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a,.m-prof-link');
+  const t = e.target.closest('[data-game],[data-act],[data-copyval],[data-cat],[data-close],[data-close-menu],[data-bal],[data-tab],[data-chip],[data-menu],[data-method],[data-amt],[data-rw],[data-theme-set],[data-site-pick],[data-auth-via],[data-bslide],[data-post],[data-video],[data-vreview],[data-cur],[data-avsel],[data-vsel],[data-prnav],[data-prmore],[data-bal-go],[data-close-after],.dash-quick a,.dash-links a,[data-balsheet],[data-sheet],[data-dsheet],[data-wtab],[data-lang-set],.m-list a,.m-prof-link');
   if (!t) return;
   if (t.dataset.balGo) { S.bal = t.dataset.balGo; S.pendingSheet = t.dataset.balGo; S.pkg = null; S.method = null; }
   if (t.dataset.closeAfter !== undefined) closeModal();
@@ -1620,6 +1630,7 @@ document.addEventListener('click', e => {
   if (t.dataset.prnav) { prStep(+t.dataset.prnav); return; }
   if (t.dataset.prmore !== undefined) { const c = t.closest('.pr-card'); c.classList.toggle('open'); t.textContent = c.classList.contains('open') ? 'See less' : 'See more'; return; }
   if (t.dataset.sitePick) { pickSite(t.dataset.sitePick); return; }
+  if (t.dataset.authVia) { const f = t.closest('#modalBox').querySelector('[name=first]'); if (f) pending.first = f.value; S.authVia = t.dataset.authVia; if (S.authModal === 'login') { const el = document.createElement('button'); el.dataset.act = 'login'; document.body.append(el); el.click(); el.remove(); } else signupStep(1); return; }
   if (t.dataset.langSet) { setLang(t.dataset.langSet); if ($('#chooser').hidden) render(true); if (document.body.classList.contains('menu-open')) setMenu(true); return; }
   if (t.dataset.bslide) { setBSlide(+t.dataset.bslide); startBSlides(); return; }
   if (t.dataset.themeSet) { setTheme(t.dataset.themeSet); toast(`${THEMES_NOW().find(x => x[0] === t.dataset.themeSet)[1]} theme`); return; }
@@ -1656,17 +1667,22 @@ document.addEventListener('click', e => {
     else document.querySelectorAll('#modalBox .cred').forEach(c => { const b = c.querySelector('[data-act="pw"]'); if (b) { const v = c.querySelector('[data-copyval]').dataset.copyval; c.outerHTML = credRow('Password', v, v, true); } });
   }
   if (a === 'signup') { setMenu(false); signupStep(1); }
-  if (a === 'resend') toast(`New code sent to ${pending.email}`);
+  if (a === 'resend') toast(`New code sent to ${pending.via === 'phone' ? `${pending.cc} ${pending.phone}` : pending.email}`);
   if (a === 'login') {
     setMenu(false);
-    openModal(`<h2>Log in</h2><p>Use your ${BRAND()} username and password.</p>
+    S.authModal = 'login';
+    const via = S.authVia || 'email';
+    openModal(`<h2>Log in</h2><p>Use your ${BRAND()} email, username or phone.</p>
+      ${authTabs('Account')}
       <form class="form-row" data-form="login">
-        <input class="field" name="u" placeholder="Username or email" autocomplete="username" required>
+        ${via === 'phone' ? phoneField() : '<input class="field" name="u" placeholder="Email or username" autocomplete="username" required>'}
         <input class="field" type="password" name="p" placeholder="Password" autocomplete="current-password" required>
+        <a href="#" class="forgot" data-act="forgot">Forgot password?</a>
         <button class="btn btn-accent btn-block" type="submit">Log in</button>
       </form>
       <p class="note">New here? <a href="#" data-act="signup">Create an account</a></p>`);
   }
+  if (a === 'forgot') toast('A reset link goes to your email or phone in the live site');
   if (a === 'logout') { setMenu(false); S.user = null; store.set('pp_user', null); S.showPw = false; goHome(); toast('Signed out'); }
   if (a === 'unlock') unlockModal(pid);
   if (a === 'unlock-go') {
@@ -1794,21 +1810,23 @@ document.addEventListener('submit', e => {
   const d = Object.fromEntries(new FormData(f));
   const k = f.dataset.form;
   const amt = Number(d.amt);
-  if (k === 'quick') { pending.email = d.email; signupStep(1); }
-  if (k === 'email') { pending.first = d.first.trim(); pending.email = d.email.trim(); signupStep(2); }
+  if (k === 'quick') { pending.email = d.email; S.authVia = 'email'; signupStep(1); }
+  if ((k === 'email' || k === 'login') && d.phone && d.phone.replace(/[^0-9]/g, '').length < 6) { toast('Enter a phone number with at least 6 digits'); return; }
+  if (k === 'email') { pending.first = d.first.trim(); pending.via = d.phone ? 'phone' : 'email'; if (d.phone) { pending.cc = d.cc; pending.phone = d.phone.replace(/[^0-9]/g, ''); pending.email = ''; } else { pending.email = d.email.trim(); pending.phone = ''; } signupStep(2); }
   if (k === 'code') {
-    S.user = normUser({ first: pending.first, email: pending.email, since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) });
+    S.user = normUser({ first: pending.first, email: pending.email || '', phone: pending.via === 'phone' ? `${pending.cc} ${pending.phone}` : '', since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) });
     S.showPw = true;
     save();
-    location.hash = '#/';
+    history.replaceState(null, '', location.pathname + location.search + '#/');
     render();
     signupStep(3);
   }
   if (k === 'login') {
     const saved = normUser(store.get('pp_account', null));
-    const name = d.u.trim();
-    const match = saved && (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === saved.email.toLowerCase());
-    S.user = match ? saved : demoUser(name, d.p);
+    const name = (d.u || '').trim();
+    const digits = d.phone ? d.phone.replace(/[^0-9]/g, '') : '';
+    const match = saved && (d.phone ? (saved.phone || '').replace(/[^0-9]/g, '').endsWith(digits) : (name.toLowerCase() === saved.username.toLowerCase() || name.toLowerCase() === (saved.email || '').toLowerCase()));
+    S.user = match ? saved : d.phone ? normUser({ ...demoUser('player' + digits.slice(-4), d.p), first: 'Player', email: '', phone: `${d.cc} ${digits}` }) : demoUser(name, d.p);
     save();
     closeModal(); goHome(); toast(`Welcome back, ${S.user.first}`);
   }

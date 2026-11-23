@@ -3,8 +3,8 @@
    Uses each site's own helpers: S, openModal, closeModal, toast, requireLogin, save, refresh, addTx. */
 (() => {
   const F2P = [
-    { id: 'arthur', name: 'Arthur Fortunes', sub: 'Slots, fish and table games', art: '/assets/f2p/arthur-king.webp', logo: '/assets/f2p/arthur-logo.png', c1: '#0c6b35', c2: '#e9b628' },
-    { id: 'bossvegas', name: 'Boss Vegas', sub: 'Classic Vegas reels', mark: 'BV', c1: '#1b1b22', c2: '#d4a63a' },
+    { id: 'arthur', name: 'Arthur Fortunes', sub: 'Slots, fish and table games', url: 'https://arthurfortunes.com', art: '/assets/f2p/arthur-king.webp', logo: '/assets/f2p/arthur-logo.png', c1: '#0c6b35', c2: '#e9b628' },
+    { id: 'bossvegas', name: 'Boss Vegas', url: '', sub: 'Classic Vegas reels', mark: 'BV', c1: '#1b1b22', c2: '#d4a63a' },
     { id: 'soon', name: 'Coming soon', sub: 'A third free game is on the way', soon: true, c1: '#23233a', c2: '#6c6c90' }
   ];
 
@@ -88,6 +88,18 @@
     </section>`;
   };
 
+  window.f2pSection = function () {
+    return `<section class="xtra xtra-games" aria-label="Free to play">
+      <div class="xtra-h"><h2>Free to play</h2><span>Play with Gold Coins. No purchase needed.</span></div>
+      <div class="f2p-row">${F2P.map(f2pCard).join('')}</div>
+    </section>`;
+  };
+  const SIGNUP_GC = 50000;
+  function launchGame(g, coins) {
+    if (g.url) { window.open(g.url, '_blank', 'noopener'); toast(`Opening ${g.name}${coins ? ` with ${gcFmt(coins)}` : ''}`); }
+    else toast(`${g.name} opens here in the live site${coins ? `, with ${gcFmt(coins)}` : ''}`);
+  }
+
   /* ---------- playing ---------- */
   function award(f, amt) {
     S.user.featureDay = dayKey();
@@ -106,7 +118,15 @@
   function openF2P(id) {
     const g = F2P.find(x => x.id === id);
     if (!g || g.soon) return;
-    if (typeof requireLogin === 'function' && !requireLogin()) return;
+    if (typeof S === 'undefined' || !S.user) {
+      openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
+        <h2 class="gc-offer-h">Sign up or log in to get <span>${gcFmt(SIGNUP_GC)}</span> free on us</h2>
+        <p class="x-sub">Use them in ${g.name} and our other free games. Gold Coins have no cash value.</p>
+        <div class="gc-offer-acts"><button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-outline btn-block" data-act="login">Log in</button></div>
+        <button class="gc-skip" data-x-act="f2p-guest" data-x-id="${g.id}">Continue to ${g.name} with 0 coins</button>`);
+      $('#modalBox').classList.add('x-box', 'gc-box');
+      return;
+    }
     const bal = gcBal(), inGame = pile(g.id);
     const others = F2P.filter(x => !x.soon && x.id !== g.id && pile(x.id)).map(x => `${x.name}: ${gcFmt(pile(x.id))}`).join(' \u00b7 ');
     openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
@@ -165,7 +185,8 @@
       openF2P(g.id); toast(`${gcFmt(n)} back in your balance`);
       return;
     }
-    if (a === 'f2p-play') { const g = F2P.find(x => x.id === t.dataset.xId); toast(`${g.name} opens here in the live site, with ${gcFmt(pile(g.id))}`); return; }
+    if (a === 'f2p-play') { const g = F2P.find(x => x.id === t.dataset.xId); launchGame(g, pile(g.id)); return; }
+    if (a === 'f2p-guest') { const g = F2P.find(x => x.id === t.dataset.xId); closeModal(); launchGame(g, 0); return; }
     if (a === 'daily') { openFeature(); return; }
     if (played()) return;
     if (a === 'spin') {

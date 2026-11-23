@@ -96,3 +96,11 @@
 .gc-chips .chip:disabled {opacity:.4}
 .gc-foot {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .gc-foot .btn:disabled {opacity:.45}
+
+/* guest offer + Games page row */
+.xtra-games {margin:18px 0 26px}
+.gc-offer-h {text-align:center;font-size:24px !important;line-height:1.2}
+.gc-offer-h span {color:#f2c14b;white-space:nowrap}
+.gc-offer-acts {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}
+.gc-skip {display:block;width:100%;padding:10px;border-radius:12px;background:none;border:0;color:var(--mute,#9a9ab2);font-weight:700;font-size:14px;text-decoration:underline;cursor:pointer}
+.gc-skip:hover {color:inherit}

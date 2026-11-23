@@ -1930,7 +1930,7 @@ document.addEventListener('submit', async e => {
     }
     const credentials = makeCreds(pending.first);
     if (pending.join) { delete credentials.password; Object.assign(credentials,pending.join); delete pending.join; }
-    S.user = normUser({ first: pending.first, email: pending.email, phone: pending.phone || '', since: new Date().toISOString().slice(0, 10), ...credentials });
+    S.user = normUser({ goldCoins: 50000, first: pending.first, email: pending.email, phone: pending.phone || '', since: new Date().toISOString().slice(0, 10), ...credentials });
     S.showPw = true;
     save();
     if (route().r) {

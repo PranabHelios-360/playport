@@ -279,6 +279,7 @@ function viewGames() {
   return `<div class="page narrow-page">
     ${crumb(['Games'])}
     <p class="lede">Here you'll find your <b>Gaming Accounts</b>. ${mine.length ? 'Tap View to play, load or redeem.' : "Don't have one yet? Unlock it now!"}</p>
+    ${typeof f2pSection === 'function' ? f2pSection() : ''}
     ${mine.length ? `<div class="list-h"><h2>Your Games</h2><span>${mine.length} account${mine.length === 1 ? '' : 's'}</span></div><div class="rows">${mine.map(platRow).join('')}</div>` : ''}
     ${rest.length ? `<div class="list-h"><h2>More Games</h2><span>${rest.length} available</span></div><div class="rows">${rest.map(platRow).join('')}</div>` : ''}
   </div>`;
@@ -1832,7 +1833,7 @@ document.addEventListener('submit', e => {
   if ((k === 'email' || k === 'login') && d.phone && d.phone.replace(/[^0-9]/g, '').length < 6) { toast('Enter a phone number with at least 6 digits'); return; }
   if (k === 'email') { pending.first = d.first.trim(); pending.via = d.phone ? 'phone' : 'email'; if (d.phone) { pending.cc = d.cc; pending.phone = d.phone.replace(/[^0-9]/g, ''); pending.email = ''; } else { pending.email = d.email.trim(); pending.phone = ''; } signupStep(2); }
   if (k === 'code') {
-    S.user = normUser({ first: pending.first, email: pending.email || '', phone: pending.via === 'phone' ? `${pending.cc} ${pending.phone}` : '', since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) });
+    S.user = normUser({ gc: 50000, first: pending.first, email: pending.email || '', phone: pending.via === 'phone' ? `${pending.cc} ${pending.phone}` : '', since: new Date().toISOString().slice(0, 10), ...makeCreds(pending.first) });
     S.showPw = true;
     save();
     history.replaceState(null, '', location.pathname + location.search + '#/');

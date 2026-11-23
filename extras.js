@@ -26,6 +26,19 @@
     return [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':');
   }
 
+  /* ---------- Gold Coins: main balance + one pile per free game ---------- */
+  const GC_KEY = () => ('gc' in S.user ? 'gc' : 'goldCoins');
+  function gcBal() {
+    const k = GC_KEY();
+    if (!Number.isFinite(S.user[k])) S.user[k] = 10000; /* demo starting coins where a site has none yet */
+    return S.user[k];
+  }
+  const gcSet = n => { S.user[GC_KEY()] = Math.max(0, Math.round(n)); };
+  const pile = id => ((S.user.f2p || {})[id] || 0);
+  const pileSet = (id, n) => { S.user.f2p = S.user.f2p || {}; S.user.f2p[id] = Math.max(0, Math.round(n)); };
+  const gcFmt = n => `${Math.round(n).toLocaleString('en-US')} GC`;
+  const gcTx = (label, amt) => { if (typeof gcv === 'function' && typeof addTx === 'function') addTx({ kind: 'Loads', label, amt, cur: 'gc', status: 'done' }); };
+
   /* ---------- art (inline SVG, no image files) ---------- */
   const WHEEL = [0.05, 0, 0.15, 0.5, 0, 1.5, 0.05, 5];
   const WHEEL_COL = ['#e53bd0', '#7b2ff2', '#3b6cf2', '#1fb6d9', '#16c47f', '#a6d61c', '#f2a21c', '#ef4444'];
@@ -51,6 +64,7 @@
       ${g.art ? `<img class="f2p-art" src="${g.art}" alt="" loading="lazy">` : `<span class="f2p-mark">${g.mark || '?'}</span>`}
       <span class="f2p-txt">${g.logo ? `<img class="f2p-logo" src="${g.logo}" alt="">` : ''}<b>${g.name}</b><small>${g.sub}</small></span>
       <span class="f2p-tag">${g.soon ? 'Soon' : 'Free · GC'}</span>
+      ${!g.soon && typeof S !== 'undefined' && S.user && pile(g.id) ? `<span class="f2p-pile">${gcFmt(pile(g.id))} in game</span>` : ''}
     </button>`;
   }
   function dailyCard() {
@@ -89,6 +103,28 @@
   }
   const pick = list => { let r = Math.random() * list.reduce((s, x) => s + x[1], 0); for (const [v, w] of list) { if ((r -= w) <= 0) return v; } return list[0][0]; };
 
+  function openF2P(id) {
+    const g = F2P.find(x => x.id === id);
+    if (!g || g.soon) return;
+    if (typeof requireLogin === 'function' && !requireLogin()) return;
+    const bal = gcBal(), inGame = pile(g.id);
+    const others = F2P.filter(x => !x.soon && x.id !== g.id && pile(x.id)).map(x => `${x.name}: ${gcFmt(pile(x.id))}`).join(' \u00b7 ');
+    openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
+      <h2>${g.name}</h2><p class="x-sub">Free to play with Gold Coins. Gold Coins have no cash value.</p>
+      <div class="gc-split">
+        <div><small>Your Gold Coins</small><b>${gcFmt(bal)}</b></div>
+        <div><small>In ${g.name}</small><b class="gc-in">${gcFmt(inGame)}</b></div>
+      </div>
+      ${others ? `<p class="gc-others">Also in other games: ${others}</p>` : ''}
+      <label class="lbl" for="gcAmt">How many Gold Coins to take to ${g.name}?</label>
+      <div class="gc-amt"><input id="gcAmt" class="field" type="number" inputmode="numeric" min="1" step="100" max="${bal}" value="${Math.min(bal, 1000)}"><span>GC</span></div>
+      <div class="gc-chips">${[1000, 5000, 10000].map(v => `<button type="button" class="chip" data-x-act="gc-chip" data-v="${v}" ${v > bal ? 'disabled' : ''}>${v.toLocaleString('en-US')}</button>`).join('')}<button type="button" class="chip" data-x-act="gc-chip" data-v="all" ${bal < 1 ? 'disabled' : ''}>All</button></div>
+      <button class="btn btn-accent btn-block" data-x-act="gc-move" data-x-id="${g.id}" ${bal < 1 ? 'disabled' : ''}>Move to ${g.name}</button>
+      <div class="gc-foot"><button class="btn btn-outline" data-x-act="f2p-play" data-x-id="${g.id}" ${inGame ? '' : 'disabled'}>Play free</button><button class="btn btn-ghost" data-x-act="gc-back" data-x-id="${g.id}" ${inGame ? '' : 'disabled'}>Bring back</button></div>
+      ${bal < 1 ? '<p class="note">You have no Gold Coins left to move. Bring some back from another game, or get more in the Shop.</p>' : ''}`);
+    $('#modalBox').classList.add('x-box', 'gc-box');
+  }
+
   function openFeature() {
     if (typeof requireLogin === 'function' && !requireLogin()) return;
     const f = today();
@@ -110,15 +146,26 @@
     const t = e.target.closest('[data-x-act]');
     if (!t) return;
     const a = t.dataset.xAct, f = today();
-    if (a === 'f2p') {
-      const g = F2P.find(x => x.id === t.dataset.xId);
-      if (!g || g.soon) return;
-      openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
-        <h2>${g.name}</h2><p>${g.sub}. Free to play with Gold Coins, which have no cash value. Sweeps Coins are not used.</p>
-        <button class="btn btn-accent btn-block" data-x-act="f2p-play" data-x-id="${g.id}">Play free</button>`);
+    if (a === 'f2p') { openF2P(t.dataset.xId); return; }
+    if (a === 'gc-chip') { const inp = document.getElementById('gcAmt'); const v = t.dataset.v === 'all' ? gcBal() : Number(t.dataset.v); inp.value = Math.min(gcBal(), v); return; }
+    if (a === 'gc-move') {
+      const g = F2P.find(x => x.id === t.dataset.xId), n = Math.round(Number(document.getElementById('gcAmt').value) || 0);
+      if (n < 1) { toast('Enter how many Gold Coins to move'); return; }
+      if (n > gcBal()) { toast(`You have ${gcFmt(gcBal())}`); return; }
+      gcSet(gcBal() - n); pileSet(g.id, pile(g.id) + n); gcTx(`Gold Coins to ${g.name}`, -n);
+      if (typeof refresh === 'function') refresh(); else if (typeof save === 'function') save();
+      openF2P(g.id); toast(`${gcFmt(n)} moved to ${g.name}`);
       return;
     }
-    if (a === 'f2p-play') { toast(`${F2P.find(x => x.id === t.dataset.xId).name} opens here in the live site`); return; }
+    if (a === 'gc-back') {
+      const g = F2P.find(x => x.id === t.dataset.xId), n = pile(g.id);
+      if (!n) return;
+      pileSet(g.id, 0); gcSet(gcBal() + n); gcTx(`Gold Coins back from ${g.name}`, n);
+      if (typeof refresh === 'function') refresh(); else if (typeof save === 'function') save();
+      openF2P(g.id); toast(`${gcFmt(n)} back in your balance`);
+      return;
+    }
+    if (a === 'f2p-play') { const g = F2P.find(x => x.id === t.dataset.xId); toast(`${g.name} opens here in the live site, with ${gcFmt(pile(g.id))}`); return; }
     if (a === 'daily') { openFeature(); return; }
     if (played()) return;
     if (a === 'spin') {

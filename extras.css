@@ -77,3 +77,22 @@
   .x-wheel-peek svg {top:-58px}
   .x-spin-hub {top:102px;width:80px;height:80px;font-size:19px}
 }
+
+/* move Gold Coins into a free game */
+.f2p-pile {position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:800;color:#fff;background:#0009;border:1px solid var(--c2)}
+.modal-box.gc-box {text-align:left}
+.gc-box h2,.gc-box .x-sub {text-align:center}
+.gc-split {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}
+.gc-split > div {padding:10px 12px;border-radius:12px;background:#ffffff0f}
+.gc-split small {display:block;color:var(--mute,#9a9ab2);font-size:12.5px}
+.gc-split b {font-size:18px;font-family:ui-monospace,monospace}
+.gc-split .gc-in {color:#f2c14b}
+.gc-others {margin:-2px 0 10px;color:var(--mute,#9a9ab2);font-size:12.5px}
+.gc-amt {position:relative;margin:6px 0 8px}
+.gc-amt .field {width:100%;padding-right:48px;font-size:18px;font-weight:700}
+.gc-amt span {position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:800;color:#f2c14b}
+.gc-chips {display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.gc-chips .chip {height:38px;padding:0 6px;font-size:14px}
+.gc-chips .chip:disabled {opacity:.4}
+.gc-foot {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.gc-foot .btn:disabled {opacity:.45}

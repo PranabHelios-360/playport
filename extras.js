@@ -138,7 +138,6 @@
       <div class="gc-amt"><input id="gcAmt" class="field" type="number" inputmode="numeric" min="0" step="100" max="${bal}" value="${start}" data-x-id="${g.id}"><span>GC</span></div>
       <div class="gc-chips">${[1000, 5000, 10000].map(v => `<button type="button" class="chip" data-x-act="gc-chip" data-v="${v}" ${v > bal ? 'disabled' : ''}>${v.toLocaleString('en-US')}</button>`).join('')}<button type="button" class="chip" data-x-act="gc-chip" data-v="all" ${bal < 1 ? 'disabled' : ''}>All</button></div>
       <button class="btn btn-accent btn-block gc-play" data-x-act="f2p-play" data-x-id="${g.id}">${playLabel(start)}</button>
-      <p class="gc-bonus">${g.name} adds its own sign-in bonus on top when you get there.</p>
       ${inGame ? `<button class="gc-return" data-x-act="gc-back" data-x-id="${g.id}">Return ${gcFmt(inGame)} to my balance</button>` : ''}
       <p class="gc-others">Done in ${g.name}? Return its coins here any time to use them in our other free games.</p>`);
     $('#modalBox').classList.add('x-box', 'gc-box');

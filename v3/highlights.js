@@ -141,9 +141,46 @@ function advanceHomeWorld(step) {
   document.querySelectorAll('.home-world-position i').forEach((mark,index) => mark.classList.toggle('current',index === homeWorldIndex));
   document.querySelector('.home-world-status').textContent = stage.querySelector('[data-offset="0"]').ariaLabel;
 }
+/* Signed-in home, built like Recharge777: a welcome hero and a plain Winners card. */
+let winnersTab = 'latest';
+function memberHero() {
+  const u = S.user, hot = ['firekirin', 'milkyway', 'orion'].map(id => PLATFORMS.find(p => p.id === id)).filter(Boolean);
+  return `<section class="sh-hero">
+    <div class="sh-hero-txt">
+      <h1>Welcome back, <span>${esc(u.first || u.username)}</span></h1>
+      <p>Fish games and slots from every platform, all in one place.</p>
+      <div class="sh-hero-acts"><a class="sh-btn" href="#/games">Play now</a><a class="sh-btn ghost" href="#/balance" data-bal-go="deposit">Deposit</a></div>
+      <div class="sh-hot"><small>Hot right now</small><div>${hot.map((p, i) => `<a href="#/platform/${p.id}">${coin(p, 'xs')}<span><b>${p.name}</b><em>${[1240, 986, 712][i].toLocaleString('en-US')} playing</em></span></a>`).join('')}</div></div>
+    </div>
+    <div class="sh-hero-art"><img src="assets/landing/welcome-host.jpg" alt=""></div>
+  </section>`;
+}
+function winnersRows() {
+  const rows = winnersTab === 'latest'
+    ? latestHighlights().slice(0, 5).map(r => ({ alias: r.alias, platform: r.platform, amount: r.usdCents / 100, when: new Date(r.at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) }))
+    : monthlyLeaders().slice(0, 5).map(r => ({ alias: r.alias, platform: r.platform, amount: r.total / 100 }));
+  return rows.map((r, i) => { const p = PLATFORMS.find(x => x.id === r.platform); return `<div class="sh-win ${winnersTab === 'month' && i === 0 ? 'top' : ''}">
+    ${winnersTab === 'month' ? `<span class="sh-rank">#${i + 1}</span>` : ''}${p ? coin(p, 'xs') : ''}
+    <span class="sh-win-txt"><b>${esc(r.alias)}</b><small>${p ? p.name : ''}${r.when ? ` &middot; ${r.when}` : ''}</small></span>
+    <em>${highlightMoney.format(r.amount)}</em></div>`; }).join('');
+}
+function winnersCard() {
+  return `<section class="sh-winners" id="shWinners">
+    <div class="sh-winners-h"><h2>${I.trophy}Winners</h2><div class="sh-seg"><button class="${winnersTab === 'latest' ? 'on' : ''}" data-sh-tab="latest">Latest</button><button class="${winnersTab === 'month' ? 'on' : ''}" data-sh-tab="month">This month</button></div></div>
+    <div class="sh-win-list">${winnersRows()}</div>
+  </section>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-sh-tab]');
+  if (!b) return;
+  winnersTab = b.dataset.shTab;
+  const card = document.getElementById('shWinners');
+  if (card) card.outerHTML = winnersCard();
+});
+
 function highlightsHome() {
   return `<div class="page member-highlights member-worlds">
-    ${activitySpotlight()}
+    ${memberHero()}
     <section class="member-world-hero" aria-labelledby="home-world-title">
       <header><p>Featured platforms</p><h2 id="home-world-title">Your next world awaits.</h2></header>
       <div class="home-world-stage" data-original="${homeWorldIndex === 1}">${homeWorldCards()}</div>
@@ -152,7 +189,9 @@ function highlightsHome() {
         <button type="button" data-act="spotlight-next" aria-label="Next platform">${I.chev}</button>${carouselPause()}</div>
       <span class="home-world-status" aria-live="polite"></span>
       <a class="home-world-all" href="#/games"><span>View all games</span><span aria-hidden="true">→</span></a>
-    </section>${typeof extrasSection === 'function' ? extrasSection() : ''}</div>`;
+    </section>
+    ${winnersCard()}
+    ${typeof extrasSection === 'function' ? extrasSection() : ''}</div>`;
 }
 let deferredInstall;
 let justInstalled=false;

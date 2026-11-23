@@ -72,27 +72,9 @@ window.RechargeSplash = (() => {
     };
   }
 
-  const opening = play(host);
-  let failed = false;
-  function handleError(event) {
-    const source = event.target instanceof HTMLScriptElement ? event.target.src : event.filename;
-    if (source && Array.from(document.scripts).some(script => script.hasAttribute('data-boot') && script.src === source)) {
-      failed = true;
-      opening.fail('Skillandslots couldn’t start.', () => location.reload());
-    }
-  }
-  window.addEventListener('error', handleError, true);
-  document.addEventListener('DOMContentLoaded', () => {
-    window.removeEventListener('error', handleError, true);
-    if (failed) return;
-    if (!host.hasAttribute('data-ready')) {
-      opening.fail('Skillandslots couldn’t start.', () => location.reload());
-      return;
-    }
-    opening.ready(() => {
-      host.hidden = true;
-      host.classList.add('off');
-    });
-  }, {once:true});
+  /* No startup splash: the page opens straight away. play() is still used by the game-opening popup. */
+  host.hidden = true;
+  host.classList.add('off');
+  host.replaceChildren();
   return {play};
 })();

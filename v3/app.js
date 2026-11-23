@@ -1140,14 +1140,12 @@ function pickSite(k) {
   const host=document.getElementById('loader');
   host.hidden=false;
   host.classList.remove('off');
-  const splash=k==='a'?RechargeSplash.play(host):null;
-  if(!splash) host.innerHTML=coinHtml(140);
+  const splash=null;
   document.getElementById('chooser').hidden = true;
   document.body.style.overflow = '';
   render();
   const finish=()=>{host.hidden=true;host.classList.add('off');host.replaceChildren();};
-  if(splash) splash.ready(finish);
-  else setTimeout(finish,600);
+  finish();
 }
 
 /* ---------- router ---------- */

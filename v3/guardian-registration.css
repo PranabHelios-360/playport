@@ -57,8 +57,7 @@ body:has(.guardian-registration) .top .member-menu-trigger {display:grid;place-i
 body:has(.guardian-registration) .tabbar .member-home-link {display:flex}
 body:has(.guardian-registration) .tabbar [data-menu] {display:none}
 :root[data-theme=navy] body:has(.guardian-registration) :is(.top,.tabbar) {background:#190b20;border-color:#693167}
-:root[data-theme=navy] body:has(.guardian-registration) .top .logo {width:clamp(108px,31vw,198px);height:44px;background:url("assets/landing/guardian-wordmark.webp") left center/contain no-repeat}
-:root[data-theme=navy] body:has(.guardian-registration) .top .logo>span {display:none}
+/* header keeps the text logo (the old wordmark image had the previous brand name baked in) */
 :root[data-site][data-theme] body:has(.guardian-registration) .guest-register {background:linear-gradient(#a633ac,#732180);border:1px solid #e48dd9;color:white;border-radius:24px}
 body:has(.guardian-registration) .guest-login {border-radius:24px}
 @media(max-width:600px) {

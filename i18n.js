@@ -249,6 +249,7 @@ const ES = {
   'Sign up or log in to get': 'Regístrate o inicia sesión para recibir', 'free on us': 'gratis de nuestra parte', 'Sign up': 'Registrarse',
   'Use them in Arthur Fortunes and our other free games. Gold Coins have no cash value.': 'Úsalas en Arthur Fortunes y nuestros otros juegos gratis. Las Gold Coins no tienen valor en efectivo.',
   'Continue to Arthur Fortunes with 0 coins': 'Continuar a Arthur Fortunes con 0 monedas', 'Opening Arthur Fortunes': 'Abriendo Arthur Fortunes', 'Opening Arthur Fortunes with 10,000 GC': 'Abriendo Arthur Fortunes con 10,000 GC',
+  'How many Gold Coins do you want to take to Arthur Fortunes?': '¿Cuántas Gold Coins quieres llevar a Arthur Fortunes?', 'Play free with 10,000 GC': 'Jugar gratis con 10,000 GC', 'Arthur Fortunes adds its own sign-in bonus on top when you get there.': 'Arthur Fortunes te da su propio bono de bienvenida al llegar.', 'Gold Coins you take to Arthur Fortunes stay there. Keep some here to play our other free games.': 'Las Gold Coins que lleves a Arthur Fortunes se quedan allí. Guarda algunas para nuestros otros juegos gratis.', '10,000 GC sent': '10,000 GC enviadas',
   'Player ID': 'ID de jugador', 'Copy Player ID': 'Copiar ID de jugador',
   'Enter a phone number with at least 6 digits': 'Escribe un número de teléfono de al menos 6 dígitos',
   'Email': 'Correo', 'Phone': 'Teléfono', 'Phone number': 'Número de teléfono', 'Country code': 'Código de país', 'At least 6 digits': 'Al menos 6 dígitos',

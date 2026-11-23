@@ -64,7 +64,7 @@
       ${g.art ? `<img class="f2p-art" src="${g.art}" alt="" loading="lazy">` : `<span class="f2p-mark">${g.mark || '?'}</span>`}
       <span class="f2p-txt">${g.logo ? `<img class="f2p-logo" src="${g.logo}" alt="">` : ''}<b>${g.name}</b><small>${g.sub}</small></span>
       <span class="f2p-tag">${g.soon ? 'Soon' : 'Free · GC'}</span>
-      ${!g.soon && typeof S !== 'undefined' && S.user && pile(g.id) ? `<span class="f2p-pile">${gcFmt(pile(g.id))} in game</span>` : ''}
+      ${!g.soon && typeof S !== 'undefined' && S.user && pile(g.id) ? `<span class="f2p-pile">${gcFmt(pile(g.id))} sent</span>` : ''}
     </button>`;
   }
   function dailyCard() {
@@ -96,7 +96,9 @@
   };
   const SIGNUP_GC = 50000;
   function launchGame(g, coins) {
-    if (g.url) { window.open(g.url, '_blank', 'noopener'); toast(`Opening ${g.name}${coins ? ` with ${gcFmt(coins)}` : ''}`); }
+    const from = typeof BRAND === 'function' ? BRAND() : document.title.split('|')[0].trim();
+    const link = g.url ? `${g.url}${g.url.includes('?') ? '&' : '?'}gc=${Math.round(coins || 0)}&from=${encodeURIComponent(from)}` : '';
+    if (link) { window.open(link, '_blank', 'noopener'); toast(`Opening ${g.name}${coins ? ` with ${gcFmt(coins)}` : ''}`); }
     else toast(`${g.name} opens here in the live site${coins ? `, with ${gcFmt(coins)}` : ''}`);
   }
 
@@ -115,6 +117,7 @@
   }
   const pick = list => { let r = Math.random() * list.reduce((s, x) => s + x[1], 0); for (const [v, w] of list) { if ((r -= w) <= 0) return v; } return list[0][0]; };
 
+  const playLabel = n => (n > 0 ? `Play free with ${gcFmt(n)}` : 'Play free');
   function openF2P(id) {
     const g = F2P.find(x => x.id === id);
     if (!g || g.soon) return;
@@ -127,21 +130,16 @@
       $('#modalBox').classList.add('x-box', 'gc-box');
       return;
     }
-    const bal = gcBal(), inGame = pile(g.id);
-    const others = F2P.filter(x => !x.soon && x.id !== g.id && pile(x.id)).map(x => `${x.name}: ${gcFmt(pile(x.id))}`).join(' \u00b7 ');
+    const bal = gcBal(), start = Math.min(bal, 10000);
     openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
       <h2>${g.name}</h2><p class="x-sub">Free to play with Gold Coins. Gold Coins have no cash value.</p>
-      <div class="gc-split">
-        <div><small>Your Gold Coins</small><b>${gcFmt(bal)}</b></div>
-        <div><small>In ${g.name}</small><b class="gc-in">${gcFmt(inGame)}</b></div>
-      </div>
-      ${others ? `<p class="gc-others">Also in other games: ${others}</p>` : ''}
-      <label class="lbl" for="gcAmt">How many Gold Coins to take to ${g.name}?</label>
-      <div class="gc-amt"><input id="gcAmt" class="field" type="number" inputmode="numeric" min="1" step="100" max="${bal}" value="${Math.min(bal, 1000)}"><span>GC</span></div>
+      <div class="gc-split one"><div><small>Your Gold Coins</small><b>${gcFmt(bal)}</b></div></div>
+      <label class="lbl" for="gcAmt">How many Gold Coins do you want to take to ${g.name}?</label>
+      <div class="gc-amt"><input id="gcAmt" class="field" type="number" inputmode="numeric" min="0" step="100" max="${bal}" value="${start}" data-x-id="${g.id}"><span>GC</span></div>
       <div class="gc-chips">${[1000, 5000, 10000].map(v => `<button type="button" class="chip" data-x-act="gc-chip" data-v="${v}" ${v > bal ? 'disabled' : ''}>${v.toLocaleString('en-US')}</button>`).join('')}<button type="button" class="chip" data-x-act="gc-chip" data-v="all" ${bal < 1 ? 'disabled' : ''}>All</button></div>
-      <button class="btn btn-accent btn-block" data-x-act="gc-move" data-x-id="${g.id}" ${bal < 1 ? 'disabled' : ''}>Move to ${g.name}</button>
-      <div class="gc-foot"><button class="btn btn-outline" data-x-act="f2p-play" data-x-id="${g.id}" ${inGame ? '' : 'disabled'}>Play free</button><button class="btn btn-ghost" data-x-act="gc-back" data-x-id="${g.id}" ${inGame ? '' : 'disabled'}>Bring back</button></div>
-      ${bal < 1 ? '<p class="note">You have no Gold Coins left to move. Bring some back from another game, or get more in the Shop.</p>' : ''}`);
+      <button class="btn btn-accent btn-block gc-play" data-x-act="f2p-play" data-x-id="${g.id}">${playLabel(start)}</button>
+      <p class="gc-bonus">${g.name} adds its own sign-in bonus on top when you get there.</p>
+      <p class="gc-others">Gold Coins you take to ${g.name} stay there. Keep some here to play our other free games.</p>`);
     $('#modalBox').classList.add('x-box', 'gc-box');
   }
 
@@ -167,25 +165,16 @@
     if (!t) return;
     const a = t.dataset.xAct, f = today();
     if (a === 'f2p') { openF2P(t.dataset.xId); return; }
-    if (a === 'gc-chip') { const inp = document.getElementById('gcAmt'); const v = t.dataset.v === 'all' ? gcBal() : Number(t.dataset.v); inp.value = Math.min(gcBal(), v); return; }
-    if (a === 'gc-move') {
-      const g = F2P.find(x => x.id === t.dataset.xId), n = Math.round(Number(document.getElementById('gcAmt').value) || 0);
-      if (n < 1) { toast('Enter how many Gold Coins to move'); return; }
+    if (a === 'gc-chip') { const inp = document.getElementById('gcAmt'); const v = t.dataset.v === 'all' ? gcBal() : Number(t.dataset.v); inp.value = Math.min(gcBal(), v); const pb = document.querySelector('#modalBox .gc-play'); if (pb) pb.textContent = playLabel(Number(inp.value)); return; }
+    if (a === 'f2p-play') {
+      const g = F2P.find(x => x.id === t.dataset.xId), inp = document.getElementById('gcAmt');
+      const n = Math.max(0, Math.round(Number(inp && inp.value) || 0));
       if (n > gcBal()) { toast(`You have ${gcFmt(gcBal())}`); return; }
-      gcSet(gcBal() - n); pileSet(g.id, pile(g.id) + n); gcTx(`Gold Coins to ${g.name}`, -n);
+      if (n) { gcSet(gcBal() - n); pileSet(g.id, pile(g.id) + n); gcTx(`Gold Coins to ${g.name}`, -n); }
       if (typeof refresh === 'function') refresh(); else if (typeof save === 'function') save();
-      openF2P(g.id); toast(`${gcFmt(n)} moved to ${g.name}`);
+      closeModal(); launchGame(g, n);
       return;
     }
-    if (a === 'gc-back') {
-      const g = F2P.find(x => x.id === t.dataset.xId), n = pile(g.id);
-      if (!n) return;
-      pileSet(g.id, 0); gcSet(gcBal() + n); gcTx(`Gold Coins back from ${g.name}`, n);
-      if (typeof refresh === 'function') refresh(); else if (typeof save === 'function') save();
-      openF2P(g.id); toast(`${gcFmt(n)} back in your balance`);
-      return;
-    }
-    if (a === 'f2p-play') { const g = F2P.find(x => x.id === t.dataset.xId); launchGame(g, pile(g.id)); return; }
     if (a === 'f2p-guest') { const g = F2P.find(x => x.id === t.dataset.xId); closeModal(); launchGame(g, 0); return; }
     if (a === 'daily') { openFeature(); return; }
     if (played()) return;
@@ -220,5 +209,6 @@
     if (a === 'cash') { award(f, 1.25); document.getElementById('xOut').innerHTML = resultHtml(f, 1.25); }
   });
 
+  document.addEventListener('input', e => { if (e.target.id === 'gcAmt') { const pb = document.querySelector('#modalBox .gc-play'); if (pb) pb.textContent = playLabel(Math.max(0, Math.round(Number(e.target.value) || 0))); } });
   setInterval(() => { document.querySelectorAll('[data-x-countdown]').forEach(el => { el.textContent = untilMidnight(); }); }, 1000);
 })();

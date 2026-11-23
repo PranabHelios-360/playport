@@ -104,3 +104,6 @@
 .gc-offer-acts {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}
 .gc-skip {display:block;width:100%;padding:10px;border-radius:12px;background:none;border:0;color:var(--mute,#9a9ab2);font-weight:700;font-size:14px;text-decoration:underline;cursor:pointer}
 .gc-skip:hover {color:inherit}
+.gc-split.one {grid-template-columns:1fr}
+.gc-play {margin-top:2px;height:52px;font-size:16.5px}
+.gc-bonus {margin:10px 0 2px;padding:10px 12px;border-radius:12px;background:#f2c14b1f;color:#f2d27a;font-size:13.5px;font-weight:700;text-align:center}

@@ -246,6 +246,7 @@ function viewHome() {
 
     ${platBand()}
     ${promoBanner()}
+    ${typeof extrasSection === 'function' ? extrasSection() : ''}
 
     ${guest ? `<section class="steps3 four">
       <div><span>1</span><b>Create your account</b><p>Email and a 6-digit code. That's your ${BRAND()} login.</p></div>
@@ -1038,6 +1039,7 @@ function viewHomeB() {
     </div>
     <section class="b-sec"><div class="b-sec-h"><h2>Platforms</h2><a href="#/games">See all ${I.chev}</a></div><div class="b-plats">${PLATFORMS.map(platCardB).join('')}</div></section>
     ${promoBanner()}
+    ${typeof extrasSection === 'function' ? extrasSection() : ''}
     <section class="b-sec"><div class="b-sec-h"><h2>Recent big wins</h2></div>
       <div class="b-wins">${BIG.slice(0, 5).map(([pid, u, d, a]) => `<div class="b-win">${coin(plat(pid), 'xs')}<b>${esc(u)}</b><span>${plat(pid).name}</span><small>${d}</small><em>$${a.toLocaleString('en-US')}</em></div>`).join('')}</div></section>
     ${S.user ? '' : reviewsSection()}

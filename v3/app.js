@@ -341,6 +341,7 @@ function viewHome() {
 return `<div class="page recharge-home premium-home">
 ${landingRegistration()}
 ${platformSpotlight()}
+${typeof extrasSection === 'function' ? extrasSection() : ''}
 ${featureRewards()}${communityUpdates()}</div>`;
 }
 

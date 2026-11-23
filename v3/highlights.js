@@ -152,7 +152,7 @@ function highlightsHome() {
         <button type="button" data-act="spotlight-next" aria-label="Next platform">${I.chev}</button>${carouselPause()}</div>
       <span class="home-world-status" aria-live="polite"></span>
       <a class="home-world-all" href="#/games"><span>View all games</span><span aria-hidden="true">→</span></a>
-    </section></div>`;
+    </section>${typeof extrasSection === 'function' ? extrasSection() : ''}</div>`;
 }
 let deferredInstall;
 let justInstalled=false;

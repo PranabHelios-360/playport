@@ -2061,3 +2061,7 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 .site-switch a:hover,.site-switch button:hover {border-color:#6b6b8c;color:#fff}
 .site-switch .on {background:#fff;border-color:#fff;color:#0b0b12;cursor:default}
 @media (max-width:420px) {.site-switch {justify-content:flex-start;padding:6px 8px;gap:5px}.site-switch > small {display:none}.site-switch a,.site-switch button,.site-switch span {padding:0 10px;font-size:12.5px}}
+
+/* no footer for signed-in players */
+body.signed-in > .foot { display: none; }
+body.signed-in main#app { min-height: 0; }

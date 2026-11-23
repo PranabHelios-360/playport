@@ -498,7 +498,7 @@ function dashboardHtml(inPanel) {
     <div class="d-list">
       ${row(I.gauge, 'Daily deposit limit', u.limit ? `$${u.limit} per day` : 'No limit', 'data-sheet="limit"')}
       ${row(I.pause, 'Take a break', blocked() || 'Pause deposits, or self-exclude', 'data-sheet="break"')}
-      ${inPanel ? row(navIco.swap, 'Switch site', 'Recharge777, Gamewallet777 or Skillslots777', 'data-act="choose-site"') : ''}
+      ${inPanel ? row(navIco.swap, 'Switch site', 'Recharge777, Gamewallet777 or Skillandslots', 'data-act="choose-site"') : ''}
       ${row(I.out, 'Logout', '', 'data-act="logout"', '')}
     </div>`;
 }
@@ -1084,7 +1084,7 @@ function showChooser() {
           <b>Gamewallet777</b><span>Gold &amp; ruby &middot; Wine, Navy or White &middot; side menu</span></button>
         <a class="ch-opt c" href="v3/">
           <div class="ch-prev"><img src="v3/assets/landing/join-777.jpg" alt="" loading="lazy"></div>
-          <b>Skillslots777</b><span>Full redesign &middot; Splash intro &middot; New wallet and shop</span></a>
+          <b>Skillandslots</b><span>Full redesign &middot; Splash intro &middot; New wallet and shop</span></a>
       </div>
     </div>`;
   ch.hidden = false;
@@ -1093,7 +1093,7 @@ function showChooser() {
 function siteSwitch() {
   const el = document.getElementById('siteSwitch');
   if (!el) return;
-  el.innerHTML = `<small>Site:</small>${[['a', 'Recharge777'], ['b', 'Gamewallet777']].map(([k, n]) => `<button type="button" class="${S.site === k ? 'on' : ''}" data-site-pick="${k}" ${S.site === k ? 'aria-current="page"' : ''}>${n}</button>`).join('')}<a href="v3/">Skillslots777</a>`;
+  el.innerHTML = `<small>Site:</small>${[['a', 'Recharge777'], ['b', 'Gamewallet777']].map(([k, n]) => `<button type="button" class="${S.site === k ? 'on' : ''}" data-site-pick="${k}" ${S.site === k ? 'aria-current="page"' : ''}>${n}</button>`).join('')}<a href="v3/">Skillandslots</a>`;
 }
 function pickSite(k) {
   if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
@@ -1119,6 +1119,7 @@ function render(keepScroll) {
   const views = { home: isB ? viewHomeB : viewHome, games: r === 'platform' ? () => viewPlatform(arg) : (isB ? viewGamesB : viewGames), balance: viewBalance, activity: viewActivity, account: isB ? viewAccountB : viewAccount, rewards: viewRewards };
   $('#app').innerHTML = views[name]();
   $('#topRight').innerHTML = topRight();
+  document.body.classList.toggle('signed-in', !!S.user);
   claimStrip();
   if (name === 'home' && S.user && S.user.kyc === 'none' && !S.vpShown) { S.vpShown = true; let tries = 0; const tryPop = () => { if (!S.user || S.user.kyc !== 'none') return; if ($('#modal').hidden && $('#chooser').hidden) verifyPop(); else if (++tries < 20) setTimeout(tryPop, 1500); }; setTimeout(tryPop, 1500); }
   document.body.classList.toggle('has-ticker', name === 'home' && !isB);

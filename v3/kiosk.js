@@ -24,10 +24,10 @@ function publicHomeUrl() { return location.origin + location.pathname + '#/'; }
 async function shareHome() {
   const url = publicHomeUrl();
   if (navigator.share) {
-    try { await navigator.share({title:'Skillslots777',url}); return; }
+    try { await navigator.share({title:'Skillandslots',url}); return; }
     catch (error) { if (error.name === 'AbortError') return; }
   }
-  openModal(`<section class="pair-panel"><h2>Share Skillslots777</h2><p>Share the public Home page.</p><label>Home link<input class="field" data-share-url readonly value="${esc(url)}"></label><button class="pair-primary" data-kiosk="copy">Copy link</button><p class="pair-status" role="status"></p></section>`);
+  openModal(`<section class="pair-panel"><h2>Share Skillandslots</h2><p>Share the public Home page.</p><label>Home link<input class="field" data-share-url readonly value="${esc(url)}"></label><button class="pair-primary" data-kiosk="copy">Copy link</button><p class="pair-status" role="status"></p></section>`);
 }
 function clearKioskChallenge() {
   clearTimeout(kioskExpiryTimer);
@@ -97,7 +97,7 @@ function stopKioskScanner() {
   scanner = null;
 }
 function showKioskScanner() {
-  openModal(`<section class="pair-panel scanner-panel"><h2>Scan QR code</h2><p>Point your camera at the QR code on your Skillslots777 kiosk.</p>
+  openModal(`<section class="pair-panel scanner-panel"><h2>Scan QR code</h2><p>Point your camera at the QR code on your Skillandslots kiosk.</p>
     <div class="kiosk-finder"><video muted playsinline autoplay></video><i aria-hidden="true"></i></div>
     <p class="pair-status" role="status">Start the camera or choose a QR image.</p><button class="pair-primary" data-kiosk="camera">Start camera</button>
     <label class="pair-file">Choose QR image<input type="file" accept="image/*" data-kiosk-image></label>
@@ -140,7 +140,7 @@ async function startKioskCamera(panel) {
       if (video.readyState >= 2 && video.videoWidth) {
         const value = decodeQr(video,video.videoWidth,video.videoHeight,run.canvas,640);
         if (value && acceptQr(value)) return;
-        if (value) status.textContent = 'Use a current Skillslots777 kiosk QR.';
+        if (value) status.textContent = 'Use a current Skillandslots kiosk QR.';
       }
       run.timer = setTimeout(tick,180);
     };
@@ -163,7 +163,7 @@ document.addEventListener('change',async event => {
     const image = new Image(); image.src=url; await image.decode();
     if (scanner!==run) return;
     const value=decodeQr(image,image.width,image.height,document.createElement('canvas'),1400);
-    if (!value || !acceptQr(value)) status.textContent='Use a current Skillslots777 kiosk QR.';
+    if (!value || !acceptQr(value)) status.textContent='Use a current Skillandslots kiosk QR.';
   } catch { if (scanner===run) status.textContent='Could not read the image. Try another QR image.'; }
   finally { URL.revokeObjectURL(url); }
 });

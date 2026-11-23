@@ -96,7 +96,7 @@ function save() {
 /* ---------- sites ---------- */
 
 const SITES = {
-  a: { name: 'Skillslots777', word: 'Skillslots<b>777</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20', img: 'assets/logos/r777-logo.png' },
+  a: { name: 'Skillandslots', word: 'Skilland<b>slots</b>', mark: '<path d="M10 9h12v3.2L15.8 23h-4.3l6.1-10.6H10Z" fill="var(--on-accent)"/>', theme: '#0b0f20', img: 'assets/logos/r777-logo.png' },
   b: { name: 'Loaded777', word: 'Loaded<b>777</b>', svg: '<svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="l7g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe7a1"/><stop offset=".45" stop-color="#e3a21a"/><stop offset=".75" stop-color="#ffd25a"/><stop offset="1" stop-color="#b9780c"/></linearGradient><radialGradient id="l7c" cx=".5" cy=".38" r=".65"><stop offset="0" stop-color="#3d1418"/><stop offset="1" stop-color="#120607"/></radialGradient></defs><circle cx="32" cy="32" r="31" fill="url(#l7g)"/><circle cx="32" cy="32" r="25.5" fill="url(#l7c)" stroke="#7a4a08" stroke-width="1.2"/><path d="M20.5 17.5h24v6.2L33.6 46.5h-8.4l10.6-21.2H20.5Z" fill="#e2343f" stroke="#ffd36b" stroke-width="2.2" stroke-linejoin="round"/><path d="M23 20.4h18.5" stroke="#ff9aa0" stroke-width="1.6" stroke-linecap="round" opacity=".75"/></svg>', mark: '<path d="M16 7.5l2.4 5 5.4.6-4 3.7 1.1 5.4L16 19.5l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6Z" fill="var(--on-accent)"/>', theme: '#0c0809' }
 };
 // Flat, scalable brand marks shared by header, drawer, footer and loader.
@@ -254,9 +254,9 @@ function landingReviews() {
     {name:'Sample player',quote:'Switching between the light and dark themes is a nice touch.'}
   ] : configured;
   return `<section class="player-stories" aria-labelledby="stories-title">
-    <div class="stories-intro"><p class="section-kicker">THE SKILLSLOTS777 COMMUNITY</p><h2 id="stories-title">Every player.<br>A different story.</h2><p>A place for the experiences, favorites, and feedback that make our community.</p>
+    <div class="stories-intro"><p class="section-kicker">THE SKILLANDSLOTS COMMUNITY</p><h2 id="stories-title">Every player.<br>A different story.</h2><p>A place for the experiences, favorites, and feedback that make our community.</p>
     ${sample ? '<span class="preview-label">Design preview · sample reviews</span><p class="review-note">These examples show the layout. They are not customer testimonials.</p>' : '<span class="community-note">Player reviews</span>'}</div>
-    <div class="review-grid">${reviews.map((r,i)=>`<article class="review-card"><div class="review-top"><span class="quote-mark" aria-hidden="true">“</span><span>${sample?'SAMPLE REVIEW':'PLAYER REVIEW'}</span></div><blockquote>${esc(r.quote)}</blockquote><div class="review-person"><span class="review-avatar avatar-${i}" aria-hidden="true">${sample?'R':esc(r.name.slice(0,1))}</span><div><b>${esc(r.name)}</b><small>${sample?'Preview content':esc(r.location||'Skillslots777 community')}</small></div></div></article>`).join('')}</div>
+    <div class="review-grid">${reviews.map((r,i)=>`<article class="review-card"><div class="review-top"><span class="quote-mark" aria-hidden="true">“</span><span>${sample?'SAMPLE REVIEW':'PLAYER REVIEW'}</span></div><blockquote>${esc(r.quote)}</blockquote><div class="review-person"><span class="review-avatar avatar-${i}" aria-hidden="true">${sample?'R':esc(r.name.slice(0,1))}</span><div><b>${esc(r.name)}</b><small>${sample?'Preview content':esc(r.location||'Skillandslots community')}</small></div></div></article>`).join('')}</div>
   </section>`;
 }
 
@@ -267,8 +267,8 @@ function appDownloadSection() {
   const badge = (url,icon,top,label) => url ? `<a class="store-badge" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${icon}<span><small>${top}</small><b>${label}</b></span></a>` : `<button class="store-badge" disabled aria-label="${label} download unavailable in this preview">${icon}<span><small>${top}</small><b>${label}</b></span></button>`;
   const apple = '<svg viewBox="0 0 24 28" aria-hidden="true"><path fill="currentColor" d="M17.5 0c.3 2-1.1 4-2.2 5.1-1.2 1.2-2.8 1.8-4.2 1.6-.3-1.9 1-3.9 2.1-5C14.5.6 16.1 0 17.5 0ZM21.1 21.3c-.8 1.8-1.2 2.6-2.3 4.2-1.4 2-3.3 2.2-5.2 1.3-1.7-.8-3.3-.8-5.1.1-1.8.8-3.2.6-4.6-1.3C.1 20.3-.8 13.8 1.9 10.3c1.8-2.5 5-2.8 7.1-1.8 1.5.7 2.6.8 4.3 0 2.4-1.1 5.3-.8 7.2 1.6-4.4 2.7-3.6 8.5.6 10.2v1Z"/></svg>';
   const play = '<svg viewBox="0 0 26 28" aria-hidden="true"><path fill="#65d6b4" d="M2 1v26l13-13Z"/><path fill="#6db6ff" d="m2 1 16 9-3 4Z"/><path fill="#ffcf5c" d="m15 14 3-4 7 4-7 4Z"/><path fill="#f7839f" d="m2 27 13-13 3 4Z"/></svg>';
-  return `<section class="app-promo" aria-labelledby="app-title"><div class="app-promo-copy"><p class="section-kicker">YOUR NEXT SESSION, ANYWHERE</p><h2 id="app-title">Take <span>Skillslots777</span><br>with you.</h2><p>Explore your platforms from your phone, tablet, or computer.</p><div class="store-badges">${badge(ios,apple,'Download on the','App Store')}${badge(android,play,'Get it on','Google Play')}</div>${!ios||!android?'<p class="download-note">Preview: official app download links have not been provided.</p>':''}<a class="mobile-browser-link" href="#/games">Explore games in your browser</a></div>
-    <div class="phone-scene" aria-hidden="true"><span class="floating-coin coin-one">7</span><span class="floating-coin coin-two">7</span><span class="floating-coin coin-three">7</span><div class="demo-phone"><div class="phone-island"></div><div class="phone-brand">Skillslots<b>777</b></div><img src="assets/landing/recharge-hero.png" alt="" loading="lazy"><div class="phone-caption">YOUR GAME LIBRARY</div><div class="phone-games"><span class="category-art art-slots"></span><span class="category-art art-fish"></span><span class="category-art art-store"></span></div><div class="phone-action">Explore games</div><div class="phone-nav">Home &nbsp; Games &nbsp; Wallet</div></div></div>
+  return `<section class="app-promo" aria-labelledby="app-title"><div class="app-promo-copy"><p class="section-kicker">YOUR NEXT SESSION, ANYWHERE</p><h2 id="app-title">Take <span>Skillandslots</span><br>with you.</h2><p>Explore your platforms from your phone, tablet, or computer.</p><div class="store-badges">${badge(ios,apple,'Download on the','App Store')}${badge(android,play,'Get it on','Google Play')}</div>${!ios||!android?'<p class="download-note">Preview: official app download links have not been provided.</p>':''}<a class="mobile-browser-link" href="#/games">Explore games in your browser</a></div>
+    <div class="phone-scene" aria-hidden="true"><span class="floating-coin coin-one">7</span><span class="floating-coin coin-two">7</span><span class="floating-coin coin-three">7</span><div class="demo-phone"><div class="phone-island"></div><div class="phone-brand">Skilland<b>slots</b></div><img src="assets/landing/recharge-hero.png" alt="" loading="lazy"><div class="phone-caption">YOUR GAME LIBRARY</div><div class="phone-games"><span class="category-art art-slots"></span><span class="category-art art-fish"></span><span class="category-art art-store"></span></div><div class="phone-action">Explore games</div><div class="phone-nav">Home &nbsp; Games &nbsp; Wallet</div></div></div>
   </section>`;
 }
 
@@ -279,7 +279,7 @@ function authPasswordField(id,name,label,placeholder,isNew=true) {
 function landingLogin() {
   const remembered = store.get('p3_login_name','');
   return `<div class="page guest-auth-page"><section class="landing-register return-screen" aria-labelledby="return-title">
-    <header class="return-hero"><img src="assets/platform-scenes/vegas.jpg" alt="" fetchpriority="high"><div><h1 id="return-title"><span>Welcome</span> <em>back!</em></h1><p>Sign in to your Skillslots777 account.</p></div></header>
+    <header class="return-hero"><img src="assets/platform-scenes/vegas.jpg" alt="" fetchpriority="high"><div><h1 id="return-title"><span>Welcome</span> <em>back!</em></h1><p>Sign in to your Skillandslots account.</p></div></header>
     <form class="register-panel return-panel demo-entry" data-form="demo-login">
       <div class="join-field"><label for="demo-player">Demo player ID</label><div class="join-input">${I.user}<input id="demo-player" name="player" type="text" required autocomplete="off" placeholder="Enter any player ID"></div></div>
       <button class="register-submit" type="submit"><span>Open demo wallet</span>${I.chev}</button>
@@ -529,7 +529,7 @@ function spotlightCaption() {
 function platformSpotlight(lobby = false) {
   const heading = lobby ? 'h1' : 'h2';
   return `<section class="world-collection" aria-labelledby="collection-title"><div class="showcase-inner">
-    <header><span class="showcase-brand" role="img" aria-label="Skillslots777"></span><p>Featured platforms</p>
+    <header><span class="showcase-brand" role="img" aria-label="Skillandslots"></span><p>Featured platforms</p>
     <${heading} id="collection-title"><span>Your next favorite.</span><em>One swipe away.</em></${heading}></header>
     <div class="collection-stage" id="spotlightStage" data-original="${featuredPlatforms[spotlightIndex].id === 'golden-treasure'}">${spotlightStage()}</div>
     <div id="spotName" aria-live="polite">${spotlightCaption()}</div>
@@ -575,7 +575,7 @@ document.addEventListener('keydown', event => {
 
 function viewActivityPreview(){
   const cards=PLATFORMS.slice(0,3).map(p=>{const g=GAMES.find(x=>x.p===p.id);return `<a class="pulse-card" href="#/platform/${p.id}"><img src="${g.img}" alt=""><span>${coin(p,'sm')}<b>${p.name}</b><small>${p.games} titles to explore</small></span></a>`}).join('');
-  return `<div class="page activity-preview">${crumb(['Activity & Highlights'])}<header class="pulse-hero"><p class="section-kicker">PLATFORM PULSE</p><h1>Activity & highlights.</h1><p>Explore curated platform highlights from Skillslots777. Live rankings and winner data are not connected yet.</p><div class="preview-trust"><span>CURATED PREVIEW</span><span>No live payout claims</span></div></header><section class="pulse-feature"><div><p class="section-kicker">FEATURED NOW</p><h2>Three places to start.</h2></div><div class="pulse-grid">${cards}</div></section><section class="pulse-explainer"><span class="pulse-info">i</span><div><h3>How highlights are selected</h3><p>This preview uses the platform catalog available in the demo. When verified activity data is connected, this area can show real trends with a clear update time and methodology.</p></div></section><section class="pulse-list"><div class="list-h"><div><p class="section-kicker">CATALOG HIGHLIGHTS</p><h2>Explore the full lineup.</h2></div><a class="btn btn-outline" href="#/games">View platforms</a></div>${PLATFORMS.map(p=>`<a href="#/platform/${p.id}">${coin(p,'sm')}<span><b>${p.name}</b><small>${p.games} available titles</small></span><em>Explore</em></a>`).join('')}</section></div>`;
+  return `<div class="page activity-preview">${crumb(['Activity & Highlights'])}<header class="pulse-hero"><p class="section-kicker">PLATFORM PULSE</p><h1>Activity & highlights.</h1><p>Explore curated platform highlights from Skillandslots. Live rankings and winner data are not connected yet.</p><div class="preview-trust"><span>CURATED PREVIEW</span><span>No live payout claims</span></div></header><section class="pulse-feature"><div><p class="section-kicker">FEATURED NOW</p><h2>Three places to start.</h2></div><div class="pulse-grid">${cards}</div></section><section class="pulse-explainer"><span class="pulse-info">i</span><div><h3>How highlights are selected</h3><p>This preview uses the platform catalog available in the demo. When verified activity data is connected, this area can show real trends with a clear update time and methodology.</p></div></section><section class="pulse-list"><div class="list-h"><div><p class="section-kicker">CATALOG HIGHLIGHTS</p><h2>Explore the full lineup.</h2></div><a class="btn btn-outline" href="#/games">View platforms</a></div>${PLATFORMS.map(p=>`<a href="#/platform/${p.id}">${coin(p,'sm')}<span><b>${p.name}</b><small>${p.games} available titles</small></span><em>Explore</em></a>`).join('')}</section></div>`;
 }
 
 function avatarFace(user) {
@@ -925,7 +925,7 @@ const DOCS = () => ({
       <details><summary>I already play one of these games. Can I use my account?</summary><p>Yes. Choose "I have an Account" when you unlock the game and enter your existing login.</p></details>
       <details><summary>Can I limit my spending?</summary><p>Yes. Set a daily deposit limit, take a break, or self-exclude under My account.</p></details>
     </div>`,
-  'Responsible play': `<div class="responsible-doc"><p>Skillslots777 is intended for adults aged 21 and over. Set limits that fit your budget, take regular breaks, and never use money needed for everyday expenses.</p><ul><li>Use the daily deposit limit in your account settings.</li><li>Choose a cool-off period when you want time away.</li><li>Use self-exclusion if you need a longer break.</li><li>Contact support if you need help finding these controls.</li></ul><p>No purchase is necessary. Availability and platform rules may vary by location.</p></div>`
+  'Responsible play': `<div class="responsible-doc"><p>Skillandslots is intended for adults aged 21 and over. Set limits that fit your budget, take regular breaks, and never use money needed for everyday expenses.</p><ul><li>Use the daily deposit limit in your account settings.</li><li>Choose a cool-off period when you want time away.</li><li>Use self-exclusion if you need a longer break.</li><li>Contact support if you need help finding these controls.</li></ul><p>No purchase is necessary. Availability and platform rules may vary by location.</p></div>`
 });
 
 /* ---------- theme ---------- */
@@ -1126,7 +1126,7 @@ function showChooser() {
       <div class="ch-opts">
         <button class="ch-opt a" data-site-pick="a">
           <div class="ch-prev"><i class="p-top"></i><i class="p-hero"></i><i class="p-rows"></i><i class="p-rows"></i><i class="p-bar"></i></div>
-          <b>Skillslots777</b><span>Navy or white theme · bottom navigation</span></button>
+          <b>Skillandslots</b><span>Navy or white theme · bottom navigation</span></button>
         <button class="ch-opt b" data-site-pick="b">
           <div class="ch-prev"><i class="p-side"></i><i class="p-hero"></i><i class="p-wallet"></i><i class="p-cards"></i></div>
           <b>Loaded777</b><span>Navy or white theme · side navigation</span></button>
@@ -1290,7 +1290,7 @@ function renewPhoneCode() {
   phoneTimer=setInterval(tick,500);
 }
 function phonePreview() {
-  openModal(`<div class="phone-step-heading"><div class="phone-brand">Skillslots<b>777</b></div><span aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="3" width="24" height="41" rx="5"/><path d="M14 7h10M16 39h6"/><path fill="var(--panel)" d="M25 14h15a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 5v-5h-2a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z"/><path d="M26 22h2m3 0h2m3 0h2"/></svg></span><h2>Verify your phone</h2>
+  openModal(`<div class="phone-step-heading"><div class="phone-brand">Skilland<b>slots</b></div><span aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="7" y="3" width="24" height="41" rx="5"/><path d="M14 7h10M16 39h6"/><path fill="var(--panel)" d="M25 14h15a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4h-7l-6 5v-5h-2a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4Z"/><path d="M26 22h2m3 0h2m3 0h2"/></svg></span><h2>Verify your phone</h2>
     <p>Use a sample number and the demo code below. No SMS is sent.</p>${signupProgress(2)}</div>
     <form class="phone-preview" data-form="code"><label for="preview-phone">Phone number</label>
     <div class="preview-phone-row"><select aria-label="Country calling code"><option>US +1</option><option>CA +1</option><option>MX +52</option><option>ES +34</option></select><input id="preview-phone" class="field" type="tel" inputmode="tel" autocomplete="off" pattern="[0-9]{7,12}" placeholder="5550101234" required></div>
@@ -2159,7 +2159,7 @@ if (!S.user && route().name === 'home' && performance.getEntriesByType('navigati
   }), {once:true});
 }
 document.getElementById('loader').setAttribute('data-ready','');
-// Open directly on Skillslots777; alternate site remains available in the footer.
+// Open directly on Skillandslots; alternate site remains available in the footer.
 
 function walletOverview(){
  const u=S.user, value=x=>Number.isFinite(x)?x.toFixed(2):'—';

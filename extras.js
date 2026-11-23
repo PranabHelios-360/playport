@@ -1,5 +1,5 @@
 /* Free-to-play games + "Today's free game" (one feature per 24 hours).
-   Shared by all three sites (root app.js for Recharge777 / Gamewallet777, v3 for Skillslots777).
+   Shared by all three sites (root app.js for Recharge777 / Gamewallet777, v3 for Skillandslots).
    Uses each site's own helpers: S, openModal, closeModal, toast, requireLogin, save, refresh, addTx. */
 (() => {
   const F2P = [

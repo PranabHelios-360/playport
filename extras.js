@@ -4,7 +4,7 @@
 (() => {
   const F2P = [
     { id: 'arthur', name: 'Arthur Fortunes', sub: 'Slots, fish and table games', url: 'https://arthurfortunes.com', art: '/assets/f2p/arthur-king.webp', logo: '/assets/f2p/arthur-logo.png', c1: '#0c6b35', c2: '#e9b628' },
-    { id: 'bossvegas', name: 'Boss Vegas', url: '', sub: 'Classic Vegas reels', mark: 'BV', c1: '#1b1b22', c2: '#d4a63a' },
+    { id: 'bossvegas', name: 'Boss Vegas', url: '', sub: 'Classic Vegas reels', art: '/assets/f2p/bossvegas-logo.webp', wide: true, mark: 'BV', c1: '#8a1a5c', c2: '#f2b82e' },
     { id: 'soon', name: 'Coming soon', sub: 'A third free game is on the way', soon: true, c1: '#23233a', c2: '#6c6c90' }
   ];
 
@@ -60,7 +60,7 @@
 
   /* ---------- section ---------- */
   function f2pCard(g) {
-    return `<button type="button" class="f2p-card ${g.soon ? 'soon' : ''}" data-x-act="f2p" data-x-id="${g.id}" style="--c1:${g.c1};--c2:${g.c2}" ${g.soon ? 'disabled' : ''}>
+    return `<button type="button" class="f2p-card ${g.soon ? 'soon' : ''} ${g.wide ? 'wide' : ''}" data-x-act="f2p" data-x-id="${g.id}" style="--c1:${g.c1};--c2:${g.c2}" ${g.soon ? 'disabled' : ''}>
       ${g.art ? `<img class="f2p-art" src="${g.art}" alt="" loading="lazy">` : `<span class="f2p-mark">${g.mark || '?'}</span>`}
       <span class="f2p-txt">${g.logo ? `<img class="f2p-logo" src="${g.logo}" alt="">` : ''}<b>${g.name}</b><small>${g.sub}</small></span>
       <span class="f2p-tag">${g.soon ? 'Soon' : 'Free · GC'}</span>
@@ -124,7 +124,7 @@
     const g = F2P.find(x => x.id === id);
     if (!g || g.soon) return;
     if (typeof S === 'undefined' || !S.user) {
-      openModal(`<div class="f2p-modal" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
+      openModal(`<div class="f2p-modal ${g.wide ? 'wide' : ''}" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark big">${g.mark}</span>`}</div>
         <h2 class="gc-offer-h">Sign up or log in to get <span>${gcFmt(SIGNUP_GC)}</span> free on us</h2>
         <p class="x-sub">Use them in ${g.name} and our other free games. Gold Coins have no cash value.</p>
         <div class="gc-offer-acts"><button class="btn btn-accent btn-block" data-act="signup">Sign up</button><button class="btn btn-outline btn-block" data-act="login">Log in</button></div>
@@ -135,7 +135,7 @@
     const bal = gcBal(), inGame = pile(g.id);
     if (gcMode === 'back' && !inGame) gcMode = 'add';
     const max = gcMax(g.id), start = Math.min(max, gcMode === 'add' ? 10000 : max);
-    openModal(`<div class="gc-head" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark">${g.mark}</span>`}<div><h2>${g.name}</h2><small>Free to play. Gold Coins have no cash value.</small></div></div>
+    openModal(`<div class="gc-head ${g.wide ? 'wide' : ''}" style="--c1:${g.c1};--c2:${g.c2}">${g.art ? `<img src="${g.art}" alt="">` : `<span class="f2p-mark">${g.mark}</span>`}<div><h2>${g.name}</h2><small>Free to play. Gold Coins have no cash value.</small></div></div>
       <div class="gc-split"><div><small>Your balance</small><b>${gcFmt(bal)}</b></div><div><small>In ${g.name}</small><b class="gc-in">${gcFmt(inGame)}</b></div></div>
       <div class="gc-step"><span>1</span><b>Transfer Gold Coins</b></div>
       <div class="gc-mode" role="tablist"><button type="button" role="tab" class="${gcMode === 'add' ? 'on' : ''}" data-x-act="gc-mode" data-v="add" data-x-id="${g.id}">Add to game</button><button type="button" role="tab" class="${gcMode === 'back' ? 'on' : ''}" data-x-act="gc-mode" data-v="back" data-x-id="${g.id}" ${inGame ? '' : 'disabled'}>Return to balance</button></div>

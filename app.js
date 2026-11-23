@@ -1965,7 +1965,9 @@ document.addEventListener('keydown', e => {
 
 window.addEventListener('hashchange', () => { S.cat = 'All'; S.q = ''; closeModal(); setMenu(false); showLoader(420); render(); });
 if (location.hash && location.hash !== '#/') history.replaceState(null, '', location.pathname + location.search + '#/');
-const wantSite = new URLSearchParams(location.search).get('site');
+/* window.FORCE_SITE ('a' or 'b') locks a standalone copy to one site: no chooser, no switcher. */
+const wantSite = window.FORCE_SITE || new URLSearchParams(location.search).get('site');
+if (window.FORCE_SITE) document.documentElement.classList.add('single-site');
 if (wantSite) history.replaceState(null, '', location.pathname + '#/');
 applySite(wantSite === 'b' ? 'b' : 'a');
 render();

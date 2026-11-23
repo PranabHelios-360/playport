@@ -2065,3 +2065,6 @@ button.d-row:hover, summary.d-row:hover { background: var(--card-2); }
 /* no footer for signed-in players */
 body.signed-in > .foot { display: none; }
 body.signed-in main#app { min-height: 0; }
+
+/* standalone copies: one site only */
+.single-site #siteSwitch, .single-site [data-act="choose-site"] { display: none !important; }
